@@ -1,0 +1,149 @@
+<apex:page showHeader="false" controller="OnsiteStaff" standardStylesheets="false" sidebar="false" docType="html-5.0" >
+	<html>
+	<head>
+		<meta charset="utf-8">  
+			<title>Onsite Testing : Choose Function</title>
+			<meta name="description" content="Description"/>
+			<apex:stylesheet value="{!URLFOR($Resource.OnsiteStaticResources, 'onsite_static_resources/css/ww-style.css')}"/>
+			<apex:include pageName="IncludeResources" />
+		</meta>
+		<style type="text/css">
+			.cell
+			{
+				padding-left: 0px;
+				padding-right: .5em;
+			}
+			.ui-dialog .ui-dialog-titlebar
+			{
+				padding:.1em;
+				margin:.1em;
+				width:98%;
+			}			
+		</style>
+	</head>
+	<body>
+		<div id="page-wrapper">
+		<div id="content-wrapper">
+		<a href='/apex/OnsiteStart?event={!objEvent.Id}' style="text-decoration: none;"><h1 style="display:block;">{!objEvent.Name}</h1></a> <input style="margin-right:60px;" class="bttn blue" type="button" name="eventlist" value="Results" onclick="goToResults()" />
+		<div class="input-grid-wrapper">
+		<div style="float:left;" class="frmElements"><input style="float:left; margin-right:12px; " class="bttn blue" type="button" name="eventlist" value="New" onclick="addNew()" /></div>
+		<apex:form rendered="{!listER.size>0}" id="frmMain">
+			<div class="frmElements">
+	       <apex:outputPanel id="errorpanel"> 
+				<div id="errors" class="error" style="{!errorMessageStyle}"><p><apex:outputText escape="false" value="{!errorMessage}"/></p></div>
+			</apex:outputPanel>		
+			<table class="input-grid" style="width: 100%; table-layout: fixed;border: 1px solid #B4B9C0;font-size:.9em; ">
+			<tr>
+				<th style="width: 25%;">Contact</th>
+				<th style="width: 30%;">Email</th>
+				<th style="width: 15%;">Role</th>
+				<th style="width: 15%;">Signed Off</th>
+				<th style="width: 15%;"></th>
+			</tr>		
+			<apex:repeat value="{!listER}" var="ers">
+				<tr style="border: 1px solid #B4B9C0;font-size:.8em;">
+					<td style="font-size:.9em;"><a href="#" onclick="signOff('{!ers.er.Id}');">{!ers.contactName}</a></td>
+					<td style="font-size:.9em;"><a href="mailto:{!ers.contactEmail}">{!ers.contactEmail}</a></td>
+					<td style="font-size:.9em;">{!ers.er.Event_Role__c}</td>
+					<td style="font-size:.9em;"><apex:outputField value="{!ers.er.Signed_Off_Date__c}" /></td>
+					<td class="cell" >
+					 <input type="button" class="bttn orange" style="vertical-align: middle; font-size:12px; width: 90px; height: 40px; " value="Edit" onclick="addData('{!ers.er.Id}')" />
+					</td>							
+				</tr>			
+			</apex:repeat>
+			</table>
+			</div>
+			<div id="modalDiv">
+				<div style="font-size:.9em;">Code:<input type="text" value="" class="txtCode" style="width:100px;"/></div>
+				<input type="button" class="bttn orange" style="vertical-align: middle; font-size:12px; width: 90px; height: 40px; " value="Submit" onclick="submitCode()" />				
+			</div>
+		</apex:form><!-- ENDS TEST RESULTS -->
+		</div><!-- ENDS INPUT GRID WRAPPER -->
+		</div><!-- ENDS CONTENT WRAPPER -->
+		</div><!-- ENDS PAGE WRAPPER -->
+	<script type="text/javascript">
+		jQuery.noConflict();
+		var selectedOrderId="";
+		jQuery(document).ready(function() {
+            jQuery("#modalDiv").dialog({
+                modal: true,
+                autoOpen: false,
+                height: '200',
+                width: '300',
+                draggable: true,
+                resizeable: true,   
+                title: 'Enter Code'
+            });
+            var userCanAccessPage=getCookie("userCanAccessPage");
+            if(userCanAccessPage=="")
+            {
+            	jQuery(".frmElements").hide();
+            	jQuery("#modalDiv").dialog("open");
+            }	
+		});
+		function submitCode()
+		{
+			var userCode=jQuery(".txtCode").val();
+		    Visualforce.remoting.Manager.invokeAction(
+		        '{!$RemoteAction.OnsiteStaff.isValidUser}', 
+		        userCode,
+		        function(result, event){
+		            if (event.status) {
+						if(result=="yes")
+						{
+							jQuery(".frmElements").show();
+							jQuery("#modalDiv").dialog("close");
+							setCookie("userCanAccessPage", "temp", 30);
+						}
+						else
+						{
+							alert("Invalid Code. Please re-enter");
+						}
+		            } else {
+		            	alert(event.message);
+		            }
+		        }, 
+		        {escape: false}
+		    );				
+		}		
+        function goToResults(){
+        	//alert("Coming soon!");
+			parent.location.href='/apex/OnsiteEventResult?event={!objEvent.Id}';
+        }
+        function addData(staffId)
+        {
+        	parent.location.href='/apex/OnsiteStaffEdit?event={!objEvent.Id}&sid='+staffId;
+        }
+        function addNew()
+        {
+        	parent.location.href='/apex/OnsiteStaffEdit?event={!objEvent.Id}';
+        }
+        function signOff(staffId)
+        {
+        	parent.location.href='/apex/OnsiteStaffSignOff?event={!objEvent.Id}&sid='+staffId;
+        }        
+		function setCookie(cname,cvalue,exdays) {
+		    var d = new Date();
+		    d.setTime(d.getTime() + (15*60*1000));
+		//alert(d.getTime()+"=="+d.toGMTString());
+		    var expires = "expires=" + d.toGMTString();
+		    document.cookie = cname+"="+cvalue+"; "+expires;
+		}
+		
+		function getCookie(cname) {
+		    var name = cname + "=";
+		    var ca = document.cookie.split(';');
+		    for(var i=0; i<ca.length; i++) {
+		        var c = ca[i];
+		        while (c.charAt(0)==' ') c = c.substring(1);
+		        if (c.indexOf(name) == 0) {
+		            return c.substring(name.length, c.length);
+		        }
+		    }
+		    return "";
+		}        
+    </script>		
+	</body>
+	 </html>
+	
+</apex:page>

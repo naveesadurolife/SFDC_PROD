@@ -1,0 +1,149 @@
+<apex:page showHeader="false"  controller="OnsiteParticipantSurvey" standardStylesheets="false" sidebar="false" docType="html-5.0">
+	<html>
+	<head>
+		<meta charset="utf-8">  
+			<title>Onsite Testing : Choose Function</title>
+			<meta name="description" content="Description"/>
+			<apex:stylesheet value="{!URLFOR($Resource.OnsiteStaticResources, 'onsite_static_resources/css/ww-style.css')}"/>
+			<apex:include pageName="IncludeResources" />
+		</meta>
+		<style type="text/css">
+			.cell
+			{
+				padding-left: 0px;
+				padding-right: .5em;
+				font-size:.8em;
+			}
+			.ui-dialog .ui-dialog-titlebar
+			{
+				padding:.1em;
+				margin:.1em;
+				width:98%;
+			}
+			.blockMsg 
+			{
+				margin-right: auto;
+				margin-left: auto;
+				position:'relative';
+			}
+			.blockOverlay
+			{
+				width:100%;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="page-wrapper">
+		<div id="content-wrapper">
+		<a href='/apex/OnsiteStart?event={!objEvent.id}' style="text-decoration: none;"><h1 style="display:block;">Participant Survey: {!objEvent.Name}</h1></a> <input style="margin-right:60px;" class="bttn blue" type="button" name="eventlist" value="Event Home" onclick="goToResults()" />
+		<div class="input-grid-wrapper">
+		<apex:form rendered="{!listOrders.size>0}" id="frmMain">
+			<table class="input-grid" style="width: 100%; table-layout: fixed;border: 1px solid #B4B9C0;">
+			<tr>
+				<th style="width: 20%;">Name</th>
+				<th style="width: 20%;">Email</th>
+				<th style="width: 12%;">Card Code</th>
+				<th style="width: 22%;">Checkin Time</th>
+				<th style="width: 22%;"></th>
+			</tr>		
+			<apex:repeat value="{!listOrders}" var="o">
+				<tr style="border: 1px solid #B4B9C0;">
+					<td class="cell" style="vertical-align: middle; height: 50px; font-size: .8em;" >
+						{!o.PatientFirstName__c + ' ' + o.PatientLastName__c}
+					</td>
+					<td class="cell" style="vertical-align: middle; height: 100%; font-size: .8em;">{!o.PatientEmailH__c}</td>					
+					<td class="cell">{!o.Onsite_Card_Code__c}</td>
+					<td class="cell" style="vertical-align: middle; height: 100%;font-size: .8em; ">
+					<apex:outputField value="{!o.Check_In_Time__c}" id="FillDate"/>
+					</td>				
+					<td class="cell" >
+					 <input type="button" class="bttn orange" style="vertical-align: middle; font-size:12px; width: 90px; height: 40px; " value="Survey" onclick="javascript:openSurvey('{!o.Id}','{!objEvent.id}','{!URLENCODE(o.PatientFirstName__c)}','{!URLENCODE(o.PatientLastName__c)}');" />
+					</td>
+				</tr>			
+			</apex:repeat>
+			</table>
+			<div id="modalDiv" >
+				<div class="divSurvey" style="font-size: .8em;">
+					<div class="participantName"></div>
+					<div class="">How would you rate your screening experience?</div>
+					<div class="">
+	        			<apex:selectList value="{!selectedScreeningExperience}" styleClass="rblSurvey" size="1" multiselect="false">
+	            			<apex:selectOptions value="{!screeningExperience}"/>
+	            		</apex:selectList>
+					</div>
+					<div>Comments:<textarea rows="2" cols="35" class="txtComment" ></textarea></div>
+					<input type="button" class="bttn orange" style="vertical-align: middle; font-size:12px; width: 90px; height: 40px; " value="Submit" onclick="javascript:submitSurvey();" />
+				</div>
+				<div class="divResult"></div>
+			</div>
+		</apex:form><!-- ENDS TEST RESULTS -->
+		</div><!-- ENDS INPUT GRID WRAPPER -->
+		</div><!-- ENDS CONTENT WRAPPER -->
+		</div><!-- ENDS PAGE WRAPPER -->
+	<script type="text/javascript">
+		jQuery.noConflict();
+		var selectedOrderId="";
+		jQuery(document).ready(function() {
+			var height=jQuery(document).height();
+			height="350";//height-100;
+            jQuery("#modalDiv").dialog({
+                modal: true,
+                autoOpen: false,
+                width: '35%',
+                height: ''+height+'',
+                draggable: true,
+                resizeable: true,   
+                title: 'Participant Survey'
+            });	
+			 jQuery('#modalDiv').bind('dialogclose', function(event) {
+			     window.location=window.location;
+			 });		
+		});	
+        function openSurvey(orderId,eid,fname,lname)
+        {
+			selectedOrderId=orderId;
+			jQuery(".participantName").html(fname+" "+lname);
+			jQuery("#modalDiv").dialog("open"); 	
+        }
+        function submitSurvey()
+        {
+			var rblSurvey=jQuery(".rblSurvey").val();
+			var txtComment=jQuery(".txtComment").val();
+			if(rblSurvey=="")
+			{
+				alert("Please select your answer.");
+				return;
+			}
+		
+		    Visualforce.remoting.Manager.invokeAction(
+		        '{!$RemoteAction.OnsiteParticipantSurvey.updateSurvey}',
+		        selectedOrderId, 
+		        rblSurvey,
+				txtComment,
+		        function(result, event){
+		            if (event.status) {
+		            	if(result=="success")
+		            	{
+							alert("Thank you for participating in the survey. Please return iPad.");
+		            		jQuery("#modalDiv").dialog("close");  
+		            	}
+		            	else
+		            	{
+		            		alert(result);
+		            	}
+		            } else {
+		            	alert(event.message);
+		            }
+		        }, 
+		        {escape: false}
+		    ); 
+        }
+		function goToResults()
+		{
+			window.location='/apex/OnsiteStart?event={!objEvent.id}';
+		}
+    </script>		
+	</body>
+	 </html>
+	
+</apex:page>

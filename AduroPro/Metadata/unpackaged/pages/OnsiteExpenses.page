@@ -1,0 +1,66 @@
+<apex:page showHeader="false" controller="OnsiteExpenses" standardStylesheets="false" sidebar="false" docType="html-5.0" >
+	<html>
+	<head>
+		<meta charset="utf-8">  
+			<title>Onsite Testing : Choose Function</title>
+			<meta name="description" content="Description"/>
+			<apex:stylesheet value="{!URLFOR($Resource.OnsiteStaticResources, 'onsite_static_resources/css/ww-style.css')}"/>
+		</meta>
+		<style type="text/css">
+			.cell
+			{
+				padding-left: 0px;
+				padding-right: .5em;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="page-wrapper">
+		<div id="content-wrapper">
+		<h1>{!objEvent.Name} <input style="margin-right:60px;" class="bttn blue" type="button" name="eventlist" value="Results" onclick="goToResults()" /></h1>
+		<div class="input-grid-wrapper">
+		<div style="float:left;"><input style="float:left; margin-right:12px; " class="bttn blue" type="button" name="eventlist" value="New" onclick="addNew()" /></div>
+		<apex:form rendered="{!listER.size>0}" id="frmMain">
+	       <apex:outputPanel id="errorpanel"> 
+				<div id="errors" class="error" style="{!errorMessageStyle}"><p><apex:outputText escape="false" value="{!errorMessage}"/></p></div>
+			</apex:outputPanel>			
+			<table class="input-grid" style="width: 100%; table-layout: fixed;border: 1px solid #B4B9C0;font-size:.9em; ">
+			<tr>
+				<th style="width: 30%;">Expense Type</th>
+				<th style="width: 30%;">Company</th>
+				<th style="width: 25%;">Expense</th>
+				<th style="width: 15%;"></th>
+			</tr>		
+			<apex:repeat value="{!listER}" var="ers">
+				<tr style="border: 1px solid #B4B9C0;font-size:.8em;">
+					<td style="font-size:.9em;">{!ers.Expense_Type__c}</td>
+					<td style="font-size:.9em;">{!ers.Company__c}</td>
+					<td style="font-size:.9em;">{!ers.Expected_Expense__c}</td>
+					<td class="cell" >
+					 <input type="button" class="bttn orange" style="vertical-align: middle; font-size:12px; width: 90px; height: 40px; " value="Edit" onclick="addData('{!ers.Id}')" />
+					</td>							
+				</tr>			
+			</apex:repeat>
+			</table>
+		</apex:form><!-- ENDS TEST RESULTS -->
+		</div><!-- ENDS INPUT GRID WRAPPER -->
+		</div><!-- ENDS CONTENT WRAPPER -->
+		</div><!-- ENDS PAGE WRAPPER -->
+	<script type="text/javascript">
+        function goToResults(){
+        	//alert("Coming soon!");
+			parent.location.href='/apex/OnsiteEventResult?event={!objEvent.Id}';
+        }
+        function addData(eid)
+        {
+        	parent.location.href='/apex/OnsiteExpenseAddEdit?event={!objEvent.Id}&eid='+eid;
+        }
+        function addNew(eid)
+        {
+        	parent.location.href='/apex/OnsiteExpenseAddEdit?event={!objEvent.Id}';
+        }
+    </script>		
+	</body>
+	 </html>
+	
+</apex:page>

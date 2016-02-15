@@ -1,0 +1,45 @@
+<apex:page extensions="AssociateUserWithProgram"  standardController="Program__c" sidebar="false" showHeader="false">
+
+    <apex:form > 
+        <apex:pageBlock mode="mainDetail">
+            <apex:pageblockSection columns="2">
+                <apex:pageBlockSectionItem >
+                <c:MultiselectPicklist leftLabel="Available Groups"
+                    leftOption="{!availableGroups}"
+                    rightLabel="Selected Groups"
+                    rightOption="{!selectedGroupds}"
+                    size="14"
+                    width="250px"/>
+             </apex:pageBlockSectionItem>
+             <apex:pageBlockSectionItem >
+                 <apex:outputLabel value="{!$ObjectType["Program__c"].fields["Allowed_Duration__c"].Label}"/>
+                <apex:inputField value="{!currentProgram.Allowed_Duration__c}"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                 <apex:outputLabel value="{!$ObjectType["Program__c"].fields["Coaching_Calendar_Name__c"].Label}"/>
+                <apex:inputField value="{!currentProgram.Coaching_Calendar_Name__c}"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                 <apex:outputLabel value="Prevent Validation on Coaching Appointment"/>
+                <apex:inputField value="{!currentProgram.PreventValidation_on_CoachingAppointment__c}"/>
+            </apex:pageBlockSectionItem> 
+            <apex:pageBlockSectionItem >
+                 <apex:outputLabel value="{!$ObjectType["Program__c"].fields["X1_1_Coaching_Identifier_DOB__c"].Label}"/>
+                <apex:inputField value="{!currentProgram.X1_1_Coaching_Identifier_DOB__c}"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                 <apex:outputLabel value="{!$ObjectType["Program__c"].fields["X1_1_Coaching_Identifier_Employee_ID__c"].Label}"/>
+                <apex:inputField value="{!currentProgram.X1_1_Coaching_Identifier_Employee_ID__c}"/>
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Program Calender"/>
+                <apex:outputLink value="{!$Label.CALENDAR_BASE_URL}/ProgramCalender?e={!currentProgram.Limeade_E_Id__c}&cname={!currentProgram.Coaching_Calendar_Name__c}&fname=[FIRSTNAME]&lname=[LASTNAME]&em=[EMAIL]&emid=[EMPID]&dob=[DOB]" target="_blank">Click Here</apex:outputLink> 
+            </apex:pageBlockSectionItem>               
+            </apex:pageblockSection>    
+            <apex:pageBlockButtons location="top" >
+                <apex:commandButton value="Save 1:1 Coaching" action="{!save}" oncomplete="window.top.location='/{!currentProgram.id}'"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+    <apex:outputText >{!message}</apex:outputText>
+</apex:page>

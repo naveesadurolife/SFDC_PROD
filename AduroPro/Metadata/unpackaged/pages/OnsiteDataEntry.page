@@ -1,0 +1,384 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" docType="html-5.0" controller="OnsiteDataEntryController" action="{!updateScreeningStart}">
+	<style >
+		/*input[type="checkbox"] {
+		    background-image: -webkit-linear-gradient(hsla(0,0%,0%,.1), hsla(0,0%,100%,.1)),
+		                      -webkit-linear-gradient(left, #B11623 50%, #387A36 50%);
+		    background-size: 100% 100%, 200% 100%;
+		    background-position: 0 0, 15px 0;
+		    border-radius: 25px;
+		    box-shadow: inset 0 1px 4px hsla(0,0%,0%,.5),
+		                inset 0 0 10px hsla(0,0%,0%,.5),
+		                0 0 0 1px hsla(0,0%,0%,.1),
+		                0 -1px 2px 2px hsla(0,0%,0%,.25),
+		                0 2px 2px 2px hsla(0,0%,100%,.75);
+		    cursor: pointer;
+		    height: 25px;
+		    margin: 10px;
+		    padding-right: 25px;
+		    position: relative;
+		    width: 75px;
+		    -webkit-appearance: none;
+		    -webkit-transition: .25s;
+		}
+		
+		input[type="checkbox"]:after {
+		    background-color: #eee;
+		    background-image: -webkit-linear-gradient(hsla(0,0%,100%,.1), hsla(0,0%,0%,.1));
+		    border-radius: 25px;
+		    box-shadow: inset 0 1px 1px 1px hsla(0,0%,100%,1),
+		                inset 0 -1px 1px 1px hsla(0,0%,0%,.25),
+		                0 1px 3px 1px hsla(0,0%,0%,.5),
+		                0 0 2px hsla(0,0%,0%,.25);
+		    content: '';
+		    display: block;
+		    height: 25px;
+		    left: 0;
+		    position: relative;
+		    top: 0;
+		    width: 50px;
+		}
+		input[type="checkbox"]:checked {
+		    background-position: 0 0, 35px 0;
+		    padding-left: 25px;
+		    padding-right: 0;
+		}*/
+		
+		.required{
+			color:red;
+			font-weight:bold;
+		}
+		.hide{
+			display:none;
+		}
+
+    	span.dateInput span.dateFormat{
+       		display:none;
+    	}
+	
+	</style>
+<div class="fullPageBlock">
+    <apex:pageBlock >
+
+	<apex:define name="head">
+		<title>Onsite Testing</title>
+		<apex:stylesheet value="{!URLFOR($Resource.OnsiteStaticResources, 'onsite_static_resources/css/ww-style.css')}"/>
+		<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+	</apex:define>
+	<apex:define name="body">
+		<div id="page-wrapper">
+		<div id="content-wrapper">
+		<a href='/apex/OnsiteStart?event={!event.id}' style="text-decoration: none;"><h1>
+			<apex:outputText value="{!event.Name}" >
+			</apex:outputText>
+		</h1></a>
+
+
+		<apex:form id="resultsform" >
+		<div class="event-wrapper" style="margin-top: 15px;">
+				<div class="row-wrapper">
+			        <div class="label">First Name:</div>
+			        <div class="field read">{!onsiteTest.PatientFirstName__c}</div>
+			        <div class="label">Last Name:</div>
+			        <div class="field read">{!onsiteTest.PatientLastName__c}</div>
+			    </div><!-- ENDS ROW WRAPPER -->
+			    <div class="row-wrapper">
+			        <div class="label">Phone:</div>
+			        <div class="field read">{!onsiteTest.PatientPrimaryPhone__c}</div>
+			        <div class="label">Spouse:</div>
+			        <div class="field read">&nbsp;</div>
+			    </div><!-- ENDS ROW WRAPPER -->
+			    <div class="row-wrapper">
+			        <div class="label">DOB:</div>
+			        <div class="field read">
+			        	<apex:inputField value="{!onsiteTest.PatientDOB__c}" />
+			        	<!-- <apex:outputText value="{0,date,MM'/'dd'/'yyyy}" >
+		    				<apex:param value="{!onsiteTest.PatientDOB__c}" /> 
+						</apex:outputText> -->
+					</div>
+			        <div class="label">Employee ID:</div>
+			        <div class="field read">{!onsiteTest.EmployeeId__c}</div>
+			    </div><!-- ENDS ROW WRAPPER -->
+			        <div class="row-wrapper">
+			        <div class="label">Email:</div>
+			        <div class="field-full read">{!onsiteTest.PatientEmailH__c}</div>
+			    </div><!-- ENDS ROW WRAPPER -->
+			<!-- ENDS EVENT INFO FORM -->
+		</div><!-- ENDS EVENT WRAPPER -->
+			
+		
+		
+		<apex:actionFunction name="quickSave" action="{!quickSaveOrder}" rerender="inputAndErrors"  oncomplete="init()"/>
+		<apex:actionFunction name="ToHRA" action="{!ToHRA}" rerender="resultsform"  oncomplete="init()"/>
+		<apex:actionFunction name="submit" action="{!submitOrder}" rerender="inputAndErrors"  oncomplete="init()"/>
+
+		 <div class="input-grid-wrapper">
+
+		<div>
+			<div class="label" style="padding-top:10px;padding-left:10px;width:70%; float:left; position:relative;"><h2>Test Results</h2></div>
+			<div style="width:50%; float:right; position:relative; padding-top:10px;">
+<!--				<apex:commandButton id="quickSaveBttn" onmouseover="changeToText()" oncomplete="init()" styleClass="bttn blue" -->
+<!--				value="Quick Save" action="{!quickSaveOrder}" rerender="inputAndErrors" />-->
+<!--				<apex:commandButton id="quickSaveBttn" onmouseover="changeToText()" oncomplete="init()" styleClass="bttn blue" -->
+<!--				value="Quick Save" action="{!quickSaveOrder}" rerender="inputAndErrors" />-->
+				<table><tr><td>
+				<input id="quickSaveButton" type="button" class="bttn blue" style="" value="Quick Save" onclick="initializeQuickSave(this)" onmouseover="changeToText()" />
+				</td>
+				<apex:outputPanel layout="none" rendered="{!event.Program__r.Screening_HRA__c}">
+				<td>
+				<input id="hraButton" type="button" class="bttn blue" style="" value="To HRA" onclick="initializeHRA(this)" onmouseover="changeToText()" />
+				</td>
+				</apex:outputPanel>
+				</tr></table>
+			</div>
+		</div>
+
+		<apex:outputPanel id="inputAndErrors" layout="block">
+
+		<div id="errors" class="error" style="{!errorMessageStyle}"><p><apex:outputText escape="false" value="{!errorMessage}"/></p></div><!-- ENDS ERROR -->
+		
+		<div style="width:30%; float:right; position:absolute; top:20px; right:40px; padding-bottom:10px; padding-right:10px; white-space: nowrap;">
+			<apex:inputText id="cardcode" styleClass="value" value="{!cardcode}" /><br/>
+			<div style="white-space: nowrap;width:30%; ">Card Code Overwrite<apex:inputCheckbox value="{!overrideCardCode}" style="vertical-align: middle; "/></div>
+		</div>
+
+		<table class="input-grid">
+		<tr>
+			<th>Test</th>
+		    <th>Value</th>
+		    <th>Confirm Value</th>
+		    <th>Comments</th>
+		</tr>
+
+		<tr>
+			<td class="label">Gender (M or F)</td>
+			<td class="value"><apex:inputText style="text-transform: uppercase;" value="{!testInput.PatientGender}" /></td>
+			<td class="value"><apex:inputText style="text-transform: uppercase;"  value="{!testVerify.PatientGender}" /></td>
+		    <td class="comments"><apex:inputText value="{!onsiteTest.Comment_Sex__c}" /></td>
+		</tr>
+
+		<tr>
+			<td class="label">Fasting (Y or N)</td>
+		    <td class="value"><apex:inputText style="text-transform: uppercase;"  value="{!testInput.Fasting}" /></td>
+			<td class="value"><apex:inputText style="text-transform: uppercase;"  value="{!testVerify.Fasting}" /></td>
+		    <td class="comments"><apex:inputText value="{!onsiteTest.Comment_Fasting__c}" /></td>
+		</tr>
+		<tr style="display:{!IF(onsiteTest.ProgramID__r.Tobacco_Saliva__c,'','none')}">
+			<td class="label">Tobacco Free?</td>
+		    <td class="value">
+				<apex:selectList value="{!testInput.Smokefree}" size="1"  style="width:100px;border: 1px solid #ccc;border-radius: 3px;-moz-box-shadow: inset 0 0 8px #dddddd;-webkit-box-shadow: inset 0 0 8px #dddddd;box-shadow: inset 0px 0px 8px #dddddd; padding: 4px; margin: 1px; overflow: hidden;">
+					<apex:selectOptions value="{!SmokeFreeOptions}" />
+				</apex:selectList>					
+			</td>
+			<td class="value">
+				<apex:selectList value="{!testVerify.Smokefree}" size="1"  style="width:100px;border: 1px solid #ccc;border-radius: 3px;-moz-box-shadow: inset 0 0 8px #dddddd;-webkit-box-shadow: inset 0 0 8px #dddddd;box-shadow: inset 0px 0px 8px #dddddd; padding: 4px; margin: 1px; overflow: hidden;">
+					<apex:selectOptions value="{!SmokeFreeOptions}" />
+				</apex:selectList>					
+			</td>
+		    <td class="comments">
+				<apex:selectList value="{!onsiteTest.Comment_Smokefree__c}" size="1"  style="width:240px;border: 1px solid #ccc;border-radius: 3px;-moz-box-shadow: inset 0 0 8px #dddddd;-webkit-box-shadow: inset 0 0 8px #dddddd;box-shadow: inset 0px 0px 8px #dddddd; padding: 4px; margin: 1px; overflow: hidden;">
+					<apex:selectOptions value="{!SmokeFreeList}" />
+				</apex:selectList>		    
+		    </td>
+		</tr>	
+		<tr style="display:{!IF(onsiteTest.ProgramID__r.Test_TC_Onsite__c,'','none')}">
+			<td class="label">Total Cholesterol(60-300)</td>
+		    <td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testInput.TotalCholesterol}" /></td>
+			<td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testVerify.TotalCholesterol}" /></td>
+		    <td class="comments"><apex:inputText value="{!onsiteTest.Comment_TChol__c}" /></td>
+		</tr>
+		<tr style="display:{!IF(onsiteTest.ProgramID__r.Test_HDL_Onsite__c,'','none')}">
+			<td class="label">HDL(15-100)</td>
+		    <td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testInput.HDL}" /></td>
+			<td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testVerify.HDL}" /></td>
+		    <td class="comments"><apex:inputText value="{!onsiteTest.Comment_HDL__c}" /></td>
+		</tr>
+		<tr style="display:{!IF(onsiteTest.ProgramID__r.Test_Trig_Onsite__c,'','none')}">
+			<td class="label">Triglycerides(45-650)</td>
+		    <td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testInput.Triglycerides}" /></td>
+			<td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testVerify.Triglycerides}" /></td>
+		    <td class="comments"><apex:inputText value="{!onsiteTest.Comment_Triglycerides__c}" /></td>
+		</tr>
+		<tr style="display:{!IF(onsiteTest.ProgramID__r.Test_LDL_Onsite__c,'','none')}">
+			<td class="label">LDL(10-200)</td>
+		    <td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testInput.LDL}" /></td>
+			<td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testVerify.LDL}" /></td>
+		    <td class="comments"><apex:inputText value="{!onsiteTest.Comment_LDL__c}" /></td>
+		</tr>
+		<tr style="display:{!IF(onsiteTest.ProgramID__r.Test_Glucose_Onsite__c,'','none')}">
+			<td class="label">Glucose(50-300)</td>
+		    <td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testInput.Glucose}" /></td>
+			<td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testVerify.Glucose}" /></td>
+		    <td class="comments"><apex:inputText value="{!onsiteTest.Comment_Glucose__c}" /></td>
+		</tr>
+		<tr style="display:{!IF(onsiteTest.ProgramID__r.Test_Waist_Onsite__c,'','none')}">
+			<td class="label">Waist (Inches)(15-60)</td>
+		    <td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testInput.Waist}" /></td>
+			<td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testVerify.Waist}" /></td>
+		    <td class="comments"><apex:inputText value="{!onsiteTest.Comment_Waist__c}" /></td>
+		</tr>
+		<tr style="display:{!IF(onsiteTest.ProgramID__r.Test_Height_Onsite__c,'','none')}">
+			<td class="label">Height (Feet)</td>
+		    <td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testInput.Height_Feet}" /></td>
+			<td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testVerify.Height_Feet}" /></td>
+		    <td class="comments"><apex:inputText value="{!onsiteTest.Comment_Height_Feet__c}" /></td>
+		</tr>
+		<tr style="display:{!IF(onsiteTest.ProgramID__r.Test_Height_Onsite__c,'','none')}">
+			<td class="label">Height (Inches)(0-11)</td>
+		    <td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()"  value="{!testInput.Height_Inches}" /></td>
+			<td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()"  value="{!testVerify.Height_Inches}" /></td>
+		    <td class="comments"><apex:inputText value="{!onsiteTest.Comment_Height_Inches__c}" /></td>
+		</tr>
+		<tr style="display:{!IF(onsiteTest.ProgramID__r.Test_Weight_Onsite__c,'','none')}">
+			<td class="label">Weight (lbs.)(80-400)</td>
+		    <td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testInput.Weight}" /></td>
+			<td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testVerify.Weight}" /></td>
+		    <td class="comments"><apex:inputText value="{!onsiteTest.Comment_Weight__c}" /></td>
+		</tr>
+		<tr style="display:{!IF(onsiteTest.ProgramID__r.Test_HR_Onsite__c,'','none')}">
+			<td class="label">Pulse(45-100)</td>
+		    <td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testInput.Pulse}" /></td>
+			<td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testVerify.Pulse}" /></td>
+		    <td class="comments"><apex:inputText value="{!onsiteTest.Comment_Pulse__c}" /></td>
+		</tr>
+		<tr style="display:{!IF(onsiteTest.ProgramID__r.Test_BP_Onsite__c,'','none')}">
+			<td class="label">Systole(80-160)</td>
+		    <td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testInput.Systole}" /></td>
+			<td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testVerify.Systole}" /></td>
+		    <td class="comments"><apex:inputText value="{!onsiteTest.Comment_Systole__c}" /></td>
+		</tr>
+		<tr style="display:{!IF(onsiteTest.ProgramID__r.Test_BP_Onsite__c,'','none')}">
+			<td class="label">Diastole(60-100)</td>
+		    <td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testInput.Diastole}" /></td>
+			<td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testVerify.Diastole}" /></td>
+		    <td class="comments"><apex:inputText value="{!onsiteTest.Comment_Diastole__c}" /></td>
+		</tr>
+		<tr style="display:{!IF(onsiteTest.ProgramID__r.Body_Fat__c,'','none')}">
+			<td class="label">Body Fat(6-50)</td>
+		    <td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testInput.Bodyfat}" /></td>
+			<td class="value"><apex:inputText styleClass="keypad" onfocus="changeToTel()" value="{!testVerify.Bodyfat}" /></td>
+		    <td class="comments"><apex:inputText value="{!onsiteTest.Comment_Bodyfat__c}" /></td>
+		</tr>
+		</table>
+		
+		<div id="errors2" class="error" style="{!errorMessageStyle}"><p><apex:outputText escape="false" value="{!errorMessage}"/></p></div><!-- ENDS ERROR -->
+		
+		</apex:outputPanel>
+
+		</div><!-- ENDS INPUT GRID WRAPPER -->
+		<div style="width:25%; float:right; position:relative; padding-top:10px;">
+			<input id="submitButton" type="button" class="bttn orange" style="" value="Submit" onclick="initializeSubmit(this)" onmouseover="changeToText()" />
+				
+		</div>
+
+		</apex:form>
+		
+		</div><!-- ENDS CONTENT WRAPPER -->
+		</div><!-- ENDS PAGE WRAPPER -->
+
+	
+	</apex:define>
+	    </apex:pageBlock>
+    </div>
+    
+    
+    
+    <script type="text/javascript">
+    
+    	var type = '';
+    
+		onload = init();
+		
+		function init(){
+			setCardCodeText();
+			changeToTel();
+			hideSpinnerAndEnableButton();
+		}
+		
+		function setCardCodeText(){
+			var inputs = document.getElementsByTagName("input");
+			for (var i = 0; i < inputs.length; i++) {
+			  if(inputs[i].id.indexOf("cardcode") > 0)
+			    inputs[i].placeholder = "Enter Card Code";
+			}
+		}
+		
+		
+
+		function changeToText(){
+			if (type == 'text')
+				return;
+			var currSelected = document.getElementsByClassName("keypad");
+			for (var i=0; i<currSelected.length;i++) {
+				currSelected[i].type = 'text';
+			}
+			type = 'text';
+		};
+		
+		function changeToTel(){
+			if (type == 'tel')
+				return;
+			var currSelected = document.getElementsByClassName("keypad");
+			for (var i=0; i<currSelected.length;i++) {
+				currSelected[i].type = 'tel';
+			}
+			type = 'tel';
+		};
+		
+		function initializeQuickSave(button){
+
+			showSpinnerAndDisableButton(button);
+			quickSave();
+		}
+		function initializeHRA(button){
+
+			showSpinnerAndDisableButton(button);
+			ToHRA();
+		}			
+		
+		function initializeSubmit(button){
+
+			showSpinnerAndDisableButton(button);
+			submit();
+		}
+		
+		function showSpinnerAndDisableButton(button) {
+			//mark the button as pending and disable
+			//add a spinner 
+			//(these two things will be reversed on the outcome of the following call)
+			button.disabled = true;
+			button.className += " pendingResult";
+			
+			var img = document.createElement('img');
+			img.src = "/img/loading32.gif";
+			img.class = "actionSpinner";
+			img.id = "actionSpinner";
+			button.parentElement.appendChild(img);
+		}
+		function hideSpinnerAndEnableButton(){
+			//now get rid of those spinners
+			var spinners = document.getElementsByClassName('actionSpinner');
+			for (var i=0; i<spinners.length;i++) {
+				spinners[i].parentNode.removeChild(spinners[i]);
+			}
+			var spinner = document.getElementById('actionSpinner');
+			if (spinner)  {
+				spinner.parentNode.removeChild(spinner);
+			}
+			
+			//enable the button and remove the pending class type
+
+			var button = document.getElementById('quickSaveButton');
+			if(button) {
+				button.className = button.className.replace ( /(?:^|\s)pendingResult(?!\S)/g , '' );
+				button.disabled = false;
+			}
+			button = document.getElementById('submitButton');
+			if(button) {
+				button.className = button.className.replace ( /(?:^|\s)pendingResult(?!\S)/g , '' );
+				button.disabled = false;
+			}
+
+		}
+    </script>
+
+</apex:page>

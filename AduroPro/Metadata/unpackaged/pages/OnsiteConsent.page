@@ -1,0 +1,76 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" docType="html-5.0" controller="OnsiteConsent">
+    <apex:define name="head">
+        <title>Consent</title>
+        <apex:stylesheet value="{!URLFOR($Resource.OnsiteStaticResources, 'onsite_static_resources/css/ww-style.css')}"/>
+        <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    </apex:define>
+<apex:form >
+    <apex:define name="body">
+        <div id="page-wrapper">
+        <div id="content-wrapper">
+        <div id="errors" class="error"  style="{!errorMessageStyle}"><p><apex:outputText escape="false" value="{!errorMessage}"/></p></div>
+        <apex:outputPanel rendered="{!DisplayCheckin}">
+        <input style="horizontal-align: center; float: none; " class="bttn blue" type="button" name="save" value="Check In" onclick="goToEventListCheckin()" />
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!ConsentNoCompleted}">
+		<p>I understand that: <br/><br/>1) Screening results will provide me with an estimate and they will be made available to me so that I can consult with my 
+		
+		
+		
+		physician regarding them <br/>2) The screening personnel are not doctors and do not provide diagnosis or treatment <br/>3) I am responsible for any follow-up 
+		
+		
+		
+		examinations with my physician to confirm the results of this screening.
+		<br/>
+		<br/>
+		
+		
+		I further understand that my personally identifiable health information will be kept confidential and will not be given to my employer.  In consideration 
+		
+		
+		
+		of my participation in this program, I will not, nor will anyone on my behalf individually or in a class, make any claim against Worksite Wellness, the 
+		
+		
+		
+		sponsors or other organizations involved in this program, their affiliated and subsidiary companies, divisions, officers, directors, employees, agents and 
+		
+		
+		
+		contractors, and I hereby release each of them from any liability or responsibility for any injury, illness (including death), property damage or loss of 
+		
+		
+		
+		every kind or nature whatsoever, foreseen or unforeseen, known or unknown arising out of my participation in this program. Biometric data may be 
+		
+		
+		
+		transferred between vendors authorized by my employer for aggregate data analysis only and through secure channels.  I also authorize the upload of 
+		
+		
+		
+		my biometric data to my health risk assessment online profile if applicable.  I do not authorize my employer to see my personal biometric data ever.</p>
+		
+		<table>
+		<tr>
+		<td><apex:commandButton styleClass="bttn blue" style="margin-right:12px;width:300px; " value="I agree and wish to participate" action="{!Agree}"/></td>
+		<td><apex:commandButton styleClass="bttn blue" style="margin-right:12px;width:370px; " value="I disagree and do not want to participate" action="{!Disagree}"/></td>
+		</tr></table>
+		</apex:outputPanel>
+<apex:outputPanel rendered="{!DisplayCardCode}">
+<p>Card Code:<apex:inputField value="{!objOrder.Onsite_Card_Code__c}" /></p>
+<apex:commandButton styleClass="bttn blue" style="margin-right:12px;width:300px; " value="Submit" action="{!SubmitCardCode}"/>
+</apex:outputPanel>
+
+</div><!-- <!-- ENDS CONTENT WRAPPER -->
+</div><!-- <!-- ENDS PAGE WRAPPER -->
+ </apex:define>
+	<script type="text/javascript">
+       
+        function goToEventListCheckin(){
+			parent.location.href='/apex/CheckIn?event={!eventId}';
+        }
+  </script> 
+</apex:form>
+</apex:page>

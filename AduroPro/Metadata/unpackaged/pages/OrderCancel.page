@@ -1,0 +1,11 @@
+<apex:page controller="ActivityDeviceFormController" sidebar="false" showHeader="false" cache="false" standardStylesheets="false" title="Cancel Order">
+<apex:stylesheet value="{!$Resource.OrderFormsCSS}" />
+<div class="fullPageBlock">
+<apex:pageBlock >
+<apex:pageBlockSection >
+	<p>Really cancel?<br/>If you didn't mean to cancel, just click your browser's "Back" button.</p>
+	<p>Otherwise, click the red "X" or red circle in the upper right or left of your window to close this page.</p>
+</apex:pageBlockSection>
+</apex:pageBlock>
+</div>	
+</apex:page>

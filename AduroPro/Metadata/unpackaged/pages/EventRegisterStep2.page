@@ -1,0 +1,191 @@
+<apex:page controller="EventRegisterStep2" showHeader="false" sidebar="false" cache="false">
+<apex:includeScript value="{!URLFOR($Resource.jquery, '/js/jquery-1.9.1.js')}"  />
+<apex:includeScript value="{!URLFOR($Resource.jquery, '/js/jquery-ui-1.10.3.custom.js')}"  />
+<apex:includeScript value="{!URLFOR($Resource.jquery, '/js/jquery-ui-1.10.3.custom.min.js')}"  />
+<apex:includeScript value="{!URLFOR($Resource.jquery, '/development-bundle/ui/jquery.ui.datepicker.js')}"  />
+<apex:stylesheet value="{!URLFOR($Resource.jquery, '/css/overcast/jquery-ui-1.10.3.custom.css')}"  />
+
+<apex:stylesheet value="{!URLFOR($Resource.eventregistrationresources, 'style.css')}"/>
+<style>
+    .label
+    {
+        text-align: left;
+        font-weight: bold
+    }
+</style>
+<apex:form >
+<div id="sidebar">
+    <header>
+        <h1>
+            <apex:outputPanel layout="none" rendered="{!eventRegistrationLogo!=''}">
+                <a href="http://adurolife.com" target="_blank"><apex:image alt="ADURO. Set Fire to Life." url="{!eventRegistrationLogo}" style="width:150px;height:150px;" /></a>
+            </apex:outputPanel>
+            <apex:outputPanel layout="none" rendered="{!eventRegistrationLogo==''}">
+                <a href="http://adurolife.com" target="_blank"><apex:image alt="ADURO. Set Fire to Life." url="{!URLFOR($Resource.eventregistrationresources,'Aduro_flame_150x150_web.png')}"  style="width:150px;height:150px;"/></a>
+            </apex:outputPanel>
+        </h1>
+    </header>
+</div>
+<div class="clearfix" id="content">
+<div class="article-wrapper">
+    
+    <div align="center" style="width: 90%;">
+    <apex:outputPanel rendered="{!AND(NOT(slotRegistered),oldSlotId=='')}"> 
+        <div  align="left" style="text-align: left;width: 90%;"><apex:outputText value="{!eventRegistrationHeader}" escape="false"/></div>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!AND(alreadyRegistered,NOT(slotRegistered))}">
+    <apex:pageMessage escape="true" severity="warning" strength="3" summary=""> 
+    To confirm your new appointment time, click the “Register” button below. <br/><b>REMEMBER:</b> delete your old appointment from your calendar and save the new invitation being sent to your email.
+    </apex:pageMessage>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!AND(slotHasBeenTaken,NOT(slotRegistered))}">
+    <table>
+        <tr>
+            <td><apex:pageMessages escape="true"/></td>
+        </tr>
+        <tr>
+            <td><a href="/Event/?id={!eventId}">Go Back</a></td>
+        </tr>   
+    </table>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!AND(NOT(slotHasBeenTaken),NOT(slotRegistered))}">
+    <table>
+        <tr>
+            <td colspan="2"><apex:pageMessages escape="true"/></td>
+        </tr>
+        <tr>
+            <td colspan="2" align="left"><span style="color:red;">*</span>Required</td>
+        </tr>
+        <tr><td  class="label">Event Name:&nbsp;</td><td>{!s.WW_Event__r.Name}</td></tr>
+        <tr><td  class="label">Location:&nbsp;</td><td>{!s.WW_Event__r.Event_Address__c}</td></tr>
+        <apex:outputPanel rendered="{!IF(s.WW_Event__r.Room_Location__c=='',false,true)}">
+            <tr><td  class="label">Room:&nbsp;</td><td>{!s.WW_Event__r.Room_Location__c}</td></tr>  
+        </apex:outputPanel>
+        <tr><td  class="label">Date/Time:&nbsp;</td><td>{!newEventDateStr}, {!newStartTimeStr}-{!newEndTimeStr}</td></tr>        
+        <tr>
+            <td class="label"><span style="color:red;">*</span>First Name:</td>
+            <td><apex:inputField value="{!s.First_Name__c}"/></td>
+        </tr>
+        <tr>
+            <td class="label"><span style="color:red;">*</span>Last Name:</td>
+            <td><apex:inputField value="{!s.Last_Name__c}"/></td>
+        </tr>
+        <tr>
+            <td class="label"><span style="color:red;">*</span>Email:</td>
+            <td><apex:inputField value="{!s.Email__c}"/></td>
+        </tr>
+        <tr>
+            <td class="label"><span style="color:red;">*</span>Date of Birth:</td>
+            <td align="left"><apex:inputText value="{!dateOfBirth}" size="10" maxlength="10" style="width:130px;" styleClass="dateOfBirth"/><span style="font-size: .8em;">(mm/dd/yyyy)</span></td>
+        </tr>
+        <apex:outputPanel layout="none" rendered="{!s.WW_Event__r.Program__r.Limeade_Identifier_Employee_ID__c}">
+        <tr>
+            <td class="label"><span style="color:red;">*</span>Employee ID:</td>
+            <td><apex:inputField value="{!s.Employee_ID__c}"/></td>
+        </tr>   
+        </apex:outputPanel>
+        <tr>
+        <td></td>
+            <td colspan="1"><apex:inputCheckbox value="{!agreement}"/>By submitting, I agree with the <a href="#" class="Terms">Terms &amp; Conditions.</a></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <table>
+                    <tr>
+                        <td valign="top"><apex:commandButton value="Submit" action="{!save}" styleClass="btn button" style="width:100px;color:#000000;font-size:12px;height:30px;border:1px solid black;"/></td>
+                        <td valign="top"><input type="button" onclick="window.location='/Event/?id={!eventId}&sid={!oldSlotId}'" class="btn button"  style="width:94px;font-size:12px;height:30px;border:1px solid black;" value="Cancel"/></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>               
+    </table>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!AND(NOT(slotHasBeenTaken),slotRegistered)}">
+    <p>Thank you for registering! A confirmation email with your appointment details will be sent to you shortly.  If you do not receive this email within 24 hours, please contact <a href="mailto:support@adurolife.com">support@adurolife.com</a>.</p>
+    </apex:outputPanel>
+    </div>
+</div>
+</div>
+<script>
+    jQuery.noConflict();
+    jQuery(document).ready(function() {
+        //jQuery(".dateOfBirth" ).datepicker();
+        jQuery( ".dateOfBirth" ).datepicker({
+            changeMonth: true,
+            changeYear: true,
+            yearRange: '1940:2015',
+        }); 
+        
+            jQuery("#modalDiv").dialog({
+                modal: true,
+                autoOpen: false,
+                height: '660',
+                width: '750',
+                draggable: true,
+                resizeable: true,   
+                title: 'Terms & Conditions'
+            }); 
+        jQuery( ".Terms" ).click(function(){
+            jQuery("#modalDiv").dialog("open");
+        }); 
+                    
+    });
+</script>
+</apex:form>
+<script>
+ 
+    function returnValidate()
+    {
+        return confirm('Are you sure you want to reschedule your appointment?');
+    }
+</script>
+<div id="modalDiv">
+    
+    <apex:outputPanel rendered="{! OR(formTxt == '', formTxt == null)}">
+        <p>I understand that: <br/><br/>1) Health Screening results will provide me with an estimate. They will be made available to me so that I can consult with my 
+        
+        
+        
+        physician regarding them. <br/>2) The Health Screening personnel are not doctors and do not provide diagnosis or treatment services. <br/>3) I am responsible for any follow-up 
+        
+        
+        
+        examinations with my physician to confirm the results of this Health Screening.
+        <br/>
+        <br/>
+        
+        
+        I further understand that my personally identifiable health information will be kept confidential and will not be given to my employer.  In consideration 
+        
+        
+        
+        of my participation in this program, I will not, nor will anyone on my behalf individually or in a class, make any claim against ADURO, Inc, the 
+        
+        
+        
+        sponsors or other organizations involved in this program, their affiliated and subsidiary companies, divisions, officers, directors, employees, agents and 
+        
+        
+        
+        contractors, and I hereby release each of them from any liability or responsibility for any injury, illness (including death), property damage or loss of 
+        
+        
+        
+        every kind or nature whatsoever, foreseen or unforeseen, known or unknown arising out of my participation in this program. Biometric data may be 
+        
+        
+        
+        transferred between vendors authorized by my employer for aggregate data analysis only and through secure channels.  I also authorize the upload of 
+        
+        
+        
+        my biometric data to my Health Risk Assessment online profile if applicable.  I do not authorize my employer to see my personal biometric data ever.</p>
+    </apex:outputPanel>
+        <apex:outputText value="{! formTxt}" escape="false"/>
+    <apex:outputPanel rendered="{! AND(formTxt != '', formTxt != null)}">
+        
+    </apex:outputPanel>
+        <input type="button" value="Close" class="btn button"  style="width:94px;font-size:12px;height:30px;border:1px solid black;" onclick='jQuery("#modalDiv").dialog("close");'/>
+</div>
+</apex:page>

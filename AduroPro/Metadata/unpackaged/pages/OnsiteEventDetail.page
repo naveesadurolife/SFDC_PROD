@@ -1,0 +1,132 @@
+<apex:page showHeader="false" controller="OnsiteEventDetail" standardStylesheets="false" sidebar="false" docType="html-5.0" >
+	<html>
+	<head>
+		<meta charset="utf-8">   
+			<title>Onsite Testing : Event Detail</title>
+			<meta name="description" content="Description"/>
+			<apex:stylesheet value="{!URLFOR($Resource.OnsiteStaticResources, 'onsite_static_resources/css/ww-style.css')}"/>
+		</meta>
+		<style type="text/css">
+			.cell
+			{
+				padding-left: 0px;
+				padding-right: .5em;
+				width:10%;
+				white-space: nowrap;
+			}
+			.blue
+			{
+				width:100%; 
+			}
+			.dd
+			{
+				border: 1px solid #ccc;border-radius: 3px;-moz-box-shadow: inset 0 0 8px #dddddd;-webkit-box-shadow: inset 0 0 8px #dddddd;box-shadow: inset 0px 0px 8px #dddddd; padding: 4px; margin: 1px; overflow: hidden;
+			}			
+		</style>
+	</head>
+	<body>
+		<div id="page-wrapper">
+		<div id="content-wrapper">
+		<a href='/apex/OnsiteStart?event={!objEvent.Id}' style="text-decoration: none;"><h1>{!objEvent.Name}</h1></a>
+		<input class="bttn blue" type="button" name="eventlist" value="Back to Event" style="vertical-align: middle; font-size:12px; width: 150px; height: 40px; " onclick="parent.location.href='/apex/OnsiteStart?event={!objEvent.Id}';" />
+		<div class="input-grid-wrapper">
+		<apex:form >
+			<table class="input-grid" style="width:100%" >
+				<tr>
+					<td class="cell">Event Name: </td>
+					<td><apex:outputField value="{!objEvent.Name}" /></td>
+				</tr>
+				<tr>
+					<td class="cell">Employer: </td>
+					<td><apex:outputField value="{!objEvent.Employer__r.Name}" /></td>
+				</tr>
+				<tr>
+					<td class="cell">Event Date: </td>
+					<td><apex:outputField value="{!objEvent.Event_Date__c}" /></td>
+				</tr>
+				<tr>
+					<td class="cell">Start Time: </td>
+					<td><apex:outputField value="{!objEvent.Start_Time__c}" /></td>
+				</tr>
+				<tr>
+					<td class="cell">End Time: </td>
+					<td><apex:outputField value="{!objEvent.End_Time__c}" /></td>
+				</tr>
+				<tr>
+					<td class="cell">Event Length: </td>
+					<td><apex:outputField value="{!objEvent.Event_Length__c}" /></td>
+				</tr>
+				<tr>
+					<td class="cell">Event Manager: </td>
+					<td><apex:outputField value="{!objEvent.Event_Manager__c}" /></td>
+				</tr>
+				<tr>
+					<td class="cell">Scheduler Details: </td>
+					<td><apex:outputField value="{!objEvent.Scheduler_Details__c}" /></td>
+				</tr>
+				<tr>
+					<td class="cell">WW Arrival Time: </td>
+					<td><apex:outputField value="{!objEvent.WW_Arrival_Time__c}" /></td>
+				</tr>
+				<tr>
+					<td class="cell">Expected Participation: </td>
+					<td><apex:outputField value="{!objEvent.Expected_Participation__c}" /></td>
+				</tr>
+				<tr>
+					<td class="cell"># Screeners Needed: </td>
+					<td><apex:outputField value="{!objEvent.Screeners_Needed__c}" /></td>
+				</tr>
+				<tr>
+					<td class="cell"># Coaches Needed: </td>
+					<td><apex:outputField value="{!objEvent.Coaches_Needed__c}" /></td>
+				</tr>
+				<tr>
+					<td class="cell">Event Address: </td>
+					<td><apex:outputField value="{!objEvent.Event_Address__c}" /></td>
+				</tr>
+				<tr>
+					<td class="cell">Biometric Contact: </td>
+					<td><apex:outputField value="{!objEvent.Biometric_Contact__c}" /></td>
+				</tr>
+				<tr>
+					<td class="cell">Room Location: </td>
+					<td><apex:inputField value="{!objEvent.Room_Location__c}"  style="width:50%;"/></td>
+				</tr>
+				<tr>
+					<td class="cell">Parking Instructions: </td>
+					<td><apex:inputField value="{!objEvent.Parking_Instructions__c}"  style="width:50%;"/></td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<table class="input-grid" style="width: 100%; table-layout: fixed;border: 1px solid #B4B9C0;font-size:.9em;" >
+							<tr>
+								<th style="width: 15%;">Name</th>
+								<th style="width: 10%;">Phone</th>
+								<th style="width: 30%;">Email</th>
+								<th style="width: 15%;">Role</th>
+								<th style="width: 30%;">Call Result</th>
+							</tr>
+						<apex:repeat value="{!objEvent.Event_Expenses__r}" var="s">
+							<tr style="border: 1px solid #B4B9C0;font-size:.8em;">
+								<td style="border: 0px solid #B4B9C0;font-size:.9em;"><apex:outputField value="{!s.Contact__r.Name}" /></td>
+								<td style="border: 0px solid #B4B9C0;font-size:.9em;"><apex:outputField value="{!s.Contact__r.Phone}" /></td>
+								<td style="border: 0px solid #B4B9C0;font-size:.9em;"><apex:outputField value="{!s.Contact__r.Email}" /></td>
+								<td style="border: 0px solid #B4B9C0;font-size:.9em;"><apex:outputField value="{!s.Event_Role__c}" /></td>
+								<td style="border: 0px solid #B4B9C0;font-size:.9em;"><apex:inputField value="{!s.Confirmation_Call_Results__c}"  style="width:90%;" styleClass="dd"/></td>
+							</tr>
+						</apex:repeat>
+					
+						</table>
+					</td>
+				</tr>	
+				<tr>
+					<td colspan="2"><apex:commandButton action="{!save}" value="Save" style="vertical-align: middle; font-size:12px; width: 90px; height: 40px; " styleClass="bttn orange"/></td>
+				</tr>							
+			</table>
+		</apex:form><!-- ENDS TEST RESULTS -->
+		</div><!-- ENDS INPUT GRID WRAPPER -->
+		</div><!-- ENDS CONTENT WRAPPER -->
+		</div><!-- ENDS PAGE WRAPPER -->			
+	</body>
+	</html>
+</apex:page>

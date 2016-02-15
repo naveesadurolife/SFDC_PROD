@@ -1,0 +1,5 @@
+<apex:page controller="OnsiteHRASearch" contentType="application/octet-stream#HRAExport{!exportDate}.csv" showHeader="false" sidebar="false" standardStylesheets="false" action="{!search}">{!columnHeader}
+<apex:repeat value="{!listOrdersText}" var="orderText">
+	{!orderText.csvTextVar}
+</apex:repeat>
+</apex:page>

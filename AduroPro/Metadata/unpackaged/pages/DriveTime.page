@@ -1,0 +1,49 @@
+<apex:page renderAs="pdf" controller="A1CFormCC"   sidebar="false" showHeader="false" applyhtmltag="false"> 
+    
+    
+    <head><style> @page { size: letter; margin-top: 0cm; margin-left: 0cm;margin-right: 0cm; margin-bottom: 0cm;}</style></head>
+    <img class="image1" src="{! coverSheetURL}" width="99%" height="99%" style="position:absolute;margin:0px;" /> 
+<!--    <img class="image1" src="{! $resource.testCoverLetter}" width="99%" height="99%" style="position:absolute;margin:0px;" />
+ --> 
+    <div style="page-break-before:always"> </div>
+    
+    <head><style> @page { size: letter; margin-top: 0cm; margin-left: 0cm;margin-right: 0cm; margin-bottom: 0cm;}</style></head>
+    
+    <img class="image1" src="{!$Resource.DriveTime}" width="99%" height="99%" style="position:absolute;margin:0px;"/>
+    
+            <p class="text1" style="z-index:100;position:absolute;left:46px;top:1116px">
+                <img src= "{! imageURL}" width="43%" height="42%"/>
+            </p> 
+             <p class="text1" style="z-index:100;position:absolute;left:691px;top:1147px">
+                <img src= "{! barCodeURL}" width="30%" height="30%"/> 
+            </p>
+    <!-- FirstName -->
+    <apex:variable var="index" value="{!0}" />
+    <apex:repeat value="{! lstFirstNameAlphas}" var="fName" rows="17">
+        <apex:variable var="index" value="{!index + 1}" />
+        <p class="text1" style="z-index:100;position:absolute;color:black;font-size:24px;font-weight:bold;left:{! mapFirstNameIndex[index]}px;top:1210px;font-family: 'Arial Unicode MS';font: normal 12pt;text-transform: uppercase;">{! fName}</p>
+    </apex:repeat>
+  
+    <!-- LastName -->
+    <apex:variable var="lIndex" value="{!0}" />
+    <apex:repeat value="{! lstLastNameAlphas}" var="lName" rows="19">
+        <apex:variable var="lIndex" value="{!lIndex + 1}" />
+        <p class="text1" style="z-index:100;position:absolute;color:black;font-size:24px;font-weight:bold;left:{! mapLastNameIndex[lIndex]}px;top:1264px;font-family: 'Arial Unicode MS';font: normal 12pt;text-transform: uppercase;">{! lName}</p>
+    </apex:repeat>
+     
+     <!-- Employee Id -->
+    <apex:variable var="employeeIndex" value="{!0}" />
+    <apex:repeat value="{! lstEmployeeAlphas}" var="employeeId" rows="19">
+        <apex:variable var="employeeIndex" value="{!employeeIndex + 1}" />
+        <p class="text1" style="z-index:100;position:absolute;color:black;font-size:24px;font-weight:bold;left:{! mapEmployeeIndex[employeeIndex]}px;top:1210px;font-family: 'Arial Unicode MS';font: normal 12pt;text-transform: uppercase;">{! employeeId}</p>
+    </apex:repeat>
+    
+    <!-- Program Number --> 
+    
+    <p class="text1" style="z-index:100;position:absolute;color:black;font-size:18px;font-weight:bold;left:660px;top:2036px;font-family: 'Arial Unicode MS';font: normal 12pt;text-transform: uppercase;">
+                {! programNumber}
+            </p>
+  
+    
+    
+</apex:page>

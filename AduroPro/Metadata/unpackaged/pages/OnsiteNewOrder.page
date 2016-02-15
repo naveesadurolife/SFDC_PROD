@@ -1,0 +1,178 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" docType="html-5.0" controller="OnsiteNewOrderController" >
+
+	<style >
+		/*input[type="checkbox"] {
+		    background-image: -webkit-linear-gradient(hsla(0,0%,0%,.1), hsla(0,0%,100%,.1)),
+		                      -webkit-linear-gradient(left, #B11623 50%, #387A36 50%);
+		    background-size: 100% 100%, 200% 100%;
+		    background-position: 0 0, 15px 0;
+		    border-radius: 25px;
+		    box-shadow: inset 0 1px 4px hsla(0,0%,0%,.5),
+		                inset 0 0 10px hsla(0,0%,0%,.5),
+		                0 0 0 1px hsla(0,0%,0%,.1),
+		                0 -1px 2px 2px hsla(0,0%,0%,.25),
+		                0 2px 2px 2px hsla(0,0%,100%,.75);
+		    cursor: pointer;
+		    height: 25px;
+		    margin: 10px;
+		    padding-right: 25px;
+		    position: relative;
+		    width: 75px;
+		    -webkit-appearance: none;
+		    -webkit-transition: .25s;
+		}
+		input[type="checkbox"]:after {
+		    background-color: #eee;
+		    background-image: -webkit-linear-gradient(hsla(0,0%,100%,.1), hsla(0,0%,0%,.1));
+		    border-radius: 25px;
+		    box-shadow: inset 0 1px 1px 1px hsla(0,0%,100%,1),
+		                inset 0 -1px 1px 1px hsla(0,0%,0%,.25),
+		                0 1px 3px 1px hsla(0,0%,0%,.5),
+		                0 0 2px hsla(0,0%,0%,.25);
+		    content: '';
+		    display: block;
+		    height: 25px;
+		    left: 0;
+		    position: relative;
+		    top: 0;
+		    width: 50px;
+		}
+		input[type="checkbox"]:checked {
+		    background-position: 0 0, 35px 0;
+		    padding-left: 25px;
+		    padding-right: 0;
+		}
+		*/
+		.required{
+			color:red;
+			font-weight:bold;
+		}
+		.hide{
+			display:none;
+		}
+	
+	</style>
+
+
+    <apex:define name="head">
+        <title>Onsite Testing</title>
+        <apex:stylesheet value="{!URLFOR($Resource.OnsiteStaticResources, 'onsite_static_resources/css/ww-style.css')}"/>
+        <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+ 		<meta http-equiv="{!metaRefresh}" content="{!metaContent}"/>
+    </apex:define>
+    <apex:define name="body">
+        <div id="page-wrapper">
+        <div id="content-wrapper">
+		
+		<apex:outputPanel rendered="{!cId==''}">
+       		<div style="padding-top:10px;padding-left:10px;width:40%; float:left; position:relative;"><h1>New Onsite Contact</h1></div>
+       </apex:outputPanel>
+		<apex:outputPanel rendered="{!cId!=''}">
+       		<div style="padding-top:10px;padding-left:10px;width:40%; float:left; position:relative;"><h1>Update Contact</h1></div>
+       </apex:outputPanel>       
+       <apex:outputPanel id="errorpanel">
+			<div id="errors" class="error" style="{!errorMessageStyle}"><p><apex:outputText escape="false" value="{!errorMessage}"/></p></div>
+		</apex:outputPanel>
+
+       <apex:form id="inputform" >
+
+		<div style="width:55%; float:right; position:absolute; top:20px; right:10px; padding-bottom:10px; ">
+			<div class="label" style="padding-top:10px;padding-left:10px;width:70%; float:left; position:relative;">Override Validation</div>
+			<div style="width:25%; float:right; position:relative; padding-top:10px;">
+ 					<apex:inputCheckbox value="{!checkLimeade}" style="vertical-align: middle; " />
+ 			</div>
+		</div>
+
+
+        <div class="event-wrapper">
+        	<apex:outputPanel rendered="{!cId==''}">
+            <div class="row-wrapper">
+                <div class="label">First Name<span style="color:red;">*</span></div>
+                <div class="field"><apex:inputText value="{!newOrder.PatientFirstName__c}" /></div>
+                <div class="label" style="display:none;">Primary Phone</div>
+                <div class="field" style="display:none;"><apex:inputText value="{!newOrder.PatientPrimaryPhone__c}" /></div>
+            </div><!-- ENDS ROW WRAPPER -->
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!cId=='' || program.Limeade_Identifier_LastName__c==true}">
+             <div class="row-wrapper">
+               	<div class="label">Last Name<span style="color:red;">*</span></div>
+                <div class="field"><apex:inputText value="{!newOrder.PatientLastName__c}" /></div>
+                <div class="label" style="display:none;">Gender</div>
+                <div class="field" style="display:none;"><apex:selectList value="{!selectedGender}" size="1">
+					<apex:selectOptions value="{!gender}" />
+				</apex:selectList></div>
+            </div><!-- ENDS ROW WRAPPER program.Limeade_Identifier_Employee_ID__c-->   
+            </apex:outputPanel>        
+         	<apex:outputPanel rendered="{!cId=='' || program.Limeade_Identifier_Email__c==true}">
+            <div class="row-wrapper">
+                <div class="label">Email<span style="color:red;">*</span></div>
+                <div class="field"><apex:inputText value="{!newOrder.PatientEmailH__c}" /></div>
+            </div>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!program.Limeade_Identifier_DOB__c==true}">
+            <div class="row-wrapper">
+           		<div class="label">DOB<span style="color:red;">*</span></div>
+                <div class="field"> <apex:inputField value="{!newOrder.PatientDOB__c}" /></div> 
+            </div><!-- ENDS ROW WRAPPER -->
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!program.Limeade_Identifier_Employee_ID__c==true}">              
+            <div class="row-wrapper">
+                <div class="label">Employee ID<span style="color:red;">*</span></div>
+                <div class="field"><apex:inputText value="{!newOrder.EmployeeID__c}" /></div>
+            </div><!-- ENDS ROW WRAPPER --> 
+            </apex:outputPanel>
+            <div class="row-wrapper">
+                <div class="label">Card Code<span style="color:red;">*</span></div>
+                <div class="field"><apex:inputText value="{!cardCode}" /></div>
+            </div><!-- ENDS ROW WRAPPER -->                       
+ 			<div class="row-wrapper">
+ 			</div><!-- ENDS ROW WRAPPER -->
+
+        </div><!-- ENDS EVENT WRAPPER -->
+
+		<table class="bttn-wrapper right"  >
+			<tr>
+				<td class="cell"  ><apex:commandButton styleClass="bttn blue" style="float:left;" value="Cancel" 
+					action="{!'/apex/CheckIn?event=' + $CurrentPage.parameters.event}" /></td>
+			    <td class="cell"  >
+			    <apex:commandButton styleClass="bttn orange" style="display:none" value="Submit" action="{!submit}"  rerender="errorpanel" oncomplete="showAlertAndReturnToList('{!message}')"/>
+		       <apex:actionStatus id="mySaveStatus1">
+		         <apex:facet name="stop">
+		             <apex:commandButton styleClass="bttn orange" value="Submit" action="{!submit}" rerender="errorpanel" status="mySaveStatus1"  oncomplete="showAlertAndReturnToList('{!message}')"/>
+		         </apex:facet>
+		         <apex:facet name="start">
+		             <apex:outputPanel >
+		                   <apex:image value="/img/loading32.gif" style="height: 15px;"/>
+		                   <apex:commandButton value="Processing..." status="mySaveStatus1" disabled="true"/>
+		               </apex:outputPanel>
+		           </apex:facet>
+		        </apex:actionStatus>			    
+			    </td>
+			</tr>
+		</table>
+		
+		<apex:actionFunction name="goBackToCheckinPage" action="{!goBackToCheckinPage}"/ >
+		
+		</apex:form>
+
+
+        </div><!-- <!-- ENDS CONTENT WRAPPER -->
+        </div><!-- <!-- ENDS PAGE WRAPPER -->
+
+    </apex:define>
+
+    <script type="text/javascript">
+
+        function showAlertAndReturnToList(message){
+        	if (message != '') {
+        		alert (message);
+        		//call salesforce "actionfunction" defined above ( which in turn calls a method on the controller )
+        		goBackToCheckinPage();
+
+			}
+        }
+
+    </script>
+
+
+</apex:page>

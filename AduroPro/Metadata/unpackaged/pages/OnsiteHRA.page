@@ -1,0 +1,340 @@
+<apex:page controller="OnsiteHRA"  showHeader="false" standardStylesheets="false" sidebar="false" docType="html-5.0" cache="false">
+    <html>
+    <head>
+        <meta charset="utf-8">  
+            <title>Onsite Testing : Choose Function</title>
+            <meta name="description" content="Description"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"></meta>
+            <apex:stylesheet value="{!URLFOR($Resource.OnsiteStaticResources, 'onsite_static_resources/css/ww-style.css')}"/>           
+            <apex:stylesheet value="{!URLFOR($Resource.jquerymobile142,'themes/blue.min.css')}"></apex:stylesheet>
+            <apex:stylesheet value="{!URLFOR($Resource.jquerymobile142,'jquery.mobile.structure-1.4.2.min.css')}"></apex:stylesheet>
+            <apex:stylesheet value="{!URLFOR($Resource.jquerymobile142,'jquery.mobile-1.4.2.min.css')}"></apex:stylesheet>
+            <apex:includeScript value="{!URLFOR($Resource.jquerymobile142,'jquery-1.10.2.min.js')}"></apex:includeScript>
+            <apex:includeScript value="{!URLFOR($Resource.jquerymobile142,'jquery.mobile-1.4.2.min.js')}"></apex:includeScript>
+            <apex:includeScript value="{!URLFOR($Resource.jquerymobile142,'jquery.blockUI.js')}"></apex:includeScript>          
+            
+        </meta>
+        <style type="text/css">
+            .cell
+            {
+                padding-left: 0px;
+                padding-right: .5em;
+            }
+            .blue
+            {
+                width:100%;
+            }
+            .ui-radio-off
+            {
+                white-space:nowrap;
+            }
+            .ui-btn
+            {
+                white-space:nowrap;
+            }
+            .ui-input-btn
+            {
+            width:90%;
+            background-color:#d75e2e;
+            }
+            .uiImage
+            {
+                background-image:url('/img/msg_icons/confirm24.png');
+                background-repeat:no-repeat;
+                background-position: 0px 20px;
+                padding-left:50px;
+            }
+            .back-to-top {
+                position: fixed;
+                bottom: 12em;
+                left: 0px;
+                text-decoration: none;
+                color: #000000;
+                background-color: rgba(235, 235, 235, 0.80);
+                font-size: 12px;
+                padding: 1em;
+                display: none;
+                z-index:5000;
+            }
+
+            .back-to-top:hover {    
+                background-color: rgba(135, 135, 135, 0.50);
+            }           
+            .ui-field-contain
+            {
+            	white-space:normal !important;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="page-wrapper">
+        <div id="content-wrapper">
+        <h1>{!objEvent.Name}</h1>
+        <div class="input-grid-wrapper">
+        <apex:form id="frmMain">
+            <div style="max-width:92%;">
+                
+            <ul data-role="listview" data-inset="true" style="margin: 10px;">
+                <apex:outputPanel rendered="{!errorOnPage}" layout="none">
+                    <li class="ui-field-contain" style="color:red;text-align:left;">{!errorMsg}</li>
+                </apex:outputPanel>
+                <li class="ui-field-contain">
+                    <table style="width:50%;">
+                        <tr>
+                            <td style="width:20%;">First Name: </td><td style="width:80%;">{!objOrder.PatientFirstName__c}</td>
+                        </tr>
+                        <tr>
+                            <td>Last Name: </td><td>{!objOrder.PatientLastName__c}</td>
+                        </tr>
+                        <tr>                            
+                            <td  style="white-space:nowrap;">Date of Birth: </td><td><apex:outputField value="{!objOrder.PatientDOB__c}" /></td>
+                        </tr>
+                        <tr>                            
+                            <td>Employee ID: </td><td>{!objOrder.EmployeeID__c}</td>
+                        </tr>
+                        <tr>                            
+                            <td>Email: </td><td>{!objOrder.PatientEmailH__c}</td>
+                        </tr>
+                    </table>
+                </li>               
+                <li class="ui-field-contain">
+                    {!$ObjectType.Order__c.Fields.HRA_Sex__c.inlineHelpText}
+                    <apex:selectRadio value="{!objOrder.HRA_Sex__c}" style="width:1%;" styleClass="inputClass">
+                        <apex:selectOptions value="{!sex}"/>
+                    </apex:selectRadio>
+                </li>
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_Age__c.inlineHelpText}
+                    <div style="width:20%;">
+                        <apex:inputField value="{!objOrder.HRA_Age__c}" styleClass="inputClass txtAge"/>
+                    </div>
+                </li>
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_Pregnant__c.inlineHelpText}
+                    <div style="width:20%;">
+                        <apex:selectRadio value="{!objOrder.HRA_Pregnant__c}" style="width:1%;" styleClass="inputClass ddlPregnant">
+                            <apex:selectOptions value="{!Pregnant}"/>
+                        </apex:selectRadio>
+                    </div>
+                </li>               
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_Know_High_Blood_Pressure__c.inlineHelpText}
+                    <apex:selectRadio value="{!objOrder.HRA_Know_High_Blood_Pressure__c}" style="width:1%;" styleClass="inputClass">
+                        <apex:selectOptions value="{!BloodPressure}"/>
+                    </apex:selectRadio>
+                </li>
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_Know_High_Cholesterol__c.inlineHelpText}
+                    <apex:selectRadio value="{!objOrder.HRA_Know_High_Cholesterol__c}" style="width:1%;" styleClass="inputClass">
+                        <apex:selectOptions value="{!HighCholesterol}"/>
+                    </apex:selectRadio>
+                </li>
+
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_Know_Good_Cholesterol__c.inlineHelpText}
+                    <apex:selectRadio value="{!objOrder.HRA_Know_Good_Cholesterol__c}" style="width:1%;" styleClass="inputClass">
+                        <apex:selectOptions value="{!GoodCholesterol}"/>
+                    </apex:selectRadio>
+                </li>   
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_Know_Blood_Sugar__c.inlineHelpText}
+                    <apex:selectRadio value="{!objOrder.HRA_Know_Blood_Sugar__c}" style="width:1%;" styleClass="inputClass">
+                        <apex:selectOptions value="{!BloodSugar}"/>
+                    </apex:selectRadio>
+                </li>   
+                <!--  <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_Know_High_Cholesterol__c.inlineHelpText}
+                    <apex:selectRadio value="{!objOrder.HRA_Know_High_Cholesterol__c}" style="width:1%;" styleClass="inputClass">
+                        <apex:selectOptions value="{!HighCholesterol}"/>
+                    </apex:selectRadio>
+                </li> -->  
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_How_many_alcoholic_drinks__c.inlineHelpText}
+                    <apex:selectRadio value="{!objOrder.HRA_How_many_alcoholic_drinks__c}" style="width:1%;" styleClass="inputClass">
+                        <apex:selectOptions value="{!AlcoholicDrinks}"/>
+                    </apex:selectRadio>
+                </li>   
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_Use_Medication_For_Mood__c.inlineHelpText}
+                    <apex:selectList value="{!objOrder.HRA_Use_Medication_For_Mood__c}"  multiselect="false" size="1" id="select-native-12" styleClass="inputClass">
+                        <apex:selectOptions value="{!MedicationForMood}"/>
+                    </apex:selectList>
+                </li>   
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_Medical_Conditions__c.inlineHelpText}
+                    <apex:selectList value="{!objOrder.HRA_Medical_Conditions__c}"  multiselect="false" size="1" id="select-native-1" styleClass="inputClass">
+                        <apex:selectOptions value="{!MedicalConditions}"/>
+                    </apex:selectList>
+                </li>   
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_You_Have_Stress__c.inlineHelpText}
+                    <apex:selectList value="{!objOrder.HRA_You_Have_Stress__c}"  multiselect="false" size="1" id="select-native-2" styleClass="inputClass">
+                        <apex:selectOptions value="{!HaveStress}"/>
+                    </apex:selectList>
+                </li>   
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_How_Often_Have_You_Felt_Depressed__c.inlineHelpText}
+                    <apex:selectRadio value="{!objOrder.HRA_How_Often_Have_You_Felt_Depressed__c}" style="width:1%;" styleClass="inputClass">
+                        <apex:selectOptions value="{!FeltDepressed}"/>
+                    </apex:selectRadio>
+                </li>   
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_Medication_For_Anxiety_or_Depression__c.inlineHelpText}
+                    <apex:selectRadio value="{!objOrder.HRA_Medication_For_Anxiety_or_Depression__c}" style="width:1%;" styleClass="inputClass">
+                        <apex:selectOptions value="{!AnxietyDepression}"/>
+                    </apex:selectRadio>
+                </li>   
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_Do_you_smoke__c.inlineHelpText}
+                    <apex:selectRadio value="{!objOrder.HRA_Do_you_smoke__c}" style="width:1%;" styleClass="inputClass">
+                        <apex:selectOptions value="{!smoke}"/>
+                    </apex:selectRadio>
+                </li>   
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_How_often_do_you_exercise__c.inlineHelpText}
+                    <apex:selectRadio value="{!objOrder.HRA_How_often_do_you_exercise__c}" style="width:1%;" styleClass="inputClass">
+                        <apex:selectOptions value="{!exercise}"/>
+                    </apex:selectRadio>
+                </li>   
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_how_would_you_describe_your_health__c.inlineHelpText}
+                    <apex:selectRadio value="{!objOrder.HRA_how_would_you_describe_your_health__c}" style="width:1%;" styleClass="inputClass">
+                        <apex:selectOptions value="{!describeHealth}"/>
+                    </apex:selectRadio>
+                </li>   
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_recurring_back_pain__c.inlineHelpText}
+                    <apex:selectList value="{!objOrder.HRA_recurring_back_pain__c}" multiselect="false" size="1" id="select-native-11" styleClass="inputClass">
+                        <apex:selectOptions value="{!backpain}"/>
+                    </apex:selectList>
+                </li>   
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_puts_my_health_at_risk__c.inlineHelpText}
+                    <apex:selectList value="{!objOrder.HRA_puts_my_health_at_risk__c}"  multiselect="false" size="1" id="select-native-3" styleClass="inputClass">
+                        <apex:selectOptions value="{!healthrisk}"/>
+                    </apex:selectList>
+                </li>   
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_do_extra_things_at_work__c.inlineHelpText}
+                    <apex:selectList value="{!objOrder.HRA_do_extra_things_at_work__c}"  multiselect="false" size="1" id="select-native-4" styleClass="inputClass">
+                        <apex:selectOptions value="{!extraThingsAtWork}"/>
+                    </apex:selectList>
+                </li>   
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_motivated_to_do_my_job__c.inlineHelpText}
+                    <apex:selectList value="{!objOrder.HRA_motivated_to_do_my_job__c}"  multiselect="false" size="1" id="select-native-5" styleClass="inputClass">
+                        <apex:selectOptions value="{!motivatedToDoJob}"/>
+                    </apex:selectList>
+                </li>   
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_time_at_work_is_spent_wisely__c.inlineHelpText}
+                    <apex:selectList value="{!objOrder.HRA_time_at_work_is_spent_wisely__c}"  multiselect="false" size="1" id="select-native-6" styleClass="inputClass">
+                        <apex:selectOptions value="{!spentWisely}"/>
+                    </apex:selectList>
+                </li>   
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_give_my_all_work__c.inlineHelpText}
+                    <apex:selectList value="{!objOrder.HRA_give_my_all_work__c}"  multiselect="false" size="1" id="select-native-7" styleClass="inputClass">
+                        <apex:selectOptions value="{!allWork}"/>
+                    </apex:selectList>
+                </li>   
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_absent_from_work__c.inlineHelpText}
+                    <apex:selectList value="{!objOrder.HRA_absent_from_work__c}"  multiselect="false" size="1" id="select-native-8" styleClass="inputClass">
+                        <apex:selectOptions value="{!AbsentFromWork}"/>
+                    </apex:selectList>
+                </li>   
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_organization_support_healthier_life__c.inlineHelpText}
+                    <apex:selectList value="{!objOrder.HRA_organization_support_healthier_life__c}"  multiselect="false" size="1" id="select-native-9" styleClass="inputClass">
+                        <apex:selectOptions value="{!OrganizationSupportHealthierLife}"/>
+                    </apex:selectList>
+                </li>   
+                <li class="ui-field-contain">{!$ObjectType.Order__c.Fields.HRA_well_being_in_my_life__c.inlineHelpText}
+                    <apex:selectList value="{!objOrder.HRA_well_being_in_my_life__c}"  multiselect="false" size="1" id="select-native-10" styleClass="inputClass">
+                        <apex:selectOptions value="{!WellBeing}"/>
+                    </apex:selectList>
+                </li>
+                <apex:outputPanel rendered="{!errorOnPage}" layout="none">
+                    <li class="ui-field-contain" style="color:red;text-align:left;">{!errorMsg}</li>
+                </apex:outputPanel>             
+                <li class="ui-field-contain">
+                    <table style="width:90%;" cellpadding="5" cellspacing="5">
+                        <tr>
+                            <td  style="width:25%;"><input type="button" value="Save"  onclick="save();"/></td>
+                            <td  style="width:25%;"><input type="button" value="Cancel"  onclick="cancel();"/></td>
+                        </tr>
+                        <tr>
+                            <td  colspan="2"  onclick="ToBiometrics();"><input type="button" value="Completed"  onclick="ToBiometrics();"/></td>
+                        </tr>                       
+                    </table>
+                </li>
+            </ul>
+            </div>
+  <apex:actionFunction action="{!saveQuick}" name="saveQuick" rerender="frmMain"/>
+  <apex:actionFunction action="{!ToBiometrics}" name="ToBiometrics" rerender="frmMain"/>
+  <apex:actionFunction action="{!save}" name="save" rerender="frmMain"/>
+  <apex:actionFunction action="{!cancel}" name="cancel" rerender="frmMain"/>
+        
+    <script>
+    /*jQuery(document).ready(function() {
+    var offset = 0;
+    var duration = 500;
+    jQuery(window).scroll(function() {
+        if (jQuery(this).scrollTop() > offset) {
+            jQuery('.back-to-top').fadeIn(duration);
+        } else {
+            jQuery('.back-to-top').fadeOut(duration);
+        }
+    });
+    
+    jQuery('.back-to-top').click(function(event) {
+        event.preventDefault();
+        jQuery('html, body').animate({scrollTop: 0}, duration);
+        return false;
+    })
+});*/
+    </script>
+
+    <script type="text/javascript">
+          /*jQuery("input, select, textarea").change(function() {
+            
+              var inputs = jQuery(this).closest('form').find('input, select, textarea');
+              inputs.eq( inputs.index(this)+ 1 ).focus();
+            });*/   
+            jQuery( document ).ready(function() {
+                jQuery("#page-wrapper").trigger("create");
+                jQuery('.ui-radio-off').css('white-space','nowrap');
+                jQuery('.ui-select').css('width','70%');
+                jQuery('select').attr("data-native-menu","true");
+        
+                jQuery('.ui-input-btn').attr('style', 'background-color:#d75e2e !important;color:white;');
+        
+                //jQuery('.ui-select').selectmenu("refresh");
+                /*jQuery(".inputClass").click(function() {
+                    var next;
+                    next = jQuery(this).closest('li').next().find('.inputClass');
+                    jQuery(next).focus();
+                });*/
+                jQuery(".inputClass").change(function() {
+                    var next;
+                    next = jQuery(this).closest('li').next().find('.inputClass');
+                    
+                    var elementType = jQuery(this).prop('tagName');
+                    if(elementType=="SELECT")
+                    {
+                        jQuery( this ).parent().parent().addClass( "uiImage" );
+                    }
+                    else
+                    {
+                        jQuery( this ).addClass( "uiImage" );
+                    }
+                    //jQuery(next).focus();
+                    //jQuery(next).scrollTop();
+                  jQuery('html, body').animate({
+                        scrollTop: jQuery(next).offset().top-50
+                    }, 0);      
+                });
+				jQuery(".txtAge").keydown(function(event) {
+			        var key;
+			        if(window.event)
+			            key = window.event.keyCode;
+			        else
+			            key = event.which;
+			        if(key == 13 || key == 10) {
+						jQuery(".ddlPregnant").focus();
+					}
+				});
+				jQuery( "form" ).submit(function( event ) {
+					event.preventDefault();
+				});		
+            });     
+    </script>           
+        </apex:form><!-- ENDS TEST RESULTS -->
+        </div><!-- ENDS INPUT GRID WRAPPER -->
+        </div><!-- ENDS CONTENT WRAPPER -->
+        </div><!-- ENDS PAGE WRAPPER -->
+        
+<!--<a href="#" class="back-to-top">Quick Save</a>-->
+
+    </body>
+
+     </html>
+    
+</apex:page>

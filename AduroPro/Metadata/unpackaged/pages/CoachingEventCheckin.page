@@ -1,0 +1,243 @@
+<apex:page controller="CoachingEventCheckin" showHeader="false" sidebar="false"  docType="html-5.0" applyBodyTag="fales" applyHtmlTag="false"  standardStylesheets="false" cache="false">
+	<head>
+	<title>Coaching : Choose Event</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
+	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css"/>
+	<!-- Latest compiled and minified JavaScript -->
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700,300' rel='stylesheet' type='text/css'/>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>	
+	<style>
+		body {
+			font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+			color: #463e38;
+		}
+
+		.logo {
+			float: left;
+			margin: 10px 25px;
+		}
+
+		h1, h4, h5 {
+			font-weight: 700;
+		}
+		h1
+		{
+			color: #463e38;
+		}
+		h3 {
+			background-color: #E4E5E7;
+			margin-top: 10px;
+			margin-bottom: 20px;
+			padding-top: 8px;
+			padding-bottom: 8px;
+			border-top: 1px solid #d92c27;
+		}
+
+		h3, h4, h5 {
+			text-transform: uppercase;
+		}
+
+		h4, h5 {
+			margin: 0px;
+			padding: 5px;	
+		}
+
+		h4 {
+			background-color: #d92c27;
+			color: #ffffff;	
+		}
+
+		h5 {
+			background-color: #E4E5E7;
+		}
+
+		p {
+			margin: 0px;
+			padding: 5px;
+			background-color: #EEEFF1;
+		}
+
+		hr {
+			background-color: #035b70;
+			border: none;
+			height: 4px;
+			width: 100%;
+			clear: both;
+			margin: 16px 0 0;
+		}
+
+		.thumbnail {
+			padding: 0px;
+			min-width: 280px;
+		}
+
+		.btn {
+			margin: 15px 10px;
+			height: 40px;
+			width: 250px;
+			font-weight: 700;
+			background-color: #d92c27;
+			color: #fff;
+		}
+
+		.btn:hover {
+			background-color: #a42022;
+			color: #fff;
+		}
+		.txtbox
+		{
+			width: 15em;
+			margin:5px;
+		}
+		@media screen and (max-width: 755px) {
+    		h1 {
+        		clear: both;
+   		 	}
+   		 	.logo {
+   		 		margin: auto;
+   		 		float: none;
+   		 	}
+		}	
+		.required
+		{
+			color: #d92c27;
+		}
+		.messageTable
+		{
+			width:100%;
+			color:#d92c27;
+		}
+		.messageText h4
+		{
+		 	background-color:#d92c27;
+			color:#fff;
+		}
+	</style>
+	</head>
+	<body style="padding:10px;">
+		<apex:form styleClass="form-horizontal">
+		
+		<apex:outputPanel layout="none" rendered="{!doNotRender}">
+		<div class="alert alert-danger" role="alert">Opps! No data found. Please try again.</div>
+		</apex:outputPanel>
+		<apex:outputPanel layout="none" rendered="{!NOT(doNotRender)}">
+			<div class="row" style="padding:10px;">
+				<div class="col-xs-6 col-md-3 thumbnail" style="text-align:center;width:100%;border:none">
+					<div class="logo">
+						<apex:outputPanel rendered="false"> <!--{!NOT(renderProgramLogo)}-->
+							<apex:image url="{!URLFOR($Resource.coaching,'coaching/GA_Healthy_Rewards_Logo.png')}" width="157" height="57"/>				 				 
+						</apex:outputPanel>
+						<apex:outputPanel rendered="{!renderProgramLogo}">
+							<image src="{!programLogo}" width="157" height="57"/>				 				 
+						</apex:outputPanel>	
+					</div>
+					<div style="margin:auto;width:70%;color:#035b70;vertical-align:middle;">
+						<apex:outputPanel rendered="{!NOT(renderProgramLogoText)}">
+							<apex:image url="{!URLFOR($Resource.coachingschedulerlogo)}" width="317" height="103"/>				 				 
+						</apex:outputPanel>				
+						<apex:outputPanel rendered="{!renderProgramLogoText}">
+							<h1 style="text-align:center">{!program.Calendar_Name__c}</h1>
+						</apex:outputPanel>
+					</div>
+				</div>
+			</div>
+	
+		   <div class="row" style="padding:10px;">
+		   <apex:outputPanel rendered="{!eventType!=firstEvent}" layout="none">
+			<div style="text-align:center;"><h3>{!eventType}</h3></div>
+			</apex:outputPanel>			   
+			   
+				  <div class="row">
+					  <div class="col-xs-6 col-md-1" style="text-align:center;width:100%;margin:auto;">
+						  <h4>{!coachingProgramName}</h4>
+						  <h5>{!occurrences}</h5>
+						  <apex:outputText value="{!eventNotes}" escape="false"/>
+						  <apex:repeat value="{!listDates}" var="evDate" rendered="false">
+							  <p>{!evDate}</p>
+						  </apex:repeat>	
+						  <apex:pageMessages />
+						  		<apex:outputPanel layout="none" rendered="{!dataSaved}" style="text-align:center;width:100%;margin:auto;" styleClass="modal-body">
+									<apex:outputText escape="false" value="{!returnURL}" />
+								</apex:outputPanel>
+							  <apex:outputPanel layout="none" rendered="{!NOT(dataSaved)}" style="text-align:center;width:100%;margin:auto;" styleClass="modal-body">
+							  <div class="form-group form-group-sm">
+							    <label class="col-sm-5 control-label">Select Time</label>
+							    <div class="col-sm-3">
+									<apex:selectList size="1" value="{!selectedEventId}" styleClass="ddlSelectedEventId form-control">
+									    <apex:selectOptions value="{!listEventsOpt}">
+									</apex:selectOptions>
+									</apex:selectList>
+							    </div>
+							  </div>								  
+							  <div class="form-group form-group-sm">
+							    <label class="col-sm-5 control-label">First Name</label>
+							    <div class="col-sm-3">
+							      <apex:inputText value="{!firstname}" styleClass="form-control"/>
+							    </div>
+							  </div>
+							  <div class="form-group form-group-sm">
+							    <label class="col-sm-5 control-label">Last Name</label>
+							    <div class="col-sm-3">
+							      <apex:inputText value="{!lastname}" styleClass="form-control"/>
+							    </div>
+							  </div>		  
+							  <div class="form-group form-group-sm">
+							    <label class="col-sm-5 control-label">Email</label>
+							    <div class="col-sm-3">
+							      <apex:inputText value="{!email}" styleClass="form-control"/>
+							    </div>
+							  </div>	
+							  <apex:outputPanel rendered="{!AND(program.Validate_Coaching_Scheduler_Slot__c,program.Coaching_Identifier_DOB__c)}">
+							  <div class="form-group form-group-sm">
+							    <label class="col-sm-5 control-label">Date of Birth</label>
+							    <div class="col-sm-3">
+							      <apex:inputText value="{!dob}" styleClass="form-control"/>
+							    </div>
+							  </div>								  
+							  </apex:outputPanel>
+							  <apex:outputPanel rendered="{!AND(program.Validate_Coaching_Scheduler_Slot__c,program.Coaching_Identifier_Employee_ID__c)}">
+							  <div class="form-group form-group-sm">
+							    <label class="col-sm-5 control-label">Employee Id</label>
+							    <div class="col-sm-3">
+							      <apex:inputText value="{!empId}" styleClass="form-control"/>
+							    </div>
+							  </div>								  
+							  </apex:outputPanel>	
+							  <apex:outputPanel rendered="{!program.Validate_Coaching_Scheduler_Slot__c}" styleClass="pnlOverride">
+							  <div class="form-group form-group-sm">
+							    <label class="col-sm-5 control-label">Override Validation</label>
+							    <div class="col-sm-3">
+							      <apex:inputCheckbox value="{!overrideValidation}" styleClass="form-control"/>
+							    </div>
+							  </div>								  
+							  </apex:outputPanel>							  
+							  <apex:commandButton value="Submit" action="{!register}" styleClass="btn" style="color:#fff;"/>
+							  </apex:outputPanel>
+					  </div>
+				  </div>
+		   </div>	
+			<script language="javascript">
+				jQuery.noConflict();
+				jQuery(document).ready(function() {
+					if(!isiPhone())
+					{	
+						jQuery('.pnlOverride').hide();
+					}
+				});
+function isiPhone(){
+    return (
+        //Detect iPhone
+        (navigator.platform.indexOf("iPhone") != -1) ||
+        //Detect iPod
+        (navigator.platform.indexOf("iPod") != -1)
+    );
+}				
+				</script>
+		</apex:outputPanel>
+		</apex:form>
+	</body>
+</apex:page>

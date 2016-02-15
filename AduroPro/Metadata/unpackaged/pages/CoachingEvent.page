@@ -1,0 +1,254 @@
+<apex:page controller="CoachingEvent" showHeader="false" sidebar="false"  docType="html-5.0" applyBodyTag="fales" applyHtmlTag="false" standardStylesheets="false" cache="false">
+	<head>
+	<title>Coaching : Choose Event</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
+	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css"/>
+	<!-- Latest compiled and minified JavaScript -->
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700,300' rel='stylesheet' type='text/css'/>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>	
+	
+	
+	<style>
+		body {
+			font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+			color: #463e38;
+		}
+
+		.logo {
+			float: left;
+			margin: 10px 25px;
+		}
+
+		h1, h4, h5 {
+			font-weight: 700;
+		}
+		h1
+		{
+			color: #463e38;
+		}
+		h3 {
+			background-color: #E4E5E7;
+			margin-top: 10px;
+			margin-bottom: 20px;
+			padding-top: 8px;
+			padding-bottom: 8px;
+			border-top: 1px solid #d92c27;
+			color: #463e38;
+		}
+
+		h3, h4, h5 {
+			text-transform: uppercase;
+		}
+
+		h4, h5 {
+			margin: 0px;
+			padding: 5px;	
+		}
+
+		h4 {
+			background-color: #fff;
+			color: #463e38;	
+		}
+		.h4:hover {
+			color: #a42022;
+		}
+		h5 {
+			background-color: #E4E5E7;
+			color:#463e38;
+		}
+		.h5:hover {
+			color: #a42022;
+		}
+		p {
+			margin: 0px;
+			padding: 5px;
+			background-color: #EEEFF1;
+		}
+
+		hr {
+			background-color: #035b70;
+			border: none;
+			height: 4px;
+			width: 100%;
+			clear: both;
+			margin: 16px 0 0;
+		}
+
+		.thumbnail {
+			padding: 0px;
+			min-width: 280px;
+		}
+
+		.btn {
+			margin: 15px 10px;
+			height: 40px;
+			width: 250px;
+			font-weight: 700;
+			background-color: #d92c27;
+			color: #fff;
+		}
+
+		.btn:hover {
+			background-color: #a42022;
+			color: #fff;
+		}
+a.thumbnail:hover { 
+    border:solid 1px #EF263C;
+}
+/*		@media screen and (max-width: 755px) {
+    		h1 {
+        		clear: both;
+   		 	}
+   		 	.logo {
+   		 		margin: auto;
+   		 		float: none;
+   		 	}
+		}*/
+		@media screen and (min-width:1685px){
+			.col-md-3{
+				width:25%;
+			}
+			.col-xs-6{
+				width:25%;
+			}
+		}
+         @media (min-width:1263px) and (max-width:1684px){
+                  .col-md-3{
+                          width:33.3333%
+                  }
+          }
+
+          @media (min-width:638px) and (max-width:1262px){
+                  .col-md-3{
+                          width:50%;
+                  }
+          }		
+          @media (max-width:595px){
+          	.col-md-3{
+          		width:100%;
+          	}
+          }
+		.messageTable
+		{
+			width:100%;
+			color:red;
+		}
+		.messageText h4
+		{
+		 	background-color:#d92c27;
+			color:#fff;
+		}
+		.col-xs-6{
+			height:25%;
+		}
+	</style>
+	</head>
+	<body style="padding:10px;">
+		<apex:form styleClass="form-horizontal">
+		<apex:outputPanel layout="none" rendered="{!doNotRender}">
+		<div class="alert alert-danger" role="alert">Opps! No data found. Please try again.</div>
+		</apex:outputPanel>
+		<apex:outputPanel layout="none" rendered="{!NOT(doNotRender)}">
+	<div class="row" style="padding:10px;">
+		<div class="col-xs-6 col-md-3 thumbnail" style="text-align:center;width:100%;border:none">
+			<div class="logo">
+				<apex:outputPanel rendered="false"> <!--{!NOT(renderProgramLogo)}-->
+					<!--<apex:image url="{!URLFOR($Resource.coaching,'coaching/GA_Healthy_Rewards_Logo.png')}" width="157" height="57"/>-->
+				</apex:outputPanel>
+				<apex:outputPanel rendered="{!renderProgramLogo}">
+					<image src="{!programLogo}" width="157" height="57"/>				 				 
+				</apex:outputPanel>				
+			</div>
+			<div style="margin:auto;width:70%;color:#035b70;vertical-align:middle;">
+				<apex:outputPanel rendered="{!NOT(renderProgramLogoText)}">
+					<apex:image url="{!URLFOR($Resource.coachingschedulerlogo)}" width="317" height="103"/>				 				 
+				</apex:outputPanel>
+				<apex:outputPanel rendered="{!renderProgramLogoText}">
+					<h1 style="text-align:center">{!program.Calendar_Name__c}</h1>
+				</apex:outputPanel>
+				<apex:outputPanel rendered="{!renderGoBackButton}" layout="none">
+					<a onclick="window.location.href='/apex/OnsiteConcierge?event={!eid}'"><button type="button" class="btn">Return to Concierge Check-In</button></a>
+				</apex:outputPanel>
+			</div>
+		</div>
+		
+	</div>
+	
+	   <apex:repeat value="{!listEventTypeWrapper}" var="etw">
+		   <apex:outputPanel layout="none"> <!--rendered="!etw.eventType!=firstEvent}-->
+			<div style="text-align:center;"><h3>{!etw.eventType}</h3></div>
+			</apex:outputPanel>
+		   <div class="row">
+			  <apex:repeat value="{!etw.listCoachingProgramWrapper}" var="cpw">
+				<div class="col-xs-6 col-md-3" style="text-align:center;margin:auto;">
+					<a href="CoachingEventCheckin?p={!psk}&e={!cpw.eventId}&oid={!oid}&eid={!eid}&fname={!URLENCODE(firstname)}&lname={!URLENCODE(lastname)}&em={!URLENCODE(email)}&emid={!empid}&dob={!dob}&cname={!URLENCODE(cname)}" class="thumbnail" style="">
+						<h4>{!cpw.coachingProgramName}</h4><apex:image url="{!IF(cpw.customImage,'',URLFOR($Resource.coaching,'coaching/'))}{!cpw.image}" width="100%"/>
+						<h5>{!cpw.occurance}</h5>
+						<!--<p>{!cpw.formattedDate}</p>-->
+						<span  class="btn">Register</span>
+					</a>
+				</div>
+			  </apex:repeat>
+			</div>
+	   </apex:repeat>
+	   <div><br/><input type="button" data-toggle="modal" data-target="#myModal" style="margin-bottom:0px;cursor:hand;" value="Need to cancel your registration?  Click here"></input><br/><br/><br/><br/></div>
+	   </apex:outputPanel>
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Enter below info to cancel your registration</h4>
+      </div>
+      <div class="modal-body">
+		  <apex:outputPanel id="pnlFrm">
+		  <apex:pageMessages />
+		  <div class="form-group form-group-sm">
+		    <label class="col-sm-3 control-label">First Name</label>
+		    <div class="col-sm-6">
+		      <apex:inputText value="{!firstname}" styleClass="form-control"/>
+		    </div>
+		  </div>
+		  <div class="form-group form-group-sm">
+		    <label class="col-sm-3 control-label">Last Name</label>
+		    <div class="col-sm-6">
+		      <apex:inputText value="{!lastname}" styleClass="form-control"/>
+		    </div>
+		  </div>		  
+		  <div class="form-group form-group-sm">
+		    <label class="col-sm-3 control-label">Email</label>
+		    <div class="col-sm-6">
+		      <apex:inputText value="{!email}" styleClass="form-control"/>
+		    </div>
+		  </div>	
+			  <apex:outputPanel rendered="{!registrationFound}" id="pnlSlots">
+				  <h5>You are registered for following, select which one you want to cancel and then press Cancel button.</h5>
+				  <apex:repeat value="{!listRegisteredSlots}" var="s">
+					  <div class="form-group form-group-sm">
+					    <div class="col-sm-10">
+					      <apex:inputCheckbox value="{!s.Slot_Selected__c}"/>&nbsp;{!s.WW_Event__r.Name}
+					    </div>
+					  </div>					  
+				  </apex:repeat>
+				  <apex:commandButton value="Cancel Selected" action="{!cancelSelected}" styleClass="btn" reRender="pnlFrm,pnlSlots"/>
+			  </apex:outputPanel>		  
+		  </apex:outputPanel>
+      </div>
+      <div class="modal-footer">
+		<apex:commandButton value="Submit" action="{!cancelRegistration}" styleClass="btn" reRender="pnlFrm" style="margin-bottom:0px;"/>
+        <button type="button" class="btn" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>	   
+</apex:form>
+	</body>	
+</apex:page>

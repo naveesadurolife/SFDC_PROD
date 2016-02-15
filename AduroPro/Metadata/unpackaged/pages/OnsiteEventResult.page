@@ -1,0 +1,182 @@
+<apex:page showHeader="false" controller="OnsiteEventResult" standardStylesheets="false" sidebar="false" docType="html-5.0" >
+	<html>
+	<head>
+		<meta charset="utf-8">  
+			<title>Onsite Testing : Choose Function</title>
+			<meta name="description" content="Description"/>
+			<apex:stylesheet value="{!URLFOR($Resource.OnsiteStaticResources, 'onsite_static_resources/css/ww-style.css')}"/>
+			<apex:include pageName="IncludeResources" />
+		</meta>
+		<style type="text/css">
+			.cell
+			{
+				padding-left: 0px;
+				padding-right: .5em;
+			}
+			.blue
+			{
+				width:100%;
+			}
+			.ui-dialog .ui-dialog-titlebar
+			{
+				padding:.1em;
+				margin:.1em;
+				width:98%;
+			}			
+		</style>
+	</head>
+	<body>
+		<div id="page-wrapper">
+		<div id="content-wrapper">
+		<a href='/apex/OnsiteStart?event={!objEvent.id}' style="text-decoration: none;"><h1>{!objEvent.Name}</h1></a>
+		<div class="input-grid-wrapper">
+		<apex:form id="frmMain">
+		<table class="input-grid" style="width:100%" >
+		<tr>
+			<td class="cell" style="width: 100%;" ><input class="bttn blue" type="button" name="save" value="# Of Duplicate Records ()" onclick="goToDuplicateRecords()" /></td>
+		</tr>
+		<tr>
+			<td class="cell" style="width: 100%;"><input class="bttn blue" type="button" name="save" value="# Of People Checked In With No Results ({!PeopleCheckedInWithNoResults}) " onclick="goToPeopleCheckedInWithNoResults()" /></td>
+		</tr>
+		<tr>			
+		    <td class="cell" style="width: 100%;"><input class="bttn blue" type="button" name="save" value="# Of People With Results ({!PeopleWithResults})" onclick="goToPeopleWithResults()" /></td>
+		</tr>
+		<tr>			
+		    <td class="cell" style="width: 100%;"><input class="bttn blue" type="button" name="save" value="# Reconciled Submitted Orders with no results ({!ReconcileResults})" onclick="goToReconcileResults()" /></td>
+		</tr>	
+		<tr>		    
+		    <td class="cell" style="width: 100%;"><input class="bttn blue" type="button" name="save" value="Staff" onclick="goToStaff()" /></td>
+		</tr>
+		<tr style="display:none;">		    
+		    <td class="cell" style="width: 100%;"><input class="bttn blue" type="button" name="eventlist" value="Expenses" onclick="goToExpenses()" /></td>
+		</tr>
+		<tr>		    
+		    <td class="cell" style="width: 100%;"><input class="bttn blue" type="button" name="eventlist" value="Event Challenges" onclick="goEventChallenges()" /></td>
+		</tr>		
+		<tr>		    
+		    <td class="cell" style="width: 100%;"><input class="bttn blue" type="button" name="eventlist" value="Event List" onclick="goToEventList()" /></td>
+		</tr>
+		<tr>
+			<td>
+				<div>Physical Count from Check-In</div>
+				<div><apex:inputField value="{!objEvent.Physical_Count_from_Check_In__c}" style="width:50%;"/></div>
+				<div>Physical Count from Data Sheets</div>
+				<div><apex:inputField value="{!objEvent.Physical_Count_from_Data_Sheets__c}" style="width:50%;"/></div>
+				<apex:outputPanel layout="none" rendered="{!objEvent.Program__r.Tobacco_Saliva__c}">
+				<div>Physical Count of Cotinine Test (Actual ={!CountOfCotinineTest})</div>
+				<div><apex:inputField value="{!objEvent.Physical_Count_of_Cotinine_Test__c}" style="width:50%;"/></div>
+				</apex:outputPanel>
+				<div>Reconciled By {!ReconciledDateTime}</div>
+				<div id="errors" class="error" style="{!errorMessageStyle}"><p><apex:outputText escape="false" value="{!errorMessage}"/></p></div>
+				<div><apex:inputText value="{!ReconciledBy}" style="width:50%;"/></div>						
+				<div>
+					<table><tr>
+					<td><apex:commandButton action="{!reconsileNow}" value="Event Reconciled" style="vertical-align: middle; font-size:12px; width: 130px; height: 40px; " styleClass="bttn orange"/></td>
+					<td><apex:commandButton action="{!save}" value="Save" style="vertical-align: middle; font-size:12px; width: 90px; height: 40px; " styleClass="bttn orange"/></td>
+					</tr></table>
+				</div>
+			</td>
+		</tr>		
+		</table>
+		<div id="modalDiv">
+			<div class="divChallenges" style="font-size:.9em;"></div>
+		</div>		
+		</apex:form><!-- ENDS TEST RESULTS -->
+		</div><!-- ENDS INPUT GRID WRAPPER -->
+		</div><!-- ENDS CONTENT WRAPPER -->
+		</div><!-- ENDS PAGE WRAPPER -->
+	</body>
+	<script type="text/javascript">
+		jQuery.noConflict();
+		jQuery(document).ready(function() {
+            jQuery("#modalDiv").dialog({
+                modal: true,
+                autoOpen: false,
+                height: '400',
+                width: '600',
+                draggable: true,
+                resizeable: true,   
+                title: 'Event Challenges'
+            });	
+		});	
+        function goToDuplicateRecords(){
+        alert("Coming soon!");
+			//parent.location.href='/apex/OnsiteDuplicateRecords?event={!objEvent.Id}';
+        }  
+        function goToStaff(){
+        	//alert("Coming soon!");
+			parent.location.href='/apex/OnsiteStaff?event={!objEvent.Id}';
+        }               
+        function goToPeopleCheckedInWithNoResults(){
+        	//alert("Coming soon!");
+			parent.location.href='/apex/OnsiteCheckedInWithNoResults?event={!objEvent.Id}';
+        }
+        function goToReconcileResults(){
+        	//alert("Coming soon!");
+			parent.location.href='/apex/OnsiteReconciledOrders?event={!objEvent.Id}';
+        }		
+        function goToPeopleWithResults(){
+        	//alert("Coming soon!");
+			parent.location.href='/apex/OnsitePeopleWithResults?event={!objEvent.Id}';
+        }
+        function goToExpenses(){
+        	parent.location.href='/apex/OnsiteExpenses?event={!objEvent.Id}';
+        } 
+        function goToEventList(){
+			parent.location.href='/apex/EventList';
+        }  
+        function goEventChallenges(){
+        	var eventId='{!objEvent.Id}';
+		    Visualforce.remoting.Manager.invokeAction(
+		        '{!$RemoteAction.OnsiteEventResult.getEventChallengesOptions}', 
+		        function(result, event){
+		            if (event.status) {
+		            	var chkHTML='<table style="width:50%;">';
+		            	for(i=0;i<result.length;i++)
+		            	{
+		            		chkHTML+="<tr><td style='white-space:nowrap;' class='cell'>";
+		            		chkHTML+=result[i]+'</td><td><input type="checkbox" class="chkChallenges" value="'+result[i]+'">';
+		            		chkHTML+="</td></tr>";
+		            	}
+		            	chkHTML+='<tr><td colspan="2"><input type="button" class="bttn orange" style="float:left;vertical-align: middle; font-size:12px; width: 90px; height: 40px; " value="Submit" onclick="submitEventChallenges(\''+eventId+'\')" /></tr></td>';
+		            	chkHTML+="</table>";
+		            	jQuery(".divChallenges").html(chkHTML);
+		            } else {
+		            	jQuery(".divChallenges").html(event.message);
+		            }
+		        }, 
+		        {escape: false}
+		    );			
+			jQuery("#modalDiv").dialog("open");          
+        }  
+        function submitEventChallenges(eventId)
+        {
+        	var sThisVal="";
+			jQuery('.chkChallenges').each(function () {
+			       sThisVal += (this.checked ? jQuery(this).val()+";" : "");
+			  });
+		    Visualforce.remoting.Manager.invokeAction(
+		        '{!$RemoteAction.OnsiteEventResult.updateEventChallenges}',
+		        eventId, 
+		        sThisVal,
+		        function(result, event){
+		            if (event.status) {
+		            	if(result=="success")
+		            	{
+		            		jQuery("#modalDiv").dialog("close");  
+		            	}
+		            	else
+		            	{
+		            		alert(result);
+		            	}
+		            } else {
+		            	alert(event.message);
+		            }
+		        }, 
+		        {escape: false}
+		    );        
+        }           
+    </script>
+	 </html>
+	
+</apex:page>

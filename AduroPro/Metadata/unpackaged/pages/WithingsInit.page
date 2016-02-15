@@ -1,0 +1,58 @@
+<apex:page controller="WithingsOAuthInit" action="{! checkParamsAndRedirect}" 
+			showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false">
+	
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+	
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css" />
+	
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <apex:includeScript value="{!URLFOR($Resource.jqueryui111, 'jquery-1.11.1.min.js')}"  />
+    
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	
+	<body style="background-color: red; vertical-align: middle;">
+	<div class="container" style="">
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<div class="jumbotron">
+			<div class="media">
+				<div class="media-left media-top">
+				
+					<apex:image id="theImage" value="{!$Resource.adurologo}" 
+								styleClass="media-object" width="150" height="150"/>
+				
+				</div>
+				<div class="media-body media-middle">
+					<h1>WELCOME TO ADURO.</h1>
+					<p>&nbsp;</p>
+					<p>&nbsp;</p>
+					<p>
+						You have successfully authorized Aduro to access your data from Withings.
+					</p>
+					<apex:outputPanel rendered="{! errorOccured}">
+						<div class="panel panel-danger">
+							<div class="panel-heading">
+								<h3 class="panel-title">Warning</h3>
+							</div>
+							<div class="panel-body">
+							  <apex:pageMessages />
+							</div>
+							
+						</div>
+					</apex:outputPanel>
+					
+				</div>
+			</div>
+			
+			
+		</div>
+		
+	</div> <!-- end of container -->
+	</body>
+</apex:page>

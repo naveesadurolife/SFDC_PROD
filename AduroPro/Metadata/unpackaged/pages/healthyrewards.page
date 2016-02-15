@@ -1,0 +1,107 @@
+<apex:page showHeader="false" sidebar="false" applyBodyTag="false" applyHtmlTag="false" cache="false"  docType="html-5.0" >
+    <html>
+    <head>  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css"/>
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>     
+    </head>
+    <body>
+   <div align="center" style="width:100%; padding-left:10px; padding-right:10px">
+    <div class="jumbotron" style="display:none;"><h2>Healthy Rewards Coaching Programs</h2></div>
+        <div class="row">
+            <div class="col-sm-6 col-md-4" style="text-align:center;width:33%;">
+                  <div class="thumbnail caption">
+                      <h3>Address the Stress</h3>
+                      <p>Available Sessions</p>
+                      <p>Thursdays at 11:30am*</p>
+                      <p>Starting 3/19/15</p>
+                      <a href="https://attendee.gotowebinar.com/register/7110267183387012098" target="_self" class="btn btn-default aUpdateLink" role="button" onclick="javascript:register();">Register Now</a>
+                      <p>Learn to thrive and survive in times of stress</p>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-4" style="text-align:center;width:33%;">
+                  <div class="thumbnail caption">
+                      <h3>Mission Nutrition</h3>
+                      <p>Available Sessions</p>
+                      <p>Wednesdays at 11:30am*</p>
+                      <p>Starting 3/18/15</p>
+                      <a href="https://attendee.gotowebinar.com/register/1452724605107448066"  target="_self" class="btn btn-default aUpdateLink" role="button"  onclick="javascript:register();">Register Now</a>
+                      <p>Make positive changes for a nourishing lifestyle</p>
+                  </div>
+          </div>    
+            <div class="col-sm-6 col-md-4" style="text-align:center;width:33%;">
+                  <div class="thumbnail caption">
+                      <h3>Weight Loss</h3>
+                      <p>Available Sessions</p>
+                      <p>Mondays at 11:30am*</p>
+                      <p>Starting 3/16/15</p>
+                      <a href="https://attendee.gotowebinar.com/register/1379869865139324418"  target="_self" class="btn btn-default aUpdateLink" role="button" onclick="javascript:register();">Register Now</a>
+                      <p>Take control and become your healthiest self</p>
+                  </div>
+          </div>            
+        </div>  
+        <div class="row" style="width: 66%; margin-left: auto;margin-right: auto;">
+            <div class="col-sm-6 col-md-4" style="text-align:center;width:50%;">
+                  <div class="thumbnail caption">
+                      <h3>Nip it in the Butt</h3>
+                      <p>Available Sessions</p>
+                      <p>Fridays at 11:30am*</p>
+                      <p>Starting 3/17/15</p>
+                      <a href="https://attendee.gotowebinar.com/register/763328615468614146" target="_self" class="btn btn-default aUpdateLink" role="button" onclick="javascript:register();">Register Now</a>
+                      <p>Become tobacco free by reshaping your habits</p>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-4" style="text-align:center;width:50%;">
+                  <div class="thumbnail caption">
+                      <h3>Your Health Matters</h3>
+                      <p>Available Sessions</p>
+                      <p>Fridays at 8:30am*</p>
+                      <p>Starting 3/20/15</p>
+                      <a href="https://attendee.gotowebinar.com/register/6925897775106768641"  target="_self" class="btn btn-default aUpdateLink" role="button"  onclick="javascript:register();">Register Now</a>
+                      <p>Educate, change, create. Learn specific information and tools to support you in reducing your health risks.</p>
+                  </div>
+          </div>
+        </div>
+    </div>
+    <p style="text-align:left">*<em>All times are in Pacific Standard Time</em></p>
+<iframe class="frmConcierge" width="0" height="0"></iframe>
+<script>
+    jQuery.noConflict();
+    jQuery(document).ready(function () {
+        jQuery(".aUpdateLink").each(function (index) {
+            var oId = getUrlVars()["oid"];
+            var eId = getUrlVars()["eid"];
+            var fname = getUrlVars()["fname"];
+            var lname = getUrlVars()["lname"];
+            var em = getUrlVars()["em"];
+            var cname = getUrlVars()["cname"];
+            var emid = getUrlVars()["emid"];
+            var str = "&registrant.givenName=" + fname + "&registrant.surname=" + lname + "&registrant.email=" + em + "&customRegistrationSubmission.answers[0].text=" + emid + "&customRegistrationSubmission.answers[1].text=" + cname;
+            jQuery(this).attr("href", jQuery(this).attr("href") + "?oid=" + oId + "&eid=" + eId + str);
+        });
+    });
+    function getUrlVars() {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for (var i = 0; i < hashes.length; i++) {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        return vars;
+    }
+    function register() {
+        var oId = getUrlVars()["oid"];
+        var eId = getUrlVars()["eid"];
+        jQuery(".frmConcierge").attr("src", "https://wellmetricssurveys.secure.force.com/Incentive/OnsiteConciergeHandler?oid=" + oId + "&eid=" + eId);
+    }
+</script>
+    </body> 
+    </html>
+</apex:page>

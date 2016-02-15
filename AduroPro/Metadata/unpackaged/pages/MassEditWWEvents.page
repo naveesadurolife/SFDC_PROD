@@ -1,0 +1,68 @@
+<apex:page standardController="WW_Event__c" recordSetVar="unused" sidebar="false">
+
+<!-- for this page to work with a specific custom object, change standController="entityname" to custom object api name  
+    For example, if custom object name is Warehouse__c, change first part of the first line to standardController="warehouse__c" -->
+
+    
+<apex:includeScript value="{!$Resource.UtilJS}" />
+<apex:form >
+<apex:pageBlock >
+<apex:pageMessages />
+<apex:pageBlock >
+Note: All modifications made on the page will be lost if Return button is clicked without clicking the Save button first. 
+</apex:pageBlock>
+<apex:pageBlockButtons >
+<apex:commandButton value="Save" action="{!save}"/>
+<apex:commandButton value="Return" action="{!cancel}"/>
+</apex:pageBlockButtons>
+<apex:pageBlockTable value="{!selected}" var="a" id="table">
+<apex:column headerValue="Name">
+<apex:inputField value="{!a.name}"/>
+</apex:column>
+<apex:column headerValue="Event Status">
+<apex:inputField value="{!a.Event_Status__c}"/>
+</apex:column>
+<apex:column headerValue="Actual Total Tested">
+<apex:inputField value="{!a.Actual_Total_Tested__c}"/>
+</apex:column>
+<apex:column headerValue="Event Date">
+<apex:inputField value="{!a.Event_Date__c}"/>
+</apex:column>
+<apex:column headerValue="Event Lead">
+<apex:inputField value="{!a.Event_Lead__c}"/>
+</apex:column>
+<apex:column headerValue="Lead Status">
+<apex:inputField value="{!a.Lead_Status__c}"/>
+</apex:column>
+<apex:column headerValue="Start Time">
+<apex:inputField value="{!a.Start_Time__c}"/>
+</apex:column>
+<apex:column headerValue="End Time">
+<apex:inputField value="{!a.End_Time__c}"/>
+</apex:column>
+<apex:column headerValue="Event Length">
+<apex:inputField value="{!a.Event_Length__c}"/>
+</apex:column>
+<apex:column headerValue="Scheduler Details">
+<apex:inputField value="{!a.Scheduler_Details__c}"/>
+</apex:column>
+<apex:column headerValue="Event Address">
+<apex:inputField value="{!a.Event_Address__c}"/>
+</apex:column>
+<apex:column headerValue="Location">
+<apex:inputField value="{!a.Location__c}"/>
+
+</apex:column>
+<apex:column headerValue="Expected Biometric Participation">
+<apex:inputField value="{!a.Expected_Biometrics_Participation__c}"/>
+</apex:column>
+<apex:column headerValue="Biometric Contact v2">
+<apex:inputField value="{!a.Biometric_Contact_v2__c}"/>
+</apex:column>
+<apex:column headerValue="Biometric Contact">
+<apex:inputField value="{!a.Biometric_Contact__c}"/>
+</apex:column>
+</apex:pageBlockTable>
+</apex:pageBlock>
+</apex:form>
+</apex:page>

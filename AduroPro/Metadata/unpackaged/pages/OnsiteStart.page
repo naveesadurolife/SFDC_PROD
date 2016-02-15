@@ -1,0 +1,168 @@
+<apex:page showHeader="false" controller="OnsiteStart" standardStylesheets="false" sidebar="false" docType="html-5.0" >
+	<html>
+	<head>
+		<meta charset="utf-8">  
+			<title>Onsite Testing : Choose Function</title>
+			<meta name="description" content="Description"/>
+			<apex:stylesheet value="{!URLFOR($Resource.OnsiteStaticResources, 'onsite_static_resources/css/ww-style.css')}"/>
+			<apex:include pageName="IncludeResources" /> 			
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css"/>
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>			
+		</meta>
+		<style type="text/css">
+			.cell
+			{
+				padding-left: 0px;
+				padding-right: .5em;
+			}
+			.blue
+			{
+				width:100%;
+			}			
+		</style>
+	</head>
+	<body>
+		<div id="page-wrapper">
+		<div id="content-wrapper">
+		<h1 style="display:block;height:2em;">{!objEvent.Name}</h1>
+		<div class="input-grid-wrapper">
+		<form name="event-list">
+			<div class="row">
+  <div class="col-xs-6 col-md-3" style="text-align:center;width:33%;">
+    <a href="#" class="thumbnail" onclick="goToEventDetail()" style="background:#eb0028;color:#fff;">
+		<img src="/img/icon/contracts32.png" title="/img/icon/contracts32.png" />
+      Event Details
+    </a>
+  </div>
+  <div class="col-xs-6 col-md-3"  style="text-align:center;width:33%;">
+    <a href="#" class="thumbnail" onclick="goToEventListCheckin()" style="background:#eb0028;color:#fff;">
+		<img src="/img/icon/computer32.png" title="/img/icon/computer32.png"/>
+      Check In
+    </a>
+  </div>  
+  <div class="col-xs-6 col-md-3"  style="text-align:center;width:33%;">
+    <a href="#" class="thumbnail" onclick="goToEventListTester()" style="background:#eb0028;color:#fff;">
+		<img src="/img/icon/people32.png" title="/img/icon/people32.png"/>
+      Screening
+    </a>
+  </div> 
+  </div>
+  <div  class="row">
+   <apex:outputPanel layout="none" rendered="{!objEvent.Program__r.Enable_Concierge__c}">
+  <div class="col-xs-6 col-md-3"  style="text-align:center;width:33%;">
+    <a href="#" class="thumbnail" onclick="goToConcierge()" style="background:#eb0028;color:#fff;">
+		<img src="/img/icon/profile32.png" title="/img/icon/profile32.png"/>
+      Concierge
+    </a>
+  </div>
+  </apex:outputPanel>
+  <div class="col-xs-6 col-md-3"  style="text-align:center;width:33%;">
+    <a href="#" class="thumbnail" onclick="goToEventResults()" style="background:#eb0028;color:#fff;">
+		<img src="/img/icon/reports32.png" title="/img/icon/reports32.png"/>
+      Results
+    </a>
+  </div>  
+  <div class="col-xs-6 col-md-3"  style="text-align:center;width:33%;">
+    <a href="#" class="thumbnail" onclick="goToEventList()" style="background:#eb0028;color:#fff;">
+		<img src="/img/icon/documents32.png" title="/img/icon/documents32.png"/>
+      Event List
+    </a>
+  </div> 
+  <div class="col-xs-6 col-md-3"  style="text-align:center;width:33%;">
+    <a href="#" class="thumbnail" onclick="goToParticipantSurvey()" style="background:#eb0028;color:#fff;">
+		<img src="/img/icon/microphone32.png" title="/img/icon/microphone32.png"/>
+      Participant Survey
+    </a>
+  </div>   
+  </div>
+		<table class="input-grid"  style="width:100%;display:none;" >
+		<tr>
+			<td class="cell" style="width: 100%;" ><input class="bttn blue" type="button" name="save" value="Event Details" onclick="goToEventDetail()" /></td>
+		</tr>
+		<tr>
+			<td class="cell"><input class="bttn blue" type="button" name="save" value="Check In" onclick="goToEventListCheckin()" /></td>
+		</tr>
+		<tr>			
+		    <td class="cell"><input class="bttn blue" type="button" name="save" value="Screening" onclick="goToEventListTester()" /></td>
+		</tr>
+		<apex:outputPanel layout="none" rendered="{!objEvent.Program__r.Enable_Concierge__c}">
+		<tr>			
+			<td class="cell"><input class="bttn blue" type="button" name="save" value="Concierge" onclick="goToConcierge()" /></td>
+		</tr>
+		</apex:outputPanel>
+		<tr>			
+		    <td class="cell" ><input class="bttn blue" type="button" name="save" value="Results" onclick="goToEventResults()" /></td>
+		</tr>
+		<tr>			
+		    <td class="cell" ><input class="bttn blue" type="button" name="eventlist" value="Event List" onclick="goToEventList()" /></td>
+		</tr>
+		</table>
+		</form><!-- ENDS TEST RESULTS -->
+		</div><!-- ENDS INPUT GRID WRAPPER -->
+		</div><!-- ENDS CONTENT WRAPPER -->
+		</div><!-- ENDS PAGE WRAPPER -->
+	</body>
+	<script type="text/javascript">
+		jQuery.noConflict();
+		jQuery(document).ready(function () {
+		//alert("test");
+		});
+        function goToEventDetail(){
+        //alert("Coming soon!");
+        	blockUI();
+			parent.location.href='/apex/OnsiteEventDetail?event={!objEvent.Id}';
+        }  
+        function goToParticipantSurvey(){
+        	//alert("Coming soon!");
+			parent.location.href='/apex/OnsiteParticipantSurvey?event={!objEvent.Id}';
+        } 				
+        function goToConcierge(){
+        	//alert("Coming soon!");
+			parent.location.href='/apex/OnsiteConcierge?event={!objEvent.Id}';
+			//window.open('/apex/CoachingEvent?p={!objEvent.Program__r.Limeade_PSK_ID__c}');
+        } 		
+        function goToEventResults(){
+        //alert("Coming soon!");
+        	blockUI();	
+			parent.location.href='/apex/OnsiteEventResult?event={!objEvent.Id}';
+        }               
+        function goToEventListCheckin(){
+        	blockUI();
+			parent.location.href='/apex/CheckIn?event={!objEvent.Id}';
+        }
+        function goToEventListTester(){
+        	blockUI();
+			parent.location.href='/apex/CheckedIn?event={!objEvent.Id}';
+        }
+        function goToEventList(){
+        	blockUI();
+			parent.location.href='/apex/EventList';
+        } 
+		function blockUI()
+		{
+	        jQuery.blockUI({ css: { 
+	            border: 'none', 
+	            padding: '15px', 
+	            backgroundColor: '#fff', 
+	            '-webkit-border-radius': '10px', 
+	            '-moz-border-radius': '10px', 
+	            opacity: .5, 
+	            color: '#000',
+				width: 'auto' ,
+				margin:'auto',
+				top:'45%',
+				left:'45%'
+	        },
+			message:'Loading...'
+			}); 				
+		}               
+    </script>
+	 </html>
+	
+</apex:page>

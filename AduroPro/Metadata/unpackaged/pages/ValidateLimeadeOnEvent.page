@@ -1,0 +1,14 @@
+<apex:page standardController="EVENT" extensions="ValidateLimeadeOnEvent" action="{!validateWithLimeade}">
+      <apex:form >
+        <apex:pageblock >
+            <apex:pageblockSection >
+             <apex:pageBlockSectionItem >
+                <apex:outputText >{!message}</apex:outputText>
+             </apex:pageBlockSectionItem>       
+            </apex:pageblockSection> 
+            <apex:pageblockbuttons >
+                <apex:commandButton value="Go Back" action="{!cancel}"/>
+            </apex:pageblockbuttons>   
+        </apex:pageblock>
+    </apex:form>   
+</apex:page>

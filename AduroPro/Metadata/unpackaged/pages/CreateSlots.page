@@ -1,0 +1,50 @@
+<apex:page standardController="WW_Event__c" extensions="CreateSlots" >
+	<apex:sectionHeader title="Create Slots" subtitle="{!e.Name}"/>
+	<apex:form >
+		<apex:pageMessages />
+		<apex:pageBlock mode="edit">
+	        <apex:pageBlockButtons location="bottom">
+	            <apex:commandButton value="Create Slots" action="{!save}" rendered="{!canCreateSlots}"/>
+	            <apex:commandButton value="Cancel" action="{!cancel}"/>
+	        </apex:pageBlockButtons>	
+	        <apex:pageBlockSection title="Slot Information" columns="2">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Account"/>
+                    <apex:outputText value="{!e.Program__r.Account__r.Name}"/> 
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Program"/>
+                    <apex:outputText value="{!e.Program__r.Name}"/> 
+                </apex:pageBlockSectionItem> 
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Event"/>
+                    <apex:outputText value="{!e.Name}"/> 
+                </apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Event Date"/>
+                    <apex:outputField value="{!e.Event_Date__c}"/> 
+                </apex:pageBlockSectionItem> 
+				<apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Start Time"/>
+                    <apex:outputText value="{!e.Start_Time__c}"/> 
+                </apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem >
+                    <apex:outputLabel value="End Time"/>
+                    <apex:outputText value="{!e.End_Time__c}"/> 
+                </apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.WW_Event__c.fields.Time_Frame_Per_Slot__c.Label}" />
+                    <apex:outputText value="{!e.Time_Frame_Per_Slot__c}"/> 
+                </apex:pageBlockSectionItem> 
+				<apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.WW_Event__c.fields.Appt_Per_Slot__c.Label}" />
+                    <apex:outputText value="{!e.Appt_Per_Slot__c}"/> 
+                </apex:pageBlockSectionItem>                                   
+				<apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Total Slots"/>
+                    <apex:outputText value="{!totalSlots}"/> 
+                </apex:pageBlockSectionItem>                                               
+	        </apex:pageBlockSection>	
+		</apex:pageBlock>	
+	</apex:form>
+</apex:page>

@@ -1,0 +1,89 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" docType="html-5.0" standardController="Order__c"  extensions="OnsiteTestSummary" action="{!updateScreeningEnd}">
+
+<div class="fullPageBlock">
+    <apex:pageBlock >
+
+	<apex:define name="head">
+		<title>Onsite Testing</title>
+		<apex:stylesheet value="{!URLFOR($Resource.OnsiteStaticResources, 'onsite_static_resources/css/ww-style.css')}"/>
+		<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+	</apex:define>
+	<apex:define name="body">
+		<div id="page-wrapper">
+		<div id="content-wrapper">
+		<h1>Employee Info</h1>
+
+		<div class="border-wrapper">
+			<form name="event-info">
+				<div class="row-wrapper">
+			        <div class="label">First Name:</div>
+			        <div class="field read">{!Order__c.PatientFirstName__c}</div>
+			        <div class="label">Last Name:</div>
+			        <div class="field read">{!Order__c.PatientLastName__c}</div>
+			    </div> <!--	ENDS ROW WRAPPER --> 
+			    <div class="row-wrapper">
+			        <div class="label">Phone:</div>
+			        <div class="field read">{!Order__c.PatientPrimaryPhone__c}</div>
+			        <div class="label">Spouse:</div>
+			        <div class="field read">&nbsp;</div>
+			    </div> <!--	ENDS ROW WRAPPER --> 
+			    <div class="row-wrapper">
+			        <div class="label">DOB:</div>
+			        <div class="field read">
+			        	<apex:outputText value="{0,date,MM'/'dd'/'yyyy}" >
+		    				<apex:param value="{!Order__c.PatientDOB__c}" /> 
+						</apex:outputText>
+					</div>
+			        <div class="label">Employee ID:</div>
+			        <div class="field read">{!Order__c.EmployeeId__c}</div>
+			    </div> <!--	ENDS ROW WRAPPER --> 
+			        <div class="row-wrapper">
+			        <div class="label">Email:</div>
+			        <div class="field-full read">{!Order__c.PatientEmailH__c}</div>
+			    </div> <!--	ENDS ROW WRAPPER --> 
+			</form> <!--	ENDS EVENT INFO FORM  -->
+		</div> <!--	<!--	ENDS EVENT WRAPPER -->
+			
+		<h2 >&nbsp;</h2>
+		<h1 >Ratios - Please write these on the Score Card</h1>
+
+		<div class="border-wrapper">
+			<form name="event-info">
+				<div class="row-wrapper">
+			        <div class="label">LDL:HDL Ratio</div>
+			        <div class="field read">{!onsiteTest.LDL_HDL_Ratio__c}</div>
+			        <div class="label">BMI</div>
+			       <div class="field read">{!onsiteTest.BMI__c}</div>
+			    </div> <!--	ENDS ROW WRAPPER --> 
+			    <div class="row-wrapper">
+			        <div class="label">Waist/Height</div>
+			        <div class="field read">{!onsiteTest.Waist_to_Height_Ratio__c}</div>
+			        <div class="label">TC:HDL Ratio</div>
+			        <div class="field read">{!onsiteTest.TC_HDL_Ratio__c}</div>
+			    </div> <!--	ENDS ROW WRAPPER --> 
+			    <div class="row-wrapper">
+			        <div class="label">Height(total inches)</div>
+			        <div class="field read">{!onsiteTest.Height_Total_Inches__c}</div>
+			        <div class="label">&nbsp;</div>
+			        <div class="field read">&nbsp;</div>
+			    </div> <!--	ENDS ROW WRAPPER --> 
+			</form> <!--	ENDS EVENT INFO FORM -->
+		</div> <!--	ENDS EVENT WRAPPER --> 
+
+		<apex:form >
+			<apex:commandButton styleClass="bttn orange" value="Back to Check-In" action="{!'/apex/CheckedIn?event=' + $CurrentPage.parameters.event}" rendered="{!OR($CurrentPage.parameters.rp='',$CurrentPage.parameters.rp=null,$CurrentPage.parameters.rp='null')}"/>
+			<apex:commandButton styleClass="bttn orange" style="width:100%;" value="Back to Onsite Checked In With No Results" action="{!'/apex/OnsiteCheckedInWithNoResults?event=' + $CurrentPage.parameters.event}"  rendered="{!$CurrentPage.parameters.rp='cwnr'}"/>
+			<apex:commandButton styleClass="bttn orange" style="width:100%;" value="Back to Onsite People With Results" action="{!'/apex/OnsitePeopleWithResults?event=' + $CurrentPage.parameters.event}"  rendered="{!$CurrentPage.parameters.rp='cwr'}"/>
+			<apex:outputPanel layout="none" rendered="{!onsiteTest.ProgramId__r.Screening_HRA__c}">
+			<input type="button"  class="bttn orange" style="width:100%;" value="To HRA" onclick="window.location='/apex/OnsiteHRA?event={!$CurrentPage.parameters.event}&oid={!onsiteTest.Id}'"  />
+			</apex:outputPanel>
+		</apex:form>
+
+		</div><!-- <!--	ENDS CONTENT WRAPPER -->
+		</div><!-- <!--	ENDS PAGE WRAPPER -->
+
+	</apex:define>
+	</apex:pageBlock>
+    </div>
+
+</apex:page>

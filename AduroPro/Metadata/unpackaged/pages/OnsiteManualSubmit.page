@@ -1,0 +1,5 @@
+<apex:page controller="OrderResultsFormController" TabStyle="Product2" action="{!submitResults}" >
+<apex:outputText rendered="false">
+{!program}
+</apex:outputText>
+</apex:page>

@@ -1,0 +1,16 @@
+<apex:page controller="EventRegisterForgotEmail" sidebar="false" showHeader="false" cache="false">
+    <apex:form id="frmMain">
+        <apex:outputPanel rendered="{!NOT(emailSent)}"> 
+        <apex:pageMessages escape="false" />
+        <div style="margin:5px;">
+            Type in the email you used to register for an appointment with this event, and our system will search for that appointment.<br/>
+        <apex:inputText value="{!searchEmail}" style="border:1px solid gray;"/>
+        <apex:commandButton value="Search" action="{!SearchEmail}" reRender="frmMain"/>
+        </div>
+        </apex:outputPanel>
+    <apex:outputPanel rendered="{!emailSent}"> 
+    <p style="margin:5px;">A confirmation email with your appointment details will be sent to you shortly.  If you do not receive this email within 24 hours, please contact support at <a href="mailto:support@adurolife.com">support@adurolife.com</a>. You can close this window now.</p>
+    </apex:outputPanel>             
+    </apex:form>
+    
+</apex:page>

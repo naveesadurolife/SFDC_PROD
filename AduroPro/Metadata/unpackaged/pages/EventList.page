@@ -1,0 +1,50 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" docType="html-5.0" controller="EventListController">
+	<html>
+	<head>
+		<meta charset="utf-8">
+			<title>Onsite Testing</title>
+			<meta name="description" content="Description"/>
+			<apex:stylesheet value="{!URLFOR($Resource.OnsiteStaticResources, 'onsite_static_resources/css/ww-style.css')}"/>
+		</meta>
+	</head>
+	<body>
+		<div id="page-wrapper">
+		<div id="content-wrapper">
+		<h1>Please click on the Event you are testing.</h1>
+		
+
+		<div class="input-grid-wrapper">
+		
+		<form name="event-list">
+		<table class="input-grid" style="width: 100%">
+		<tr>
+			<th style="width: 30%;">Event Name</th>
+		    <th style="width: 30%;">Event Date</th>
+		    <th style="width: 20%;">Start Time</th>
+		    <th style="width: 20%;">End Time</th>
+		</tr>
+		<apex:repeat value="{!eventList}" var="event">
+		<tr>
+			<td class="cell" style="text-align: left;">
+			<apex:outputlink value="/apex/OnsiteStart?event={!event.Id}" target="_top">{!event.Name}</apex:outputlink>
+			<!-- <apex:outputlink rendered="{!OR(testerType='tester',testerType='')}" value="/apex/CheckedIn?event={!event.Id}" target="_top">{!event.Name}</apex:outputlink> -->
+			</td>
+		    <td class="cell" style="text-align: left;"><apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+    				<apex:param value="{!event.Event_Date__c}" /> 
+				</apex:outputText></td>
+		    <td class="cell" style="text-align: left;">{!event.Start_Time__c}</td>
+		    <td class="cell" style="text-align: left;">{!event.End_Time__c}</td>
+		</tr>
+		</apex:repeat>
+		
+		</table>
+
+		</form><!-- ENDS TEST RESULTS -->
+		</div><!-- ENDS INPUT GRID WRAPPER -->
+		</div><!-- ENDS CONTENT WRAPPER -->
+		</div><!-- ENDS PAGE WRAPPER -->
+<!--		<center/>-->
+	
+	</body>
+	 </html>
+</apex:page>

@@ -1,0 +1,138 @@
+<apex:page showHeader="false" controller="OnsiteCheckedInWithNoResults" standardStylesheets="false" sidebar="false" docType="html-5.0" >
+	<html>
+	<head>
+		<meta charset="utf-8">  
+			<title>Onsite Testing : Choose Function</title>
+			<meta name="description" content="Description"/>
+			<apex:includeScript value="{!URLFOR($Resource.jquery, '/js/jquery-1.9.1.js')}"  />
+			<apex:includeScript value="{!URLFOR($Resource.jquery, '/js/jquery-ui-1.10.3.custom.js')}"  />
+			<apex:includeScript value="{!URLFOR($Resource.jquery, '/js/jquery-ui-1.10.3.custom.min.js')}"  />
+			<apex:includeScript value="{!URLFOR($Resource.jquery, '/development-bundle/ui/jquery.ui.datepicker.js')}"  />
+			<apex:stylesheet value="{!URLFOR($Resource.jquery, '/css/overcast/jquery-ui-1.10.3.custom.css')}"  />			
+			<apex:stylesheet value="{!URLFOR($Resource.OnsiteStaticResources, 'onsite_static_resources/css/ww-style.css')}"/>
+		</meta>
+		<style type="text/css">
+			.cell
+			{
+				padding-left: 0px;
+				padding-right: .5em;
+			}
+			.ui-dialog .ui-dialog-titlebar
+			{
+				padding:0em;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="page-wrapper">
+		<div id="content-wrapper">
+		<h1>{!objEvent.Name} <input style="margin-right:60px;" class="bttn blue" type="button" name="eventlist" value="Results" onclick="goToResults()" /></h1>
+		<div class="input-grid-wrapper">
+		<apex:form rendered="{!listOrders.size>0}" id="frmMain">
+			<table class="input-grid" style="width: 100%; table-layout: fixed;border: 1px solid #B4B9C0;">
+			<tr>
+				<th style="width: 18%;">Name</th>
+				<th style="width: 20%;">Email</th>
+				<th style="width: 10%;">Card Code</th>
+				<th style="width: 16%;">Checkin</th>
+				<th style="width: 12%;"></th>
+				<th style="width: 12%;"></th>
+			    <th style="width: 12%;"></th>
+			    
+			</tr>		
+			<apex:repeat value="{!listOrders}" var="o">
+				<tr style="border: 1px solid #B4B9C0;">
+					<td class="cell" style="vertical-align: middle; height: 50px; font-size: .9em;" >
+						{!o.PatientFirstName__c + ' ' + o.PatientLastName__c}
+					</td>
+					<td class="cell" style="vertical-align: middle; height: 100%; font-size: .9em;">{!o.PatientEmailH__c}</td>					
+					<td class="cell">{!o.Onsite_Card_Code__c}</td>
+					<td class="cell" style="vertical-align: middle; height: 100%;font-size: .9em; ">
+					<apex:outputField value="{!o.Check_In_Time__c}" id="FillDate"/>
+					</td>				
+
+				    
+					<td class="cell" >
+					 <input type="button" class="bttn orange" style="vertical-align: middle; font-size:12px; width: 75px; height: 40px; " value="Add Data" onclick="addData('{!o.Id}')" />
+					</td>
+					<td class="cell" >
+					 <input type="button" class="bttn orange" style="vertical-align: middle; font-size:12px; width: 75px; height: 40px; " value="Reason" onclick="Reason('{!o.Id}')" />
+					</td>					
+					<td class="cell" >
+					 <input type="button" class="bttn orange" style="vertical-align: middle; font-size:12px; width: 75px; height: 40px;margin-left:5px;" value="Cancel" onclick="cancel('{!o.Id}')" />
+					</td>
+		
+				</tr>			
+			</apex:repeat>
+			</table>
+		  	<apex:actionFunction name="cancelOrder" action="{!cancelOrder}" rerender="frmMain">
+				<apex:param name="orderId" assignTo="{!orderId}" value="" />
+			</apex:actionFunction>
+			<apex:actionFunction action="{!saveReasonApex}" name="saveReasonJS" rerender="frmMain">
+			    <apex:param name="selectedOrderId" assignTo="{!selectedOrderId}" value="" />
+				<apex:param name="reasonText" assignTo="{!reasonText}" value="" />
+			</apex:actionFunction>		
+		</apex:form><!-- ENDS TEST RESULTS -->
+		</div><!-- ENDS INPUT GRID WRAPPER -->
+		</div><!-- ENDS CONTENT WRAPPER -->
+		</div><!-- ENDS PAGE WRAPPER -->
+		<div id="modalDiv">
+			<textarea id="txtReason" rows="3"></textarea>
+			<input type="button" class="bttn orange" style="vertical-align: middle; font-size:12px; width: 75px; height: 40px; " value="Save" onclick="saveReason();" />
+		</div>
+	<script type="text/javascript">
+		var selectedOrderId="";
+		jQuery.noConflict();
+		jQuery(document).ready(function() {
+            jQuery("#modalDiv").dialog({
+                modal: true,
+                autoOpen: false,
+                height: '200',
+                width: '400',
+                draggable: true,
+                resizeable: true,   
+                title: 'Reason'
+            });	
+		});
+		function saveReason()
+		{
+			var reason=jQuery("#txtReason").val();
+			if(jQuery.trim(reason)=="")
+			{
+				alert("Reason is required.");
+			}
+			else if(jQuery.trim(selectedOrderId)!="")
+			{
+				saveReasonJS(selectedOrderId,reason);
+				jQuery("#modalDiv").dialog("close");
+				//parent.location.href=parent.location.href;
+			}
+			else
+			{
+				alert("Error occured, please try again.");
+			}
+			
+		}
+        function goToResults(){
+        	//alert("Coming soon!");
+			parent.location.href='/apex/OnsiteEventResult?event={!objEvent.Id}';
+        }
+        function addData(orderId)
+        {
+        	parent.location.href='/apex/OnsiteDataEntry?rp=cwnr&orderid='+orderId;
+        }
+        function Reason(orderId)
+        {
+			selectedOrderId=orderId;
+			jQuery("#modalDiv").dialog("open");
+        	//parent.location.href='/apex/OnsiteDataEntry?rp=cwnr&orderid='+orderId;
+        }		
+        function cancel(orderId)
+        {
+        	cancelOrder(orderId);
+        }        
+    </script>		
+	</body>
+	 </html>
+	
+</apex:page>

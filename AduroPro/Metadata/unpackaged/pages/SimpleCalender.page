@@ -1,0 +1,135 @@
+<apex:page sidebar="false" showHeader="false" controller="SimpleCalender" standardStylesheets="false" docType="html-5.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <apex:stylesheet value="{!URLFOR($Resource.CalenderResource,'/CalenderResource/reset.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.CalenderResource,'/CalenderResource/libs/css/smoothness/jquery-ui-1.8rc3.custom.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.CalenderResource,'/CalenderResource/jquery.weekcalendar.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.CalenderResource,'/CalenderResource/demo.css')}"/>
+    <!-- JQUERY -->
+    <apex:includeScript value="{!URLFOR($Resource.CalenderResource,'/CalenderResource/libs/jquery-1.4.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.CalenderResource,'/CalenderResource/libs/jquery-ui-1.8rc3.custom.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.CalenderResource,'/CalenderResource/jquery.weekcalendar.js')}"/>
+    <apex:includeScript value="{!$Resource.CustomJS}"/>
+    <!-- Bootstrap -->
+    <!-- Latest compiled and minified CSS -->
+    <apex:includeScript value="{!URLFOR($Resource.CalenderResource,'/CalenderResource/jquery-2.1.4.min.js')}" />
+    <apex:stylesheet value="{!$Resource.CustomCSS}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Bootstrap,'/js/bootstrap.min.js')}"/>
+        
+    <script>
+     $.noConflict();
+    </script>
+     <div id="bootstrap">         
+        <center><h3>Welcome {!$USER.FirstName} {!$USER.LastName} Your timezone is : {!timeZone}</h3></center>
+     </div>
+    <div id='calendar' class=""></div>
+    <div id="bootstrap">
+    <div class="modal fade" id="past-date-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title"> Past date or time selected</h4>
+          </div>
+          <div class="modal-body">
+            <p>You are not allowed to create event on past time.</p>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+</div><!-- /.modal --> 
+     <div class="modal fade" id="booked-date-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Calender is booked</h4>
+          </div>
+          <div class="modal-body">
+            <p>You are not allowed to edit confirmed event.</p>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->     
+    <div id="event_edit_container" class="modal fade" role="dialog"> 
+        <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" onclick='$("#calendar").weekCalendar("removeUnsavedEvents");'>&times;</button>
+            <h4 class="modal-title"></h4>
+          </div>
+          <div class="modal-body">                          
+            <form class="form-horizontal">
+           <!-- 
+           <div class="form-group col-sm-5">
+                <a class="control-label btn-link link-pointer" onclick="$('#slot-selection').hide();return false;">Event</a>
+                <a class="control-label btn-link link-pointer" onclick=" $('#slot-selection').show();return false;">| Appointment Slots</a>
+            </div>  
+            -->
+            <div class="form-group">    
+                <input type="hidden" name="sf-record-id" id ="sf-record-id"/>
+            </div>     
+            <div class="form-group">
+                <label class="col-sm-3">When: </label>
+                <div class="col-sm-6">
+                    <span class="start_time"></span>
+                </div>
+                
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3" for="title">What: </label>
+                <div class=" col-sm-5">
+                     <input type="text"  name="title" class="form-control" required="true"/>
+                </div>               
+            </div>
+            <!--     
+            <div class="form-group">
+                <label class="col-sm-3" for="start">Start Time: </label>
+                <div class=" col-sm-5">
+                	<select class="form-control"  name="start"><option value="">Select Start Time</option></select>                
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3" for="start">End Time: </label>
+                <div class=" col-sm-5">
+                    <select class="form-control"  name="end">
+                        <option value="">Select Start Time</option>
+                    </select>
+                </div>                
+            </div> 
+            -->
+            <div class="form-group">
+                <label for="title" class="col-sm-3">Calender: </label>
+                <div class=" col-sm-5">
+                	<input type="text"  class="form-control col-sm-5" placeholder="{!$USER.FirstName} {!$USER.LastName}" disabled="true"/>
+                </div>      
+            </div>               
+           <div class="form-group" id="slot-selection">
+                <label for="title" class="col-sm-3 ">Type:</label>
+                <div class="col-sm-9 input-group"> 
+                    <label class="checkbox-inline">
+                        <input type="radio" id="single-slot" name="slot-radio" /> 
+                        Offer as a single appointment slot<br/><br/>
+                         <input type="radio"  name="slot-radio" id="multi-slot" checked="true"/>
+                            Offer as a slot of 
+                            <select class="customSelect" id="slot-option">                        
+                            <option>15</option>
+                            <option selected="true">30</option> 
+                            <option>45</option>
+                            <option>60</option>
+                          </select>
+                    </label>
+               </div>     
+            </div>
+        </form>  
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger btn-delete" data-dismiss="modal" onclick='$("#calendar").weekCalendar("removeUnsavedEvents");$("#calendar").weekCalendar("removeEvent", this.id);deleteEvent();'>Delete</button>
+              <button type="button" class="btn btn-warning btn-cancel" data-dismiss="modal" onclick='$("#calendar").weekCalendar("removeUnsavedEvents");'>Cancel</button>
+            <button type="button" class="btn btn-primary"  onclick='validateForm();'>Save</button>
+          </div>
+        </div>
+    
+      </div>        
+    </div>
+    </div>    
+</apex:page>

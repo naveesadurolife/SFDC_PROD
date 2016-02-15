@@ -1,0 +1,23 @@
+<apex:page controller="OrderSubmittedController" sidebar="false" showHeader="false" cache="false" standardStylesheets="true" >
+    <apex:pageBlock >
+        <br></br>
+        <apex:outputText rendered="{!isDuplicate != true}">
+        <h1>Thank you!</h1><br/><br/>
+        <p>Your order has been submitted. You will receive an email confirming this to the email address you entered in the submission form. </p>
+        <br/>
+        Regards,
+        <br/>
+        The Aduro, Inc Support Team
+        </apex:outputText>
+        <apex:outputText rendered="{!isDuplicate == true}">
+        <h1>Your order appears to be a duplicate</h1><br/><br/>
+        <p>If you still want to submit an order, please contact Aduro staff at support@adurolife.com.</p>
+        <br/>
+        Regards,
+        The Aduro, Inc Support Team
+                <br/>
+                <br/>
+To close this window, please click the Red X or Circle in the upper right-hand corner of the window.
+        </apex:outputText>
+    </apex:pageBlock>
+</apex:page>

@@ -1,0 +1,4 @@
+<apex:component access="global" controller="CoachingSchedulerEmailComponent">
+    <apex:attribute name="slotId" description="This is the value for the component."  type="String" assignTo="{!slotIdNew}"/>
+	<apex:outputLabel value="{!data}" escape="false"  />
+</apex:component>

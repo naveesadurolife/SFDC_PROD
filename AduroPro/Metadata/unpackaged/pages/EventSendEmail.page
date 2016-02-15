@@ -1,0 +1,57 @@
+<apex:page controller="EventSendEmail">
+	<apex:includeScript value="{!URLFOR($Resource.jquery, '/js/jquery-1.9.1.js')}"  />
+	<apex:includeScript value="{!URLFOR($Resource.jquery, '/js/jquery-ui-1.10.3.custom.js')}"  />
+	<apex:includeScript value="{!URLFOR($Resource.jquery, '/js/jquery-ui-1.10.3.custom.min.js')}"  />
+	<apex:includeScript value="{!URLFOR($Resource.jquery, '/development-bundle/ui/jquery.ui.datepicker.js')}"  />
+	<apex:stylesheet value="{!URLFOR($Resource.jquery, '/css/overcast/jquery-ui-1.10.3.custom.css')}"  />
+	<apex:form id="frmMain">
+		<apex:pageBlock title="Send Email for {!wwEvent.Name}" mode="edit">
+		<apex:pageMessages />
+		
+	       <apex:pageBlockButtons location="bottom">
+	           <apex:commandButton action="{!sendEmail}" value="Send"/>
+	           <apex:commandButton action="{!cancel}" value="Cancel"/>
+	       </apex:pageBlockButtons>
+	       <apex:pageBlockSection title="Email Information" columns="1">
+	       		<apex:pageBlockSectionItem >
+	       			<apex:outputLabel value="Subject"/>
+					<apex:outputpanel layout="block" styleClass="requiredInput">
+	                	<apex:outputpanel layout="block" styleClass="requiredBlock"/>
+			           <apex:inputField value="{!wwEvent.Event_Email_Subject__c}"/>
+		           </apex:outputpanel>
+	           </apex:pageBlockSectionItem>
+	       		<apex:pageBlockSectionItem >
+	       			<apex:outputLabel value="Email Body"/>
+					<apex:outputpanel layout="block" styleClass="requiredInput">
+	                	<apex:outputpanel layout="block" styleClass="requiredBlock"/>
+			           <apex:inputField value="{!wwEvent.Event_Email_Body__c}"/>
+		           </apex:outputpanel>
+	           </apex:pageBlockSectionItem>	           
+	       </apex:pageBlockSection>	
+		   <apex:pageBlockSection title="Email Recepient" columns="1">
+		       <apex:pageBlockTable value="{!wwEvent.Slots__r}" var="s">
+					<apex:column >
+						<apex:facet name="header"><input type="checkbox" id="selectall"/></apex:facet>
+						<apex:inputField value="{!s.Slot_Selected__c}" styleClass="selectedId"/>
+					</apex:column>
+		           <apex:column value="{!s.First_Name__c}"/> 
+					<apex:column value="{!s.Last_Name__c}"/>
+					<apex:column value="{!s.Email__c}"/>
+		       </apex:pageBlockTable> 		   
+		   </apex:pageBlockSection>
+		</apex:pageBlock>
+	</apex:form>
+	<script>
+	jQuery.noConflict();
+	jQuery(document).ready(function () {
+	    jQuery('#selectall').click(function () {
+	        jQuery('.selectedId').prop('checked', this.checked);
+	    });
+	
+	    jQuery('.selectedId').change(function () {
+	        var check = (jQuery('.selectedId').filter(":checked").length == jQuery('.selectedId').length);
+	        jQuery('#selectall').prop("checked", check);
+	    });
+	});	
+	</script>	
+</apex:page>

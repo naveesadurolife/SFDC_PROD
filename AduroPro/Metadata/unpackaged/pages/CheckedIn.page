@@ -1,0 +1,89 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" docType="html-5.0" controller="CheckedInListController">
+	<html>
+	<head>
+		<title>Onsite Testing</title>
+		<apex:stylesheet value="{!URLFOR($Resource.OnsiteStaticResources, 'onsite_static_resources/css/ww-style.css')}"/>
+		<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+	</head>
+	
+	<body>
+		<div id="page-wrapper">
+		<div id="content-wrapper">
+				<a href='/apex/OnsiteStart?event={!eventid}' style="text-decoration: none;"><h1>Enter test results for {!event.Name}</h1></a><input style="margin-right:40px;" class="bttn blue" type="button" name="eventlist" value="Event List" onclick="goToEventList()" />
+		<apex:form id="list" >
+		<form name="checkin-list">
+		
+		<div class="border-wrapper"> 
+			<apex:repeat value="{!alphabet}" var="letter">
+				<apex:commandLink style="font-size:1.8em; padding-left:8px; padding-right:8px;line-height:35px;" value="{!letter}" rerender="list"  action="{!filterList}"><apex:param name="filter" value="{!letter}"/>
+				</apex:commandLink><a href="" >{!IF(letter = 'z' , '' , ' | ')}</a>
+			</apex:repeat>
+			<div class="row-wrapper" style="margin-top:15px;">
+				<div style="float: left;	position: relative;	overflow: hidden;width: 550px;	">
+					<apex:inputText styleClass="searchInput" style="vertical-align:middle;width: 500px;"  value="{!searchString}" /></div>
+				<div class="field" style="vertical-align: middle;float:right;">
+					<apex:commandButton styleClass="bttn blue" style="margin-right:12px; " value="Search" action="{!searchForEmployee}" rerender="list"  />
+					
+					</div>
+			</div>
+		</div>
+		
+		<div class="input-grid-wrapper">
+
+		<table class="input-grid" style="width: 100%;border: 1px solid #B4B9C0;">
+		<tr>
+			<apex:outputPanel layout="none" rendered="{!event.Program__r.Screening_HRA__c}">
+			<th style="width: 10%;">HRA</th>
+			</apex:outputPanel>
+			<th style="width: 10%;">BIO</th>
+			<th style="width: 30%;">Name</th>
+		    <th style="width: 40%;">Email</th>
+		    <th style="width: 10%;">Emp ID</th>
+		</tr>
+		<apex:repeat value="{!checkedinList}" var="order">
+		<tr  style="border: 1px solid #B4B9C0;">
+			<apex:outputPanel layout="none" rendered="{!event.Program__r.Screening_HRA__c}">
+				<apex:outputPanel layout="none" rendered="true">
+					<td class="cell"><input type="button" class="bttn orange" style="vertical-align: middle; font-size:12px; width: 90px; height: 40px;" value="HRA" onclick="hra('{!order.Id}')" /></td>
+				</apex:outputPanel>
+				<apex:outputPanel layout="none" rendered="false">
+					<td class="cell"><input type="button" class="bttn blue" style="vertical-align: middle; font-size:12px; width: 90px; height: 40px;" value="HRA" onclick="hra('{!order.Id}')" /></td>
+				</apex:outputPanel>				
+			</apex:outputPanel>
+			<td class="cell"><input type="button" class="bttn orange" style="vertical-align: middle; font-size:12px; width: 90px; height: 40px;" value="BIO" onclick="bio('{!order.Id}')" /></td>
+			<td class="cell" style="vertical-align: bottom; height: 50px; " >
+				{!order.PatientFirstName__c + ' ' + order.PatientLastName__c}
+<!--				<a 	href="/apex/OnsiteEditOrder?contact={!order.Contact__c}&event={!event.Id}&program={!event.Program__c}&order={!order.Id}&returnpage=CheckedIn" target="_top" -->
+<!--					style="vertical-align: bottom; height: 100%; position: relative;">{!order.PatientFirstName__c + ' ' + order.PatientLastName__c}</a>-->
+<!--				<a 	href="/apex/OnsiteEditOrder?contact={!order.Contact__c}&event={!event.Id}&program={!event.Program__c}&order={!order.Id}&returnpage=CheckedIn" target="_top" -->
+<!--					style="vertical-align: bottom; height: 100%; position: relative;">{!order.PatientFirstName__c + ' ' + order.PatientLastName__c}</a>-->
+			</td>
+		    <td class="cell" style="vertical-align: bottom; height: 100%; ">{!order.PatientEmailH__c}</td>
+		    <td class="cell" style="vertical-align: bottom; height: 100%; ">{!order.EmployeeID__c}</td>
+		   	
+		    
+		</tr>
+		</apex:repeat>
+		
+		</table>
+
+		</div><!-- ENDS INPUT GRID WRAPPER -->
+		</form><!-- ENDS TEST RESULTS -->
+		</apex:form>
+		
+		</div><!-- ENDS CONTENT WRAPPER -->
+		</div><!-- ENDS PAGE WRAPPER -->
+	<script type="text/javascript">
+        function goToEventList(){
+			parent.location.href='/apex/EventList';
+        }  
+        function hra(oid){
+			parent.location.href='/apex/OnsiteHRA?event={!eventid}&oid='+oid;
+        }  	
+        function bio(oid){
+			parent.location.href='/apex/OnsiteDataEntry?orderid='+oid;
+        } 		
+    </script>
+	</body>
+	 </html>
+</apex:page>

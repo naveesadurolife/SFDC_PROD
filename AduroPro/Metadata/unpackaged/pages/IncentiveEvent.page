@@ -1,0 +1,228 @@
+<apex:page docType="html-5.0" showHeader="false" sidebar="false" standardStylesheets="false" controller="IncentiveEvent" cache="false">
+    <head>
+        <meta charset="utf-8"></meta>
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"></meta>
+        <apex:stylesheet value="{!URLFOR($Resource.jquerymobile142,'themes/blue.min.css')}"></apex:stylesheet>
+        <apex:stylesheet value="{!URLFOR($Resource.jquerymobile142,'jquery.mobile.structure-1.4.2.min.css')}"></apex:stylesheet>
+        <apex:includeScript value="{!URLFOR($Resource.jquerymobile142,'jquery-1.10.2.min.js')}"></apex:includeScript>
+        <apex:includeScript value="{!URLFOR($Resource.jquerymobile142,'jquery.mobile-1.4.2.min.js')}"></apex:includeScript>
+		<apex:includeScript value="{!URLFOR($Resource.jquerymobile142,'jquery.blockUI.js')}"></apex:includeScript>
+		<style>
+			input[type="text"]
+			{
+				border-left:2px solid red;
+			}
+		</style>
+    </head>
+    <body>
+        <form>
+			<div style="max-width:650px; margin: 0 auto;">
+            <ul data-role="listview" data-inset="true" style="margin: 10px;">
+                <li class="ui-field-contain">
+					<apex:outputPanel layout="none" rendered="{!eventRegistrationLogo!=''}">
+						<label style="height:55px;font-weight:bold;font-size:1em;background-image:url('{!eventRegistrationLogo}');background-size:50px 55px;background-repeat:no-repeat;padding-left:55px;padding-top:10px;" >Check-In&nbsp;{!objE.Name}</label>
+					</apex:outputPanel>
+					<apex:outputPanel layout="none" rendered="{!eventRegistrationLogo==''}">						
+                    <label style="height:55px;font-weight:bold;font-size:1em;background-image:url('{!$Resource.adurologo}');background-size:50px 55px;background-repeat:no-repeat;padding-left:55px;padding-top:10px;" >Check-In&nbsp;{!objE.Name}</label>
+					</apex:outputPanel>
+                </li>
+				<li class="ui-field-contain pnlErrorMessage" style="color:red;">
+					<table>
+						<tr>
+							<td style="vertical-align:top;"><img src="/img/msg_icons/error24.png"/>&nbsp;<span class="spnErrorMessage" style="padding-left:20px;"></span></td>
+						</tr>
+					</table>
+				</li>
+				<li class="ui-field-contain pnlSavedSuccessfully">
+					<table style="width:100%;">
+						<tr>
+							<td style="vertical-align:top;"><img src="/img/msg_icons/confirm24.png" title="/img/msg_icons/confirm24.png"/>&nbsp;Successfully checked in.</td>
+						</tr>
+						<tr>
+							<td><div  style="width:200px;"><input type="button" value="New Check-In" class="btnNewCheckIn"/></div></td>
+						</tr>
+					</table>
+				</li>
+				<li class="ui-field-contain">
+					<table style="width:100%;border 1px sold black;font-size: 0.88em;"  data-role="table" data-mode="columntoggle" class="ui-responsive" id="myTable">
+						<thead>
+							<tr>
+								<th style="width:70%;" data-priority="2">Location</th>
+								<th style="width:10%;" data-priority="1">Date</th>
+								<th style="width:10%;" data-priority="1">Start Time</th>
+								<th style="width:10%;" data-priority="1">End Time</th>
+							</tr>
+						</thead>						
+						<tbody>
+							<tr>
+								<td><apex:outputField value="{!objE.Location__c}"/></td>
+								<td><apex:outputField value="{!objE.Event_Date__c}"/></td>
+								<td><apex:outputField value="{!objE.Start_Time__c}"/></td>
+								<td><apex:outputField value="{!objE.End_Time__c}"/></td>
+							</tr>
+						</tbody>
+					</table>
+				</li>				
+				<apex:outputPanel layout="none" rendered="{!objE.Incentive_Event_Display_First_Name__c}">
+                <li class="ui-field-contain">
+                    <label for="txtFirstName">First Name:</label>
+                    <input type="text" name="txtFirstName" id="txtFirstName" value="" style=""></input>
+                </li>
+				</apex:outputPanel>
+				<apex:outputPanel layout="none">
+                <li class="ui-field-contain">
+                    <label for="txtLastName">Last Name:</label>
+                    <input type="text" name="txtLastName" id="txtLastName" value=""></input>
+                </li>
+				</apex:outputPanel>	
+				<apex:outputPanel layout="none" rendered="{!OR(objE.Identifier_DOB__c,objE.Incentive_Event_Display_DOB__c)}">
+                <li class="ui-field-contain">
+                    <label for="txtDOB">Date of Birth:</label>
+                    <input type="text" name="txtDOB" id="txtDOB" value=""></input>
+                </li>
+				</apex:outputPanel>	
+				<apex:outputPanel layout="none" rendered="{!OR(objE.Identifier_Email__c,objE.Incentive_Event_Display_Email__c)}">
+                <li class="ui-field-contain">
+                    <label for="txtEmail">Email:</label>
+                    <input type="text" name="txtEmail" id="txtEmail" value=""></input>
+                </li>
+				</apex:outputPanel>	
+				<apex:outputPanel layout="none" rendered="{!OR(objE.Identifier_Employee_ID__c,objE.Incentive_Event_Display_Employee_ID__c)}">
+                <li class="ui-field-contain">
+                    <label for="txtEmployeeID">Employee ID:</label>
+                    <input type="text" name="txtEmployeeID" id="txtEmployeeID" value=""></input>
+                </li>
+				</apex:outputPanel>
+                <li class="ui-field-contain">
+					<label for="txtEmployeeID">Validate:</label>
+					<select name="flip-min" id="flip-min" data-role="slider" class="ddlValidate">
+						<option value="off">Off</option>
+						<option value="on" selected="selected">On</option>
+					</select>
+                </li>					
+                <li class="ui-field-contain">
+					<div style="width:150px;float:rigth;">
+					<input type="button" value="Submit" class="btnSubmit"/>
+					</div>
+                </li>
+            </ul>
+			</div>
+			<script type="text/javascript">
+				jQuery.noConflict();
+		        jQuery(document).ready(function () {
+					jQuery(".ui-table-columntoggle-btn").hide();
+					jQuery(".pnlErrorMessage").hide();
+					jQuery(".pnlSavedSuccessfully").hide();
+					
+					if("{!errorOnPage}"=="true")
+					{
+						showErrorMessage("{!pageMessage}");
+					}
+					jQuery(".btnNewCheckIn").click(function(){
+						window.location="/Incentive/IncentiveEvent?id={!objE.Id}";
+					});
+					jQuery(".btnSubmit").click(function(){
+						var eventId="{!objE.Id}";
+						var txtFirstName="";
+						txtFirstName={!objE.Incentive_Event_Display_First_Name__c}?jQuery("#txtFirstName").val().trim():"";
+						var txtLastName="";
+						txtLastName=jQuery("#txtLastName").val().trim();
+						var txtDOB=({!objE.Identifier_DOB__c} || {!objE.Incentive_Event_Display_DOB__c})?jQuery("#txtDOB").val().trim():"";
+						var txtEmployeeID=({!objE.Identifier_Employee_ID__c} || {!objE.Incentive_Event_Display_Employee_ID__c})?jQuery("#txtEmployeeID").val().trim():"";
+						var txtEmail=({!objE.Identifier_Email__c} || {!objE.Incentive_Event_Display_Email__c})?jQuery("#txtEmail").val().trim():"";
+						var ddlValidate=jQuery('select[data-role="slider"]').val();
+						var errorMessage="";
+						if(txtFirstName.length==0 && {!objE.Incentive_Event_Display_First_Name__c})
+						{
+							errorMessage+="<li>First Name required.</li>"
+						}
+						if(txtLastName.length==0)
+						{
+							errorMessage+="<li>Last Name required.</li>"
+						}
+						if(txtDOB.length==0 && ({!objE.Identifier_DOB__c}  || {!objE.Incentive_Event_Display_DOB__c}))
+						{
+							errorMessage+="<li>Date of Birth required.</li>"
+						}
+						if(txtEmail.length==0 && ({!objE.Identifier_Email__c}  || {!objE.Incentive_Event_Display_Email__c}))
+						{
+							errorMessage+="<li>Email required.</li>"
+						}
+						if(txtEmployeeID.length==0 && ({!objE.Identifier_Employee_ID__c}  || {!objE.Incentive_Event_Display_Employee_ID__c}))
+						{
+							errorMessage+="<li>Employee Id required.</li>"
+						}				
+						if(errorMessage.length>0)
+						{
+							showErrorMessage("<ul>"+errorMessage+"</ul>");
+						}
+						else 
+						{
+							jQuery(".pnlErrorMessage").hide();
+							blockUI();
+						    Visualforce.remoting.Manager.invokeAction(
+						        '{!$RemoteAction.IncentiveEvent.checkInUser}', 
+						        eventId,
+								txtFirstName,
+								txtLastName,
+								txtDOB,
+								txtEmail,
+								txtEmployeeID,
+								ddlValidate,
+						        function(result, event){
+						            if (event.status) {
+										jQuery.unblockUI();
+										if(result=="yes")
+										{
+						                	jQuery(".pnlSavedSuccessfully").show();
+											jQuery(".pnlForm").hide();
+										}
+										else
+										{	
+											showErrorMessage(result);
+										}	
+						            } else if (event.type === 'exception') {
+										jQuery.unblockUI();
+						                showErrorMessage(result);
+						            } else {
+										jQuery.unblockUI();
+						                showErrorMessage(result);
+						            }
+						        }, 
+						        {escape: true}
+						    );							
+						}
+					});				
+		         });
+				function showErrorMessage(msg)
+				{
+					jQuery(".pnlErrorMessage").show();
+					jQuery(".spnErrorMessage").html(msg);
+					jQuery.mobile.silentScroll(0)
+				}
+				function blockUI()
+				{
+			        jQuery.blockUI({ css: { 
+			            border: 'none', 
+			            padding: '15px', 
+			            backgroundColor: '#fff', 
+			            '-webkit-border-radius': '10px', 
+			            '-moz-border-radius': '10px', 
+			            opacity: .5, 
+			            color: '#fff',
+						width: 'auto' ,
+						margin:'auto',
+						top:'45%',
+						left:'45%'
+			        },
+					message:'<img src="/img/loading32.gif" title="/img/loading32.gif"/>'
+					}); 				
+				}
+				window.onorientationchange = function()
+				{
+				  // window.location.reload();
+				}				
+			</script>
+        </form>
+    </body>
+</apex:page>

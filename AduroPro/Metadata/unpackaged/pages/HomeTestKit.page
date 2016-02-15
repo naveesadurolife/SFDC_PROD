@@ -1,0 +1,173 @@
+<apex:page controller="HomeTestKitFormController" sidebar="false" showHeader="false" cache="false" standardStylesheets="false" title="Request a Home Test Kit" >
+    <apex:stylesheet value="{!$Resource.OrderFormsCSS}" />
+	<apex:include pageName="IncludeResources" /> 
+
+    <style>
+
+		.bPageBlock .message {
+			margin: 0 0 4px 0;
+		}
+		div {
+			display: block;
+		}
+		img {
+			border: 0;
+		}
+		user agent stylesheetimg {
+			display: inline-block;
+		}
+		.message {
+			-moz-border-radius: 4px;
+			-webkit-border-radius: 4px;
+			border-radius: 4px;
+			background-color: #FFC;
+			border-style: solid;
+			border-width: 1px;
+			color: black;
+			padding: 6px 8px 6px 6px;
+			margin: 4px 20px;
+		}
+		.errorM6, .errorM4, .errorM3, .errorM2, .errorS1 {
+			border-color: #C00;
+		}
+		.errorM3 .msgIcon, .errorMedium {
+			background-image: url(/img/msg_icons/error24.png);
+			background-position: 0 0;
+			width: 24px;
+			height: 24px;
+		}
+		table {
+			border-collapse: separate;
+			border-spacing: 2px;
+			border-color: gray;
+		}
+		h1, h2, h3, h4, h5, h6 {
+			font-family: 'Verdana','Geneva',sans-serif;
+			font-size: 100%;
+			margin: 0;
+			display: inline;
+		}
+		user agent stylesheeth4 {
+			display: block;
+			-webkit-margin-before: 1.33em;
+			-webkit-margin-after: 1.33em;
+			-webkit-margin-start: 0px;
+			-webkit-margin-end: 0px;
+			font-weight: bold;
+		}
+
+    </style>
+    <div class="fullPageBlock" style="width:721px;">
+    <apex:pageBlock >
+        <div>
+            <apex:image url="{!$Resource.DoYouKnowYourNumbers}" width="695" height="177" />
+        </div>
+
+        <apex:define name="body">
+        
+        <apex:form >
+            
+        <apex:outputPanel layout="block">
+        
+            <apex:panelGrid columns="1" styleClass="errorMessages" >   
+                <apex:pageMessages id="error" escape="false" />
+                <apex:actionSupport event="onchange" rerender="theForm"/> 
+                <br/>
+            </apex:panelGrid>
+            
+            <apex:panelGrid id="theForm" columns="3" cellpadding="3" columnClasses="column1, column2, column3" >     
+            
+                <apex:outputLabel value="Account Name: " for="outputAcctName" />   
+                    <apex:outputText id="outputAcctName" value="{!account.Name}" />
+                    <apex:outputText ><b>What is a home test kit?</b></apex:outputText>
+                    
+                <apex:outputLabel value="Program Name: " for="outputProgName" />    
+                    <apex:outputText id="outputProgName" value="{!program.Name}" />
+                    <apex:outputText >A home test kit enables you to provide a small blood sample for our lab. The kit is comprised of a few simple tools, including a self-addressed, postage paid mailer.
+</apex:outputText>
+                              
+                <apex:outputLabel value="*First Name: " for="inputFirstName" />
+                    <apex:inputText id="inputFirstName" value="{!newOrder.PatientFirstName__c}" />
+                    <apex:outputText ></apex:outputText>
+                    
+                <apex:outputLabel value="*Last Name: " for="inputLastName" />    
+                    <apex:inputText id="inputLastName" value="{!newOrder.PatientLastName__c}" />
+                    <apex:outputText ><b>When will I get it?</b></apex:outputText>
+                    
+               <apex:outputLabel value="*Address 1: "  />    
+                    <apex:inputText value="{!newOrder.PatientAddressLine1__c}" />
+                    <apex:outputText >You will receive your kit 3-5 business days after you hit submit.</apex:outputText>
+                   
+               <apex:outputLabel value="Address 2: "  />    
+                    <apex:inputText value="{!newOrder.PatientAddressLine2__c}" />
+                    <apex:outputText ></apex:outputText>
+                    
+               <apex:outputLabel value="*City: "  />    
+                    <apex:inputText value="{!newOrder.PatientCity__c}" />
+                    <apex:outputText ><b>What do I do?</b></apex:outputText>
+                    
+               <apex:outputLabel value="*State: "  />
+                    <apex:inputField value="{!newOrder.PatientState__c}" />
+                    <apex:outputText >When you receive the kit, you will receive specific instructions to perform the test. A friendly nurse line is available for you to call if you need additional help.</apex:outputText>
+                    
+                    
+               <apex:outputLabel value="*Zip Code: "  />
+                    <apex:inputText value="{!newOrder.PatientZip__c}" />
+                    <apex:outputText ></apex:outputText>
+               
+                <apex:outputLabel value="*Primary Phone (No Symbols): " />    
+                    <apex:inputText value="{!newOrder.PatientPrimaryPhone__c}" />
+                    <apex:outputText ><b>When do I see my results?</b></apex:outputText>
+    
+               <apex:outputLabel value="{!IF(program.Limeade_Identifier_Email__c,'* ','')}Primary Email (used with online platform): " />
+                    <apex:inputText value="{!newOrder.PatientEmailH__c}" />
+                    <apex:outputText rendered="{!program.Non_Branded_Form__c == false}"  >You will receive an email letting you know when your numbers are in your secure online wellness account. This usually happens 10-12 days from when you mail back the kit to the lab.</apex:outputText>
+                    <apex:outputText rendered="{!program.Non_Branded_Form__c == true}" >You will receive your results in the mail to the address you provided. This usually happens within 30 days from when you mail back the kit to the lab.</apex:outputText>
+
+      
+                <apex:outputLabel value="*Gender: " />
+                    <apex:inputField value="{!newOrder.PatientGender__c}" />
+                    <apex:outputText ></apex:outputText>
+                  
+                <apex:outputLabel value="{!IF(program.Limeade_Identifier_DOB__c,'* ','')}Date of Birthday (mm/dd/yyyy): " />
+                    <apex:inputField value="{!newOrder.PatientDOB__c}" styleClass="txtDOB"/>
+                    <apex:outputText ></apex:outputText>
+            
+                 <apex:outputLabel value="*Employee ID: " rendered="{!program.Limeade_Identifier_Employee_ID__c}"/>
+                    <apex:inputField value="{!newOrder.EmployeeID__c}" rendered="{!program.Limeade_Identifier_Employee_ID__c}"/>
+                    <apex:outputText rendered="{!program.Limeade_Identifier_Employee_ID__c == false}" />
+                    <apex:outputText rendered="{!program.Limeade_Identifier_Employee_ID__c == false}" />
+                    <apex:outputText ></apex:outputText>
+
+                <br />
+                
+                <apex:commandButton action="{!submit}" value="Send" id="submitButton" disabled="{!submitDisabled}"/>
+                <apex:commandButton action="{!cancel}" value="Cancel" id="cancelButton" />
+                
+                <br />
+                
+            </apex:panelGrid>
+        </apex:outputPanel>
+		<script>
+			jQuery.noConflict();
+			jQuery(document).ready(function() {
+				jQuery(".dateFormat").hide();
+				jQuery( ".txtDOB" ).datepicker({
+					changeMonth: true,
+					changeYear: true,
+					yearRange: '1940:2015'
+				});
+				jQuery( ".txtDOB" ).change(function() {
+				  jQuery('#ui-datepicker-div').hide();
+				});					
+			});
+		</script>    
+        </apex:form>
+        
+                    
+        </apex:define>
+        
+    </apex:pageBlock>
+    </div>
+     <site:previewAsAdmin />
+</apex:page>

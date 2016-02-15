@@ -1,0 +1,375 @@
+<apex:page sidebar="false" controller="CoachingSchedulerEvent" tabStyle="WW_Event__c">
+	<apex:include pageName="IncludeResources" />
+	<apex:sectionHeader title="Create Events" />
+	<apex:form >
+	<apex:pageBlock >
+		<apex:pageMessages />
+		<apex:pageBlockButtons rendered="{!NOT(dataSaved)}">
+			<apex:commandButton value="Save" action="{!save}" onclick="setDates()" />
+			<apex:commandButton value="Cancel" action="{!cancel}" />
+		</apex:pageBlockButtons>
+		<apex:pageBlockSection columns="2" title="Event Information" rendered="{!NOT(dataSaved)}">
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="Event Type" />
+				<apex:outputPanel styleClass="requiredInput" layout="block"> 
+				<apex:outputPanel styleClass="requiredBlock" layout="block"/>				
+				<apex:selectList size="1" value="{!selectedEventType}">
+				    <apex:selectOptions value="{!eventTypes}">
+				</apex:selectOptions>
+				</apex:selectList>
+				</apex:outputPanel>
+			</apex:pageBlockSectionItem>
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="Time Zone" />
+				<apex:outputPanel styleClass="requiredInput" layout="block"> 
+				<apex:outputPanel styleClass="requiredBlock" layout="block"/>				
+				<apex:selectList size="1" value="{!selectedTimeZone}">
+				    <apex:selectOptions value="{!timeZone}">
+				</apex:selectOptions>
+				</apex:selectList>
+				</apex:outputPanel>
+			</apex:pageBlockSectionItem>			
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="Coaching Program Name" />
+				<apex:outputPanel styleClass="requiredInput" layout="block"> 
+				<apex:outputPanel styleClass="requiredBlock" layout="block"/>				
+				<apex:selectList size="1" value="{!selectedCoachingProgramName}">
+				    <apex:selectOptions value="{!coachingProgramNames}">
+				</apex:selectOptions>
+				</apex:selectList>				
+				</apex:outputPanel>
+			</apex:pageBlockSectionItem>
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="Occurrence" />
+				<apex:outputPanel styleClass="requiredInput" layout="block"> 
+				<apex:outputPanel styleClass="requiredBlock" layout="block"/>				
+				<apex:selectList size="1" value="{!selectedOccurrence}" styleClass="ddlOccurrence">
+				    <apex:selectOptions value="{!eventOccurrences}">
+				</apex:selectOptions>
+				</apex:selectList>	
+				</apex:outputPanel>
+			</apex:pageBlockSectionItem>	
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="Access Code" />
+				<apex:outputPanel styleClass="requiredInput" layout="block"> 
+				<apex:outputPanel styleClass="requiredBlock" layout="block"/>				
+				<apex:inputField value="{!eventStart.Access_Code__c}"/>		
+				</apex:outputPanel>
+			</apex:pageBlockSectionItem>			
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="Start Date" />
+				<apex:outputPanel styleClass="requiredInput" layout="block"> 
+				<apex:outputPanel styleClass="requiredBlock" layout="block"/>				
+				<apex:inputField value="{!eventStart.Event_Date__c}" styleClass="txtStartDate"/>				
+				</apex:outputPanel>
+			</apex:pageBlockSectionItem>			
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="Event Phone Number" />
+				<apex:outputPanel styleClass="requiredInput" layout="block"> 
+				<apex:outputPanel styleClass="requiredBlock" layout="block"/>				
+				<apex:inputText value="{!eventPhoneNumber}"/>				
+				</apex:outputPanel>
+			</apex:pageBlockSectionItem>
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="End Date" />
+				<apex:outputPanel styleClass="requiredInput" layout="block"> 
+				<apex:outputPanel styleClass="requiredBlock" layout="block"/>				
+				<apex:inputField value="{!eventEnd.Event_Date__c}"  styleClass="txtEndDate"/>				
+				</apex:outputPanel>				
+			</apex:pageBlockSectionItem>	
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="Coaching Mentor" />
+				<apex:outputPanel styleClass="requiredInput" layout="block"> 
+				<apex:outputPanel styleClass="requiredBlock" layout="block"/>				
+				<apex:inputField value="{!eventStart.Coaching_Mentor__c}" />				
+				</apex:outputPanel>
+			</apex:pageBlockSectionItem>			
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="Start Time" />
+				<apex:outputPanel styleClass="requiredInput" layout="block"> 
+				<apex:outputPanel styleClass="requiredBlock" layout="block"/>				
+				<apex:inputField value="{!eventStart.Start_Time__c}" />				
+				</apex:outputPanel>
+			</apex:pageBlockSectionItem>
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="Goto Training URL" />
+				<apex:outputPanel styleClass="requiredInput" layout="block"> 
+				<apex:outputPanel styleClass="requiredBlock" layout="block"/>				
+				<apex:inputText value="{!eventURL}"/>				
+				</apex:outputPanel>
+			</apex:pageBlockSectionItem>				
+			<apex:pageBlockSectionItem rendered="false" >
+				<apex:outputLabel value="Event Logo" />
+				<apex:inputField value="{!eventStart.Event_Logo__c}" />				
+			</apex:pageBlockSectionItem>			
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="End Time" />
+				<apex:outputPanel styleClass="requiredInput" layout="block"> 
+				<apex:outputPanel styleClass="requiredBlock" layout="block"/>				
+				<apex:inputField value="{!eventStart.End_Time__c}" />				
+				</apex:outputPanel>
+			</apex:pageBlockSectionItem>
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="Post Event Survey Link" />
+				<apex:outputPanel styleClass="requiredInput" layout="block">
+				<apex:outputPanel styleClass="requiredBlock" layout="block"/>				
+				<apex:inputField value="{!eventStart.Post_Event_Survey_Link__c}"/>				
+				</apex:outputPanel>
+			</apex:pageBlockSectionItem>
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="6 Week Engagement Goal Type" />
+				<apex:outputPanel styleClass="requiredInput" layout="block">
+				<apex:outputPanel styleClass="requiredBlock" layout="block"/>				
+				<apex:inputField value="{!eventStart.X6_Week_Engagement_Goal_Type__c}"/>				
+				</apex:outputPanel>
+			</apex:pageBlockSectionItem>	
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="6 Week Engagement Modality" />
+				<apex:outputPanel styleClass="requiredInput" layout="block">
+				<apex:outputPanel styleClass="requiredBlock" layout="block"/>				
+				<apex:inputField value="{!eventStart.X6_Week_Engagement_Modality__c}"/>				
+				</apex:outputPanel>
+			</apex:pageBlockSectionItem>	
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="Event Tile Image" />
+				<apex:inputFile value="{!eventTile.body}" filename="{!eventTile.name}"/>
+			</apex:pageBlockSectionItem>			
+			
+
+			<apex:pageBlockSectionItem rendered="true">
+				<apex:outputLabel value="Notes" />
+				<apex:inputField value="{!eventStart.Coaching_Event_Notes__c}" style="height:100px;" id="txtNotes" />				
+			</apex:pageBlockSectionItem>			
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="Welcome Email" />
+				<apex:outputPanel styleClass="requiredInput" layout="block"> 
+				<apex:outputPanel styleClass="requiredBlock" layout="block"/>				
+				<apex:inputField value="{!eventStart.Coaching_Welcome_Email__c}" style="height:100px;" id="txtWelcomeEmail" />				
+				</apex:outputPanel>
+			</apex:pageBlockSectionItem>				
+		</apex:pageBlockSection>
+		<apex:pageBlockSection columns="1" title="Event Dates" rendered="{!NOT(dataSaved)}">
+			<apex:inputText value="{!selectedEventDates}" style="display:none;" styleClass="txtHiddenDates"/>
+			<div class="divDates"></div>
+			<script>function setFocusOnLoad() {}</script>	
+			<script type="text/javascript">
+				jQuery.noConflict();
+				jQuery(document).ready(function() {
+					calculateDates();
+					jQuery(".txtStartDate").change(function(){
+						calculateDates();
+					});
+					jQuery(".txtEndDate").change(function(){
+						calculateDates();
+					});		
+					jQuery(".ddlOccurrence").change(function(){
+						calculateDates();
+					});	
+					//jQuery(document).on('change', '.txtDate' function () {
+					 //   addDate();
+					//});		
+					jQuery(".txtDate").change(function(){
+						//addDate();
+					});		
+				});
+				function DeleteSelectedDates()
+				{
+					jQuery(".chkDate").each(function(){
+						if(jQuery(this).is(':checked'))
+						{
+							var chkDate=jQuery(this).attr("class");
+							chkDate=chkDate.replace("chkDate","").replace("chkDate","").replace(" ","");
+							var dataRow=".dataRow"+chkDate;
+							jQuery(dataRow).remove();
+						}
+					});	
+					addDate();
+				}
+				function setDates()
+				{
+					var str="";
+					jQuery(".txtDate").each(function(){
+						str+=jQuery(this).val()+",";
+					});	
+					jQuery(".txtHiddenDates").val(str);
+				}
+				function addDate()
+				{
+					var str="";
+					jQuery(".txtDate").each(function(){
+						str+=jQuery(this).val()+",";
+					});
+					str+=jQuery(".txtAddDate").val();
+				    Visualforce.remoting.Manager.invokeAction(
+				        '{!$RemoteAction.CoachingSchedulerEvent.addDate}',
+						str,
+				        function(result, event){
+				            if (event.status) {
+								buildTable(result);
+				            } else {
+				            	alert(event.message);
+				            }
+				        }, 
+				        {escape: false}
+				    );
+				}
+				function calculateDates()
+				{
+					var ddlOccurrence=jQuery(".ddlOccurrence").val();
+					var txtStartDate=jQuery(".txtStartDate").val();
+					var txtEndDate=jQuery(".txtEndDate").val();
+					if(txtStartDate=="" || txtEndDate=="" || ddlOccurrence=="")
+					{
+						return;
+					}
+				    Visualforce.remoting.Manager.invokeAction(
+				        '{!$RemoteAction.CoachingSchedulerEvent.getDates}',
+						ddlOccurrence,
+				        txtStartDate, 
+				        txtEndDate,
+				        function(result, event){
+				            if (event.status) {
+								buildTable(result);
+				            } else {
+				            	alert(event.message);
+				            }
+				        }, 
+				        {escape: false}
+				    ); 
+				}
+				function buildTable(result)
+				{
+					var str="<input type='button' class='btn' value='Delete Selected Dates' onclick='DeleteSelectedDates()'/>";
+					str+="<input type='text' class='txtAddDate' value='' size='12' style='width: 6em;'/>";
+					str+="<input type='button' class='btn' value='Add' onClick='addDate()'/>";
+					str+="<table class='list' style='border:1px solid #e0e3e5;'>";
+					str+='<tr>';
+					str+='<th></th>';
+					str+='<th></th>';
+					str+='<th></th>';
+					str+='</tr>';
+					for(i=0;i<result.length;i++)
+					{
+						if(i==0)
+						{
+							jQuery(".txtStartDate").val(result[i].actualDate);
+						}
+						if(i==result.length-1)
+						{
+							jQuery(".txtEndDate").val(result[i].actualDate);
+						}			
+						str+="<tr class='dataRow dataRow"+result[i].rowNumber+"' onblur='if (window.hiOff){hiOff(this);}'  onfocus='if (window.hiOn){hiOn(this);}' onmouseout='if (window.hiOff){hiOff(this);}' onmouseover='if (window.hiOn){hiOn(this);}'>";
+						str+="<td  class='dataCell'><input type='checkbox' value='"+result[i].rowNumber+"' class='chkDate chkDate"+result[i].rowNumber+"'/></td>";
+						str+="<td class='dataCell'>"+result[i].formattedDate+"</td>";
+						str+="<td  class='dataCell'><input type='text' value='"+result[i].actualDate+"' class='txtDate txtDate"+result[i].rowNumber+"' size='12' style='width: 6em;' onchange='addDate();' /></td>";
+						str+="</tr>";
+					}
+					str+="</table>";
+					jQuery(".divDates").html(str);
+					jQuery(".txtAddDate").datepicker();
+					jQuery(".txtDate").datepicker();		
+				}
+			</script>			
+		</apex:pageBlockSection>
+		<apex:pageBlockSection rendered="{!AND(dataSaved,NOT(templateSaved))}" title="Select Email Templates" columns="1">
+			<apex:pageBlockTable value="{!listEvents}" var="e">
+				<apex:column value="{!e.Coaching_Event_Number__c}" headerValue="Event Number" />
+				<apex:column value="{!e.Name}" headerValue="Name" />
+				<apex:column headerValue="Before Email">
+					<input type="button" value="Update" class="btnbefore{!e.Id}" onclick="updateTemplate('{!e.Id}','before');" />
+					<apex:inputTextArea value="{!e.Coaching_Before_Email__c}" styleClass="txtTemplate txtbefore{!e.Id}" style="display:none;"/>
+				</apex:column>
+				<apex:column headerValue="After Email}">
+					<input type="button" value="Update" class="btnafter{!e.Id}" onclick="updateTemplate('{!e.Id}','after');" />
+					<apex:inputTextArea value="{!e.Coaching_After_Email__c}" styleClass="txtTemplate txtafter{!e.Id}" style="display:none;"/>					
+				</apex:column>
+			</apex:pageBlockTable>
+			<apex:commandButton action="{!saveEventTemplate}" value="Save" />
+		</apex:pageBlockSection>
+	</apex:pageBlock>
+	<div id="modalDiv">
+		<apex:selectList styleClass="ddlTemplate" onchange="getDocument();">
+			<apex:selectOption itemValue="" itemLabel="Select Template"/>
+		</apex:selectList>
+		<apex:inputTextArea styleClass="txtTemplateMain" richText="true" id="txtTemplateMain"/>
+		<input type="button" value="Save" onclick="saveTemplate();"/>
+	</div>
+			<script language="javascript">
+				jQuery.noConflict();
+				jQuery(document).ready(function() {
+			            jQuery("#modalDiv").dialog({
+			                modal: true,
+			                autoOpen: false,
+			                height: '400',
+			                width: '650',
+			                draggable: true,
+			                resizeable: true,   
+			                title: 'Email Template'
+			            });					
+				});	
+				var selectedEvent="";
+				var selectedEventClass="";
+				function updateTemplate(eId,cls)
+				{
+					selectedEvent=eId;
+					selectedEventClass=cls;
+					var txtClass='.txt'+selectedEventClass+selectedEvent;
+					var txtTemplateMain = jQuery("textarea[id*='txtTemplateMain']").attr("id");
+					var txtTemplateMainData=CKEDITOR.instances[txtTemplateMain].setData(jQuery(txtClass).val());
+					jQuery('.ddlTemplate option:not(:first)').remove();
+				    Visualforce.remoting.Manager.invokeAction(
+				        '{!$RemoteAction.CoachingSchedulerEvent.getDocuments}',
+						"{!coachingProgramName}",
+				        function(result, event){
+				            if (event.status) {
+								for(i=0;i<result.length;i++)
+								{
+									jQuery("<option value='"+result[i].Id+"'>"+result[i].Name+"</option>").appendTo(".ddlTemplate");
+								}
+				            } else {
+				            	alert(event.message);
+				            }
+				        }, 
+				        {escape: false}
+				    );				
+					jQuery("#modalDiv").dialog("open");
+				}
+				function getDocument()
+				{
+					var docId=jQuery(".ddlTemplate").val();
+					if(docId!="")
+					{
+					    Visualforce.remoting.Manager.invokeAction(
+					        '{!$RemoteAction.CoachingSchedulerEvent.getDocument}',
+							docId,
+					        function(result, event){
+					            if (event.status) {
+									var txtTemplateMain = jQuery("textarea[id*='txtTemplateMain']").attr("id");
+									CKEDITOR.instances[txtTemplateMain].setData(result);
+					            } else {
+					            	alert(event.message);
+					            }
+					        }, 
+					        {escape: false}
+					    );									
+					}
+				}
+				function saveTemplate()
+				{
+					var txtTemplateMain = jQuery("textarea[id*='txtTemplateMain']").attr("id");
+					var txtTemplateMainData=CKEDITOR.instances[txtTemplateMain].getData();
+					var txtClass='.txt'+selectedEventClass+selectedEvent;
+					jQuery(txtClass).val(txtTemplateMainData);
+					var btnClass='.btn'+selectedEventClass+selectedEvent;
+					if(txtTemplateMainData!="")
+					{
+						jQuery(btnClass).val("Updated");
+					}
+					else{
+						jQuery(btnClass).val("Update");
+					}
+					jQuery("#modalDiv").dialog("close");
+				}
+			</script>
+	</apex:form>
+</apex:page>

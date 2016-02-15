@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HomePageComponent xmlns="http://soap.sforce.com/2006/04/metadata">
+    <body>&lt;br&gt;&lt;!-- charmer/Soliant Consulting, 07/26/2012: Automatically 
+redirect the user to the onsite testing homepage  if they are viewing 
+the standard homepage on an iPad --&gt;&lt;script&gt;/*var isiPad = 
+navigator.userAgent.match(/iPad/i) != null;            var thePage = 
+window.location.href;            if(isiPad &amp;&amp; 
+thePage.indexOf(&quot;home.jsp&quot;) !=-1) */ window.location.href = 
+&apos;/apex/EventList&apos;;&lt;/script&gt;</body>
+    <pageComponentType>htmlArea</pageComponentType>
+    <width>narrow</width>
+</HomePageComponent>

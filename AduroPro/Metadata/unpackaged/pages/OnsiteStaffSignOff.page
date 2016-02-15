@@ -1,0 +1,339 @@
+<apex:page showHeader="false" controller="OnsiteStaffSignOff" standardStylesheets="false" sidebar="false" docType="html-5.0" >
+    <html>
+    <head>
+        <meta charset="utf-8">  
+            <title>Onsite Testing : Staff</title>
+            <meta name="description" content="Description"/>
+            <apex:stylesheet value="{!URLFOR($Resource.OnsiteStaticResources, 'onsite_static_resources/css/ww-style.css')}"/>
+            <apex:include pageName="IncludeResources" />
+              <apex:stylesheet value="{!URLFOR($Resource.jquerysignature, 'assets/jquery.signaturepad.css')}"  />
+              <apex:includeScript value="{!URLFOR($Resource.jquerysignature, 'assets/flashcanvas.js')}"  />
+              <apex:includeScript value="{!URLFOR($Resource.jquerysignature, 'jquery.signaturepad.js')}"  />
+              <apex:includeScript value="{!URLFOR($Resource.jquerysignature, 'assets/json2.min.js')}"  />           
+        </meta> 
+        <style type="text/css">
+            .cell
+            {
+                padding-left: .5em;
+                padding-right: .5em;
+            }
+            .ui-dialog .ui-dialog-titlebar 
+            {
+                padding:.1em;
+                margin:.1em;
+                width:98%;
+            }   
+            .inputbox
+            {
+                width:15em;
+            }
+            .sigPad {
+              margin: 0;
+              padding: 0;
+              width: 100% /* Change the width */
+            }
+            
+            .sigWrapper {
+              clear: both;
+              height: 70px; /* Change the height */
+              width: 100%;
+              border: 1px solid #ccc;
+            }                   
+        </style>
+    </head>
+    <body>
+        <div id="page-wrapper">
+        <div id="content-wrapper">
+        <a href='/apex/OnsiteStart?event={!objEvent.Id}' style="text-decoration: none;"><h1 style="display:block;">{!objEvent.Name}</h1></a> <input style="margin-right:60px;" class="bttn blue" type="button" name="eventlist" value="Staff" onclick="goToStaff()" />
+        <div class="input-grid-wrapper">
+        <apex:form id="frmMain">
+            <div class="frmElements">
+           <apex:outputPanel id="errorpanel"> 
+                <div id="errors" class="error" style="{!errorMessageStyle}"><p><apex:outputText escape="false" value="{!errorMessage}"/></p></div>
+            </apex:outputPanel>     
+            <table class="input-grid" style="width: 100%; table-layout: fixed;border: 1px solid #B4B9C0;font-size:.9em; ">
+                <tr>
+                    <td class="cell" style="width:30%;">Name</td><td class="cell" style="width:70%;">{!objEventR.Contact__r.Name}</td>
+                </tr>
+                <tr>
+                    <td class="cell">Role</td><td class="cell">{!objEventR.Event_Role__c}</td>
+                </tr>
+                <tr>                
+                    <td class="cell">Number of Hours</td><td class="cell">{!objEventR.Total_Hours_Time__c}</td>
+                </tr>
+                <tr>                
+                    <td class="cell">Transit</td>
+                    <td class="cell">
+                        <apex:selectList id="ddlTransit" value="{!selectedTransit}" size="1" styleClass="inputbox ddlTransit">
+                          <apex:selectOptions value="{!TransitMethods}"/>
+                        </apex:selectList>                      
+                    </td>
+                </tr>       
+                <tr class="txtDriverName">              
+                    <td class="cell">Driver Name</td>
+                    <td class="cell">
+                        <apex:inputText value="{!driverName}" styleClass="inputbox txtDriverName" />
+                    </td>
+                </tr>               
+                <tr class="txtAddress">             
+                    <td class="cell">Street</td>
+                    <td class="cell">
+                        <apex:inputText value="{!street}" styleClass="inputbox txtStreet" />
+                    </td>
+                </tr>
+                <tr class="txtAddress">             
+                    <td class="cell">City</td>
+                    <td class="cell">
+                        <apex:inputText value="{!city}" styleClass="inputbox txtCity" />
+                    </td>
+                </tr>
+                <tr class="txtAddress">             
+                    <td class="cell">State</td>
+                    <td class="cell">
+                        <apex:inputText value="{!state}" styleClass="inputbox txtState" />
+                    </td>
+                </tr>
+                <tr class="txtAddress">             
+                    <td class="cell">Zip Code</td>
+                    <td class="cell">
+                        <apex:inputText value="{!zip}" styleClass="inputbox txtZip" />
+                    </td>
+                </tr>
+                <tr class="txtAddress">             
+                    <td class="cell">Country</td>
+                    <td class="cell">
+                        <apex:inputText value="{!country}" styleClass="inputbox txtCountry" />
+                    </td>
+                </tr>               
+                <tr class="txtAddress">             
+                    <td class="cell">End Address</td><td class="cell txtEventAddress">{!objEventR.WW_Event__r.Event_Address__c}</td>
+                </tr>
+                <tr class="txtAddress">             
+                    <td class="cell">Total Miles</td><td class="cell"><apex:inputField value="{!objEventR.Total_Miles__c}"  style="width:7em;" styleClass="txtMiles"/><a href="" onclick="javascript:calculateDistance();">ReCalculate</a></td>
+                </tr>
+                <tr class="txtAddress">             
+                    <td class="cell">Eligible Miles</td><td class="cell txtEligibleMiles">{!totalMilesEligible} <a href="" onclick="javascript:calculateDistance();">ReCalculate</a></td>
+                </tr>
+                <tr class="txtAddress">                
+                    <td class="cell">Mileage Reimbursement</td>
+                    <td class="cell ">
+                    <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!objEventR.Mileage_Reimbursement__c}"/>  
+                     </apex:outputText>        
+                    </td>
+                </tr>   
+                <tr>                
+                    <td class="cell">Total Hours Pay</td>               
+                    <td class="cell">
+                    <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!objEventR.Total_Hours_Pay__c}"/>
+                     </apex:outputText>
+                    </td>
+                </tr>                   
+                <tr>        
+                      
+                    <td class="cell">Total Calculated Pay</td>
+                    <td class="cell">
+                     <apex:outputText value="${0, number, ###,###,###,##0.00}">  
+                      <apex:param value="{!totalPay}"/>  
+                     </apex:outputText>                   
+                    </td>        
+                  
+                </tr> 
+                
+                <tr>
+                    <td class="cell">Get Totals</td>
+                    <td>          
+                     <apex:CommandLink value="Update Total Before Submitting" action="{!saveMileage}" oncomplete="location.reload()"/>
+                     </td>
+                </tr>
+                              
+                <tr>    
+                           
+                    <td class="cell">Sign</td>
+                    <td class="cell">
+                    
+                        <div class="sigPad">
+                            <ul class="sigNav">
+                              <li class="drawIt" style="display:none;"><a href="#draw-it" >Sign Here</a></li>
+                              <li class="clearButton"><a href="#clear">Clear</a></li>
+                            </ul>
+                            <div class="sig sigWrapper" style="width:400px;">
+                              <div class="typed"></div>
+                              <canvas class="pad" width="400" height="70"></canvas>
+                              <input type="hidden" name="output" class="output"/>
+                            </div>                      
+                        </div>
+                    </td>
+                </tr>
+                <tr>                
+                    <td class="cell">
+                        <apex:inputText value="{!totalPaySignedOff}" id="totalPaySignedOff" styleClass="totalPaySignedOff" style="display:none;"/>
+                        <apex:commandButton action="{!save}" value="Submit" style="vertical-align: middle; font-size:12px; width: 90px; height: 40px; " styleClass="bttn orange" onclick="javascript:return getImage();"/></td>
+                        <td class="cell"><apex:inputTextarea id="newDesc" value="{!signature}" styleClass="divImg" style="display:none;"/></td>
+                </tr>       
+            </table>
+            </div>
+
+        </apex:form><!-- ENDS TEST RESULTS -->
+        </div><!-- ENDS INPUT GRID WRAPPER -->
+        </div><!-- ENDS CONTENT WRAPPER -->
+        </div><!-- ENDS PAGE WRAPPER -->
+    <script type="text/javascript">
+        var EligibleMilesRate=parseFloat("{!EligibleMilesRate}");
+        jQuery.noConflict();
+        jQuery(document).ready(function() {
+            if("{!signedOff}"=="yes")
+            {
+                alert("Successfully signed off. Please return iPad");
+                goToStaff();
+            }
+            jQuery('.sigPad').signaturePad({drawOnly:true});
+            jQuery( ".txtMiles" ).change(function() {
+                var txtMiles=jQuery(".txtMiles").val();
+                    txtMiles=txtMiles.replace(",","");
+                var eligibleMiles=parseFloat(txtMiles)-parseInt("{!EligibleMilesAfter}");
+                if(eligibleMiles<0 || {!objEventR.Not_Eligible_for_Mileage__c} == true)
+                {
+                    eligibleMiles=0;
+                }
+                jQuery(".txtEligibleMiles").html(eligibleMiles);            
+              calculatePay();
+            }); 
+            jQuery( ".ddlTransit" ).change(function() {
+                jQuery(".txtDriverName").hide();
+                jQuery(".txtAddress").hide();
+               
+                var ddlTransit=jQuery(".ddlTransit").val();
+                if(ddlTransit=="Carpool")
+                {
+                    jQuery(".txtDriverName").show();
+                }
+                else if(ddlTransit=="Personal Vehicle")
+                {
+                    jQuery(".txtAddress").show();
+                    calculateDistance();
+                }
+            
+                            
+                if({!objEventR.Not_Eligible_for_Mileage__c} == true)
+                {
+                    jQuery(".txtAddress").hide();
+                }
+                
+                calculatePay();
+            });
+            jQuery( ".ddlTransit" ).change();
+        });
+        function goToStaff(){
+            //alert("Coming soon!");
+            parent.location.href='/apex/OnsiteStaff?event={!objEvent.Id}';
+        }
+        function calculatePay()
+        {
+        
+            var ddlTransit=jQuery(".ddlTransit").val();
+            if(ddlTransit!="Personal Vehicle" && {!objEventR.Not_Eligible_for_Mileage__c} != true)
+            {
+                jQuery(".txtMiles").val("0");
+                jQuery(".txtEligibleMiles").html("0");
+                jQuery(".txtMileageReimbursement").html("0");
+            }
+            var txtEligibleMiles=jQuery(".txtEligibleMiles").html();
+                txtEligibleMiles=txtEligibleMiles.replace(",","");
+            var eligibleMiles=parseFloat(txtEligibleMiles);
+            if(eligibleMiles<=0 || {!objEventR.Not_Eligible_for_Mileage__c} == true)
+            {
+                eligibleMiles=0;
+            }     
+            
+              
+            var txtMileageReimbursement=eligibleMiles*EligibleMilesRate;
+            txtMileageReimbursement=Math.round(txtMileageReimbursement*10)/10 ;
+            jQuery(".txtMileageReimbursement").html("$"+txtMileageReimbursement);
+            var totalPay=({!NULLVALUE(objEventR.Total_Hours_Pay__c,0)})+(eligibleMiles*parseFloat("{!EligibleMilesRate}"));
+            totalPay=Math.round(totalPay*10)/10 ;
+                      
+            jQuery(".txtTotalPay").html("$"+totalPay);
+            jQuery(".totalPaySignedOff").val(totalPay);
+            //alert(totalPay);
+            
+        }
+        function calculateDistance()
+        {
+            blockUI();
+            jQuery(".txtEligibleMiles").html("");
+            
+            var txtStreet=jQuery(".txtStreet").val();
+            var txtCity=jQuery(".txtCity").val();
+            var txtState=jQuery(".txtState").val();
+            var txtZip=jQuery(".txtZip").val();
+            var txtCountry=jQuery(".txtCountry").val();
+            var txtEventAddress=jQuery(".txtEventAddress").html();
+            var txtAddress=txtStreet+', '+txtCity+', '+txtState+' '+txtZip+', '+txtCountry;     
+      
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.OnsiteStaffSignOff.getDistance}',
+                txtAddress, 
+                txtEventAddress,
+                function(result, event){
+                    if (event.status) {
+                            jQuery(".txtMiles").val(result);
+                            var eligibleMiles=parseFloat(result)-parseInt("{!EligibleMilesAfter}");
+                            if(eligibleMiles<=0 || {!objEventR.Not_Eligible_for_Mileage__c} == true)
+                            {
+                                eligibleMiles=0;
+                                jQuery(".txtEligibleMiles").html(eligibleMiles);
+                            }
+                            else
+                                jQuery(".txtEligibleMiles").html(eligibleMiles); 
+                                
+                            totalMiles = parseFloat(result);  
+                            jQuery(".txtMiles").html(totalMiles); 
+                            calculatePay();
+                    } else {
+                        alert(event.message);
+                    }
+                }, 
+                {escape: false}
+            ); 
+            jQuery.unblockUI();             
+        }
+        function getImage()
+        {
+            var txtImage="";
+            try
+            {
+                txtImage=jQuery('.sigPad').signaturePad().getSignatureImage();
+            }
+            catch(err){}
+//          if(txtImage=="")
+    //        {
+                //txtImage="encode="+jQuery('.sigPad').signaturePad().getSignatureString();
+      //      }
+            //alert(txtImage);
+            jQuery(".divImg").val(txtImage);
+        }   
+        function blockUI()
+        {
+            jQuery.blockUI({ css: { 
+                border: 'none', 
+                padding: '15px', 
+                backgroundColor: '#fff', 
+                '-webkit-border-radius': '10px', 
+                '-moz-border-radius': '10px', 
+                opacity: .5, 
+                color: '#000',
+                width: 'auto' ,
+                margin:'auto',
+                top:'45%',
+                left:'45%'
+            },
+            message:'Processing...'
+            });                 
+        }       
+    </script>       
+    </body>
+     </html>
+    
+</apex:page>

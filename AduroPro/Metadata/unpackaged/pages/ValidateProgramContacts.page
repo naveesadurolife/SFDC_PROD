@@ -1,0 +1,4 @@
+<apex:page controller="ValidateProgramContacts" sidebar="false" showHeader="false" action="{!ScheduleJob}">
+Job Scheduled Successfully. It will be done with in half hour.<br/>
+You can close this window now.
+</apex:page>

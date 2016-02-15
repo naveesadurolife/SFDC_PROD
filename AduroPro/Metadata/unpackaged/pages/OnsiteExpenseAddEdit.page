@@ -1,0 +1,57 @@
+<apex:page showHeader="false" controller="OnsiteExpenseAddEdit" standardStylesheets="false" sidebar="false" docType="html-5.0" >
+	<html>
+	<head>
+		<meta charset="utf-8">  
+			<title>Onsite Testing : Choose Function</title>
+			<meta name="description" content="Description"/>
+			<apex:stylesheet value="{!URLFOR($Resource.OnsiteStaticResources, 'onsite_static_resources/css/ww-style.css')}"/>
+		</meta>
+		<style type="text/css">
+			.cell
+			{
+				padding-left: 0px;
+				padding-right: .5em;
+			}
+			.dd
+			{
+				border: 1px solid #ccc;border-radius: 3px;-moz-box-shadow: inset 0 0 8px #dddddd;-webkit-box-shadow: inset 0 0 8px #dddddd;box-shadow: inset 0px 0px 8px #dddddd; padding: 4px; margin: 1px; overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="page-wrapper">
+		<div id="content-wrapper">
+		<h1>{!objEvent.Name} <input style="margin-right:60px;" class="bttn blue" type="button" name="eventlist" value="Expenses" onclick="goToStaff()" /><input style="margin-right:60px;" class="bttn blue" type="button" name="eventlist" value="Results" onclick="goToResults()" /></h1>
+		<div class="input-grid-wrapper">
+		<apex:form id="frmMain">
+	       <apex:outputPanel id="errorpanel"> 
+				<div id="errors" class="error" style="{!errorMessageStyle}"><p><apex:outputText escape="false" value="{!errorMessage}"/></p></div>
+			</apex:outputPanel>		
+			<table class="input-grid" style="width: 90%; table-layout: fixed;border: 0px solid #B4B9C0;font-size:.9em; ">
+				<tr><td style="width:30%;">Name</td><td align="left">{!contact}</td></tr>
+				<tr><td >Expense Type</td><td  align="left"><apex:inputField value="{!er.Expense_Type__c}" style="width:90%;"  styleClass="dd"/></td></tr>
+				<tr><td valign="top">Company</td><td  align="left"><apex:inputField value="{!er.Company__c}" style="width:90%;"/></td></tr>
+				<tr><td valign="top">Expense Details</td><td  align="left"><apex:inputField value="{!er.Expense_Details__c}" style="width:90%;"/></td></tr>
+				<tr><td valign="top">Transaction Date</td><td  align="left"><apex:inputField value="{!er.Transaction_Date__c}" style="width:90%;"/></td></tr>
+				<tr><td valign="top">Expense</td><td  align="left"><apex:inputField value="{!er.Expected_Expense__c}" style="width:90%;" styleClass="dd"/></td></tr>
+				<tr><td class="cell" colspan="2">
+					<apex:commandButton action="{!save}" value="Save" style="vertical-align: middle; font-size:12px; width: 90px; height: 40px; " styleClass="bttn orange"/>
+				</td></tr>							
+			</table>
+		</apex:form><!-- ENDS TEST RESULTS -->
+		</div><!-- ENDS INPUT GRID WRAPPER -->
+		</div><!-- ENDS CONTENT WRAPPER -->
+		</div><!-- ENDS PAGE WRAPPER -->
+	<script type="text/javascript">
+        function goToResults(){
+			parent.location.href='/apex/OnsiteEventResult?event={!objEvent.Id}';
+        }
+        function goToStaff()
+        {
+        parent.location.href='/apex/OnsiteExpenses?event={!objEvent.Id}';
+        }
+    </script>		
+	</body>
+	 </html>
+	
+</apex:page>

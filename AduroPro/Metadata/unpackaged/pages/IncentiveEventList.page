@@ -1,0 +1,64 @@
+<apex:page docType="html-5.0" showHeader="false" sidebar="false" standardStylesheets="false" controller="IncentiveEventList" cache="false">
+    <head>
+        <meta charset="utf-8"></meta>
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"></meta>
+        <apex:stylesheet value="{!URLFOR($Resource.jquerymobile142,'themes/blue.min.css')}"></apex:stylesheet>
+        <apex:stylesheet value="{!URLFOR($Resource.jquerymobile142,'jquery.mobile.structure-1.4.2.min.css')}"></apex:stylesheet>
+        <apex:includeScript value="{!URLFOR($Resource.jquerymobile142,'jquery-1.10.2.min.js')}"></apex:includeScript>
+        <apex:includeScript value="{!URLFOR($Resource.jquerymobile142,'jquery.mobile-1.4.2.min.js')}"></apex:includeScript>
+    </head>
+    <body>
+		<div style="max-width:700px; margin: 0 auto;">
+        <ul data-role="listview" data-inset="true" style="margin: 10px;">
+            <li class="ui-field-contain">
+					<apex:outputPanel layout="none" rendered="{!eventRegistrationLogo!=''}">
+						<label style="height:55px;font-weight:bold;font-size:1em;background-image:url('{!eventRegistrationLogo}');background-size:50px 55px;background-repeat:no-repeat;padding-left:55px;padding-top:10px;" >Event List for {!programName}</label>
+					</apex:outputPanel>
+					<apex:outputPanel layout="none" rendered="{!eventRegistrationLogo==''}">						
+                    <label style="height:55px;font-weight:bold;font-size:1em;background-image:url('{!$Resource.adurologo}');background-size:50px 55px;background-repeat:no-repeat;padding-left:55px;padding-top:10px;" >Event List for {!programName}</label>
+					</apex:outputPanel>				
+            </li>
+			<li class="ui-field-contain">
+				<apex:outputPanel layout="none" rendered="{!listEvents.size==0}">
+					<div>No Incentive Event Found!</div>
+				</apex:outputPanel>
+				<apex:outputPanel layout="none" rendered="{!listEvents.size>0}">
+				<table data-role="table" id="table-custom-2" data-mode="columntoggle" class="ui-body-d ui-shadow table-stripe ui-responsive" data-column-btn-theme="b" data-column-popup-theme="a" style="font-size: 0.88em;">
+					<thead>
+						<tr>
+							<th style="width:40%;">Name</th>
+							<th style="width:30%;" data-priority="2">Location</th>
+							<th style="width:10%;" data-priority="1">Date</th>
+							<th style="width:10%;" data-priority="1">Start Time</th>
+							<th style="width:10%;" data-priority="1">End Time</th>							
+						</tr>
+					</thead>
+					<tbody>
+						<apex:repeat value="{!listEvents}" var="e">
+						<tr>
+							<td><a href="#" style="cursor:pointer;" onclick="window.location='/Incentive/IncentiveEvent?id={!e.Id}';">{!e.Name}</a></td>
+							<td>{!e.Location__c}</td>
+							<td><apex:outputField value="{!e.Event_Date__c}"/></td>
+							<td><apex:outputField value="{!e.Start_Time__c}"/></td>
+							<td><apex:outputField value="{!e.End_Time__c}"/></td>							
+						</tr>
+						</apex:repeat>
+					</tbody>
+				</table>
+				</apex:outputPanel>
+			</li>
+		</ul>
+		</div>
+		    <script type="text/javascript">
+				jQuery.noConflict();
+		        jQuery(document).ready(function () {
+		            jQuery(".ui-table-columntoggle-btn").hide();
+		            
+		         });
+			window.onorientationchange = function()
+			{
+			 //  window.location.reload();
+			}				
+		</script>			
+	</body>
+</apex:page>

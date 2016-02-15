@@ -1,0 +1,16 @@
+<apex:page controller="EventRegisterDeleteEmail" sidebar="false" showHeader="false" cache="false">
+	<apex:form id="frmMain">
+		<apex:outputPanel rendered="{!NOT(emailSent)}">	
+		<apex:pageMessages />
+		<div style="margin:5px;">
+			Type in the email you used to register for an appointment with this event, and our system will search for that appointment.<br/>
+		<apex:inputText value="{!searchEmail}" style="border:1px solid gray;"/>
+		<apex:commandButton value="Search and Delete" action="{!SearchEmail}" reRender="frmMain"/>
+		</div>
+		</apex:outputPanel>
+	<apex:outputPanel rendered="{!emailSent}"> 
+	<p style="margin:5px;">Your appointment has been cancelled. You can close this window now.</p>
+	</apex:outputPanel>				
+	</apex:form>
+	
+</apex:page>

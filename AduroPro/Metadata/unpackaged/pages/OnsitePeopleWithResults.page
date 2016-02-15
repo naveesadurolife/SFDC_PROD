@@ -1,0 +1,176 @@
+<apex:page showHeader="false" controller="OnsitePeopleWithResults" standardStylesheets="false" sidebar="false" docType="html-5.0" >
+	<html>
+	<head>
+		<meta charset="utf-8">  
+			<title>Onsite Testing : Choose Function</title>
+			<meta name="description" content="Description"/>
+			<apex:stylesheet value="{!URLFOR($Resource.OnsiteStaticResources, 'onsite_static_resources/css/ww-style.css')}"/>
+			<apex:include pageName="IncludeResources" />
+		</meta>
+		<style type="text/css">
+			.cell
+			{
+				padding-left: 0px;
+				padding-right: .5em;
+				font-size:.8em;
+			}
+			.ui-dialog .ui-dialog-titlebar
+			{
+				padding:.1em;
+				margin:.1em;
+				width:98%;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="page-wrapper">
+		<div id="content-wrapper">
+		<a href='/apex/OnsiteStart?event={!objEvent.id}' style="text-decoration: none;"><h1 style="display:block;">{!objEvent.Name}</h1></a> <input style="margin-right:60px;" class="bttn blue" type="button" name="eventlist" value="Results" onclick="goToResults()" />
+		<div class="input-grid-wrapper">
+		<apex:form rendered="{!listOrders.size>0}" id="frmMain">
+			<table class="input-grid" style="width: 100%; table-layout: fixed;border: 1px solid #B4B9C0;">
+			<tr>
+				<th style="width: 20%;">Name</th>
+				<th style="width: 30%;">Email</th>
+				<th style="width: 12%;">Card Code</th>
+				<th style="width: 22%;">Checkin Time</th>
+				<th style="width: 16%;"></th>
+				<apex:outputPanel layout="none" rendered="{!objEvent.Program__r.Screening_HRA__c}">
+				<th style="width: 16%;"></th>
+				</apex:outputPanel>
+		    
+			</tr>		
+			<apex:repeat value="{!listOrders}" var="o">
+				<tr style="border: 1px solid #B4B9C0;">
+					<td class="cell" style="vertical-align: middle; height: 50px; font-size: .8em;" >
+						<a href="#" onclick="javascript:openConcierge('{!o.Id}');">{!o.PatientFirstName__c + ' ' + o.PatientLastName__c}</a>
+					</td>
+					<td class="cell" style="vertical-align: middle; height: 100%; font-size: .8em;">{!o.PatientEmailH__c}</td>					
+					<td class="cell">{!o.Onsite_Card_Code__c}</td>
+					<td class="cell" style="vertical-align: middle; height: 100%;font-size: .8em; ">
+					<apex:outputField value="{!o.Check_In_Time__c}" id="FillDate"/>
+					</td>				
+
+				    
+					<td class="cell" >
+					 <input type="button" class="bttn orange" style="vertical-align: middle; font-size:12px; width: 90px; height: 40px; " value="Edit BIO" onclick="addData('{!o.Id}')" />
+					</td>
+					<apex:outputPanel layout="none" rendered="{!objEvent.Program__r.Screening_HRA__c}">
+					<td class="cell" >
+					 <input type="button" class="bttn orange" style="vertical-align: middle; font-size:12px; width: 90px; height: 40px; " value="Edit HRA" onclick="editHRA('{!o.Id}')" />
+					</td>	
+					</apex:outputPanel>
+				</tr>			
+			</apex:repeat>
+			</table>
+			<div id="modalDiv">
+				<div class="divConcierge" style="font-size:.9em;"></div>
+			</div>
+		</apex:form><!-- ENDS TEST RESULTS -->
+		</div><!-- ENDS INPUT GRID WRAPPER -->
+		</div><!-- ENDS CONTENT WRAPPER -->
+		</div><!-- ENDS PAGE WRAPPER -->
+	<script type="text/javascript">
+		jQuery.noConflict();
+		var selectedOrderId="";
+		jQuery(document).ready(function() {
+            jQuery("#modalDiv").dialog({
+                modal: true,
+                autoOpen: false,
+                height: '300',
+                width: '600',
+                draggable: true,
+                resizeable: true,   
+                title: 'Concierge'
+            });	
+		});	
+        function goToResults(){
+        	//alert("Coming soon!");
+			parent.location.href='/apex/OnsiteEventResult?event={!objEvent.Id}';
+        }
+        function addData(orderId)
+        {
+        	parent.location.href='/apex/OnsiteDataEntry?rp=cwr&orderid='+orderId;
+        }
+        function editHRA(oid){
+			parent.location.href='/apex/OnsiteHRA?event={!objEvent.Id}&oid='+oid;
+        }
+        function submitConcierge(orderId)
+        {
+        	blockUI();
+        	var sThisVal="";
+			jQuery('.chkConcierge').each(function () {
+			       sThisVal += (this.checked ? jQuery(this).val()+";" : "");
+			  });
+		    Visualforce.remoting.Manager.invokeAction(
+		        '{!$RemoteAction.OnsitePeopleWithResults.updateConcierge}',
+		        orderId, 
+		        sThisVal,
+		        function(result, event){
+		            if (event.status) {
+		            	if(result=="success")
+		            	{
+		            		jQuery("#modalDiv").dialog("close");  
+		            	}
+		            	else
+		            	{
+		            		alert(result);
+		            	}
+		            } else {
+		            	alert(event.message);
+		            }
+		        }, 
+		        {escape: false}
+		    ); 
+		    jQuery.unblockUI();   	
+        }
+        function openConcierge(orderId)
+        {
+			selectedOrderId=orderId;
+			blockUI();
+		    Visualforce.remoting.Manager.invokeAction(
+		        '{!$RemoteAction.OnsitePeopleWithResults.getConciergeOptions}', 
+		        function(result, event){
+		            if (event.status) {
+		            	var chkHTML='<table style="width:50%;">';
+		            	for(i=0;i<result.length;i++)
+		            	{
+		            		chkHTML+="<tr><td style='white-space:nowrap;' class='cell'>";
+		            		chkHTML+=result[i]+'</td><td><input type="checkbox" class="chkConcierge" value="'+result[i]+'">';
+		            		chkHTML+="</td></tr>";
+		            	}
+		            	chkHTML+='<tr><td colspan="2"><input type="button" class="bttn orange" style="float:left;vertical-align: middle; font-size:12px; width: 90px; height: 40px; " value="Submit" onclick="submitConcierge(\''+selectedOrderId+'\')" /></tr></td>';
+		            	chkHTML+="</table>";
+		            	jQuery(".divConcierge").html(chkHTML);
+		            } else {
+		            	jQuery(".divConcierge").html(event.message);
+		            }
+		        }, 
+		        {escape: false}
+		    );			
+		    jQuery.unblockUI();
+			jQuery("#modalDiv").dialog("open");        	
+        }
+		function blockUI()
+		{
+	        jQuery.blockUI({ css: { 
+	            border: 'none', 
+	            padding: '15px', 
+	            backgroundColor: '#fff', 
+	            '-webkit-border-radius': '10px', 
+	            '-moz-border-radius': '10px', 
+	            opacity: .5, 
+	            color: '#000',
+				width: 'auto' ,
+				margin:'auto',
+				top:'45%',
+				left:'45%'
+	        },
+			message:'Processing...'
+			}); 				
+		}           		
+    </script>		
+	</body>
+	 </html>
+	
+</apex:page>

@@ -1,0 +1,239 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" docType="html-5.0" controller="CheckInControllerV2">
+	<html>
+	<head>
+		<title>Onsite Testing</title>
+		<apex:include pageName="IncludeResources" /> 
+		<apex:stylesheet value="{!URLFOR($Resource.OnsiteStaticResources, 'onsite_static_resources/css/ww-style.css')}"/>
+		<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+		<style type="text/css">
+			.cell
+			{
+				padding-left: 0px;
+				padding-right: .5em;
+			}
+		</style>	
+		
+		<!--  <apex:includeScript value="{!URLFOR($Resource.jquery, '/js/jquery-1.9.1.js')}"  />
+		<apex:includeScript value="{!URLFOR($Resource.jquery, '/js/jquery-ui-1.10.3.custom.js')}"  />
+		<apex:includeScript value="{!URLFOR($Resource.jquery, '/js/jquery-ui-1.10.3.custom.min.js')}"  />-->			
+	</head>
+	<body>
+		<div id="page-wrapper">
+		<div id="content-wrapper">
+		<a href='/apex/OnsiteStart?event={!event.Id}' style="text-decoration: none;"><h1 style="display:block;">Check In for {!event.Name}</h1></a><input style="margin-right:40px;" class="bttn blue" type="button" name="eventlist" value="Change Role" onclick="goToChangeRole()" />
+
+		<apex:form id="list" >
+		  <apex:actionFunction name="checkInNow" action="{!checkInNow}" rerender="list">
+			<apex:param name="selectedContactId" assignTo="{!selectedContactId}" value="" />
+			<apex:param name="cardCode" assignTo="{!cardCode}" value="" />
+		</apex:actionFunction>
+		<div id="errors" class="error" style="{!errorMessageStyle}"><p><apex:outputText escape="false" value="{!checkinMessage}"/></p></div><!-- ENDS ERROR -->
+		<form name="checkin-list">
+		
+		<div class="border-wrapper"> 
+			<apex:repeat value="{!alphabet}" var="letter">
+				<!--<apex:commandLink styleClass="filterbutton" value="{!letter}" rerender="list"  action="{!filterList}"> -->
+				<apex:commandLink style="font-size:1.8em; padding-left:8px; padding-right:8px;line-height:35px;" 
+									value="{!letter}" rerender="list"  action="{!filterList}">
+					<apex:param name="filter" value="{!letter}"/>
+				</apex:commandLink><a href="" >{!IF(letter = 'z' , '' , ' | ')}</a>
+			</apex:repeat>
+			<div class="row-wrapper" style="margin-top:15px;">
+				<div style="float: left;	position: relative;	overflow: hidden;width: 550px;	">
+					<apex:inputText styleClass="searchInput" style="vertical-align:middle;width: 500px;"  value="{!searchString}" /></div>
+				<div class="field" style="vertical-align: middle;float:right;">
+					<apex:commandButton styleClass="bttn blue" style="margin-right:12px; " value="Search" action="{!searchForEmployee}" rerender="list"  /></div>
+			</div>
+		</div>
+		<div class="input-grid-wrapper">
+		
+		<apex:commandButton styleClass="bttn blue" style="float:left; margin-right:12px; " value="New Contact" action="{!newOrder}" rerender="list"  />
+
+		<table class="input-grid" style="width: 100%; table-layout: fixed;border: 1px solid #B4B9C0;">
+		
+		<tr>
+			<th style="width: 13%;"></th>
+			<th style="width: 12%;">Card Code</th>
+			<th style="width: 15%;">Appt Time</th>
+			<th style="width: 25%;">Name</th>
+		    <th style="width: 25%;">Email</th>
+		    <!-- <th style="width: 15%;">DOB</th> -->
+		    <th style="width: 10%;">Emp Id</th>
+		    
+		</tr>
+		<apex:repeat value="{!checkinList}" var="contact">
+		<tr style="border: 1px solid #B4B9C0;">
+			<td class="cell" >
+			<!-- <apex:commandButton styleClass="bttn orange" style="vertical-align: middle; font-size:12px; width: 90px; height: 40px;" value="Check In" action="{!checkIn}">
+				<apex:param name="selectedContactId" assignTo="{!selectedContactId}" value="{!contact.Id}" />
+			</apex:commandButton> -->
+			 <input type="button" class="bttn orange" style="vertical-align: middle; font-size:12px; width: 90px; height: 40px;" value="Check In" onclick="checkIn('{!contact.Id}')" />
+		</td>
+		<td class="cell"><input type="text" value="" class="value txt{!contact.Id}" style="width:95%;"/></td>
+			<td class="cell" style="vertical-align: middle; height: 100%;font-size: .9em; ">
+			<apex:outputField value="{!contact.Appointment_Time__c}" id="FillDate"/>
+			</td>				
+			<td class="cell" style="vertical-align: middle; height: 50px; font-size: .9em;" >
+				<!-- <a 	href="/apex/OnsiteEditOrder?contact={!contact.Id}&event={!event.Id}&program={!event.Program__c}&returnpage=CheckIn" target="_top" style="vertical-align: bottom; height: 100%; position: relative;"> -->
+				{!contact.FirstName + ' ' + contact.LastName}
+				<!-- </a> -->
+				</td>
+		    <td class="cell" style="vertical-align: middle; height: 100%; font-size: .9em;">{!contact.Email}</td>
+		    <!-- <td class="cell" style="vertical-align: bottom; height: 100%; ">
+		    	<apex:outputText value="{0,date,MM'/'dd'/'yy}">
+    				<apex:param value="{!contact.Birthdate}" /> 
+				</apex:outputText></td> -->
+		    <td class="cell" style="vertical-align: middle; height: 100%;font-size: .9em; ">{!contact.Employee_ID__c}</td>
+
+
+		</tr>
+		</apex:repeat>
+		
+		</table>
+		</div><!-- ENDS INPUT GRID WRAPPER -->
+	 <script type="text/javascript">
+	jQuery.noConflict();
+	jQuery(document).ready(function() {
+		jQuery.unblockUI();
+	});	 
+	</script>		
+		</form><!-- ENDS TEST RESULTS -->
+		</apex:form>
+
+		</div><!-- ENDS CONTENT WRAPPER -->
+		</div><!-- ENDS PAGE WRAPPER -->
+		
+
+
+
+	
+	</body>
+	 </html>
+
+	 <script type="text/javascript">
+	jQuery.noConflict();
+	jQuery(document).ready(function() {
+		jQuery.unblockUI();
+	});	 
+	 function checkIn(contactId)
+	 {
+	 	var cardCode=jQuery(".txt"+contactId).val();
+	 	if(jQuery.trim(cardCode)=="")
+	 	{
+	 		alert("Please enter valid Card Code.");
+	 		jQuery(".txt"+contactId).focus()
+	 	}
+	 	else
+	 	{
+	 		blockUI();
+	 		checkInNow(contactId,cardCode);
+	 	}
+	 }
+function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
+}	 
+		/* 
+		Created by: Caspar Harmer 
+		*/
+		// ------------------------------------------------------------
+		// PAGE LOAD JAVASCRIPT
+		// ------------------------------------------------------------
+		
+		
+		onload = function() {
+		
+			var element = document.getElementsByClassName('searchInput');
+			element[0].placeholder = "Enter all or part of the Employee's name";
+		
+		};
+		
+		function handleCheckinResult(message) {
+
+			//now get rid of those spinners
+			spinners = document.getElementsByClassName("loadingspinner");
+			for (var i=0; i<spinners.length;i++) {
+				spinners[i].parentNode.removeChild(element);
+			}
+			
+			//enable the button and remove the pending class type
+			var buttons = document.getElementsByClassName("pendingCheckin");
+			for (var i=0; i<buttons.length;i++) {
+				buttons[i].className = buttons[i].className.replace ( /(?:^|\s)pendingCheckin(?!\S)/g , '' );
+				buttons[i].disabled = false;
+			}
+			
+			alert(message);
+		}
+		
+		function initializeCheckin(id,button) {
+		
+			var cardCode;
+			var codeEntered = false;
+			var cancel = false;
+			var done = false;
+
+			while (!done) {
+				codeEntered = false;
+		
+				cardCode = prompt("Please enter your Card Code", null);
+		
+				if (cardCode == null || cardCode == "") { //we hit cancel
+					cancel = true;
+				} else if (cardCode ) {
+					codeEntered = true;
+				} 
+		
+				if (codeEntered == true || cancel == true) {
+					done = true;
+				}
+			}
+		
+		
+			if (codeEntered == true) {
+				//mark the button as pending and disable
+				//add a spinner 
+				//(these two things will be reversed on the outcome of the following call)
+				button.disabled = true;
+				button.className += " pendingCheckin";
+				
+				var img = document.createElement('img');
+				img.src = "/img/loading32.gif";
+				img.class = "loadingspinner";
+				button.parentElement.appendChild(img);
+			
+				checkIn(id, cardCode);
+		
+			}
+		}
+		function blockUI()
+		{
+	        jQuery.blockUI({ css: { 
+	            border: 'none', 
+	            padding: '15px', 
+	            backgroundColor: '#fff', 
+	            '-webkit-border-radius': '10px', 
+	            '-moz-border-radius': '10px', 
+	            opacity: .5, 
+	            color: '#000',
+				width: 'auto' ,
+				margin:'auto',
+				top:'45%',
+				left:'45%'
+	        },
+			message:'Processing...'
+			}); 				
+		} 		
+		
+
+    </script>
+	<script type="text/javascript">
+        function goToChangeRole(){
+			parent.location.href='/apex/OnsiteStart?event={!event.Id}';
+        }        
+    </script>
+</apex:page>

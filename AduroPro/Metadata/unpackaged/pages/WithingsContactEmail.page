@@ -1,0 +1,13 @@
+<apex:page standardController="Contact"  extensions="WithingsContactCX" action="{! sendEmail}">
+
+	<apex:form >
+		<apex:pageBlock title="Request to send out Registration Email">
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton action="{! goBack}" value="Back"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="1">
+                {! message}
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+	</apex:form>
+</apex:page>

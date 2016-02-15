@@ -1,0 +1,191 @@
+<apex:page controller="ActivityDeviceFormController" sidebar="false" showHeader="false" standardStylesheets="false" cache="false"  title="Request an Activity Device">
+    <apex:stylesheet value="{!$Resource.OrderFormsCSS}" />
+	<style>
+
+		.bPageBlock .message {
+			margin: 0 0 4px 0;
+		}
+		div {
+			display: block;
+		}
+		img {
+			border: 0;
+		}
+		user agent stylesheetimg {
+			display: inline-block;
+		}
+		.message {
+			-moz-border-radius: 4px;
+			-webkit-border-radius: 4px;
+			border-radius: 4px;
+			background-color: #FFC;
+			border-style: solid;
+			border-width: 1px;
+			color: black;
+			padding: 6px 8px 6px 6px;
+			margin: 4px 20px;
+		}
+		.errorM6, .errorM4, .errorM3, .errorM2, .errorS1 {
+			border-color: #C00;
+		}
+		.errorM3 .msgIcon, .errorMedium {
+			background-image: url(/img/msg_icons/error24.png);
+			background-position: 0 0;
+			width: 24px;
+			height: 24px;
+		}
+		table {
+			border-collapse: separate;
+			border-spacing: 2px;
+			border-color: gray;
+		}
+		h1, h2, h3, h4, h5, h6 {
+			font-family: 'Verdana','Geneva',sans-serif;
+			font-size: 100%;
+			margin: 0;
+			display: inline;
+		}
+		user agent stylesheeth4 {
+			display: block;
+			-webkit-margin-before: 1.33em;
+			-webkit-margin-after: 1.33em;
+			-webkit-margin-start: 0px;
+			-webkit-margin-end: 0px;
+			font-weight: bold;
+		}
+
+    </style>
+    <div class="fullPageBlock">
+    <apex:pageBlock >
+        
+        <div>
+            <apex:image url="{!$Resource.ActivityDeviceImage}" rendered="{!NOT(isFitbit)}"   width="720" height="160" />
+            <apex:image url="{!$Resource.FitBitOrderBanner}" rendered="{!isFitbit}"  width="720" height="154" />
+        </div>
+
+        <apex:define name="body">
+        
+        <apex:form >
+            
+        <apex:outputPanel layout="block">
+        
+            <apex:panelGrid columns="1" styleClass="errorMessages" >   
+                <apex:pageMessages id="error" escape="false"/>
+                <apex:actionSupport event="onchange" rerender="theForm"/> 
+                <br/>
+            </apex:panelGrid>
+        
+            <apex:panelGrid id="theForm" columns="3" cellpadding="3" columnClasses="column1, column2, column3">     
+            
+                 <apex:outputLabel value="Account Name: " for="outputAcctName" />    
+                    <apex:outputText id="outputAcctName" value="{!account.Name}" />                 
+                    <apex:outputText ><b>What is an activity device?</b></apex:outputText>
+                    
+                <apex:outputLabel value="Program Name: " for="outputProgName" />    
+                    <apex:outputText id="outputProgName" value="{!program.Name}" />
+                    <apex:outputText >This device will help you track your daily movements. It is worn on your shoe and syncs up with your wellness account.</apex:outputText>
+
+                  <apex:outputText rendered="{!showOrderInstructions}" />
+                  <apex:outputText rendered="{!showOrderInstructions}" />
+                  <apex:outputText rendered="{!showOrderInstructions}" />
+                  
+                 <apex:outputLabel rendered="{!showOrderInstructions}" />
+                 <apex:outputText rendered="{!showOrderInstructions}" />
+                 <apex:outputText rendered="{!showOrderInstructions}" ><b>Special Order Instructions:</b></apex:outputText>
+                    
+                <apex:outputLabel value="Device Type: " for="outputDeviceType" rendered="{!showDeviceSelector}" />    
+                <apex:selectList value="{!selectedOrderType}" size="1" id="outputDeviceType" rendered="{!showDeviceSelector}" >  
+					<apex:selectOptions value="{!orderTypeList}" />
+				</apex:selectList>
+				 <apex:outputLabel rendered="{!AND(NOT(showDeviceSelector),showOrderInstructions)}" />
+                 <apex:outputText rendered="{!AND(NOT(showDeviceSelector), showOrderInstructions)}" />
+				<apex:outputText value="{!program.Special_Order_Instructions__c}"  rendered="{!showOrderInstructions}" />  
+
+                              
+                <apex:outputLabel value="*First Name: " for="inputFirstName" />
+                    <apex:inputText id="inputFirstName" value="{!newOrder.PatientFirstName__c}" />
+                    <apex:outputText ></apex:outputText>
+                    
+                <apex:outputLabel value="*Last Name: " for="inputLastName" />    
+                    <apex:inputText id="inputLastName" value="{!newOrder.PatientLastName__c}" />
+                    <apex:outputText ></apex:outputText>
+                    
+               <apex:outputLabel value="*Address 1: "  />    
+                    <apex:inputText value="{!newOrder.PatientAddressLine1__c}" />
+<!--                    <apex:outputText ><b>What do I do?</b></apex:outputText>-->
+						<apex:outputText ></apex:outputText>
+                   
+               <apex:outputLabel value="Address 2: "  />    
+                    <apex:inputText value="{!newOrder.PatientAddressLine2__c}" />
+<!--                    <apex:outputText >When you receive the device, you will receive specific instructions on how to sync the device up to your wellness program and how to wear it properly.</apex:outputText>-->
+                    <apex:outputText ></apex:outputText>
+                    
+                    
+               <apex:outputLabel value="*City: "  />    
+                    <apex:inputText value="{!newOrder.PatientCity__c}" />
+                    <apex:outputText ></apex:outputText>
+                    
+               <apex:outputLabel value="*State (Canadian States at bottom): "  />
+                    <apex:inputField value="{!newOrder.PatientState__c}" />
+                    <apex:outputText ></apex:outputText>
+<!--                    <apex:outputText >(Scroll to the bottom for Canadian States)</apex:outputText>-->
+                    
+                    
+               <apex:outputLabel value="*Zip Code: "  />
+                    <apex:inputText value="{!newOrder.PatientZip__c}" />
+                    <apex:outputText ></apex:outputText>
+              
+               
+                <apex:outputLabel value="*Primary Phone (No Symbols): " />    
+                    <apex:inputText value="{!newOrder.PatientPrimaryPhone__c}" />
+<!--                    <apex:outputText ><b>When do I see my results?</b></apex:outputText>-->
+					<apex:outputText ></apex:outputText>
+    
+               <apex:outputLabel value="*Primary Email: " />
+                    <apex:inputText value="{!newOrder.PatientEmailH__c}" />
+<!--                    <apex:outputText >Depending on the challenges in your wellness program, you will see tracking daily.</apex:outputText>-->
+					<apex:outputText ></apex:outputText>
+      
+                <apex:outputLabel value="*Sex: " />
+                    <apex:inputField value="{!newOrder.PatientGender__c}" />
+                    <apex:outputText ></apex:outputText>
+                    
+                  
+                <apex:outputLabel value="*Date of Birthday (mm/dd/yyyy): " />
+                    <apex:inputField value="{!newOrder.PatientDOB__c}" />
+                    <apex:outputText ></apex:outputText>
+                    
+                <apex:outputLabel value="*Employee Info: " for="employeeInfo" rendered="{!showEmployeeInfo}" />    
+                    <apex:inputText id="employeeInfo" value="{!newOrder.Employee_Info__c}" rendered="{!showEmployeeInfo}" />
+                    <apex:outputText rendered="{!showEmployeeInfo}" ></apex:outputText>
+                    
+                            
+                <apex:outputLabel value="*Employee ID: " rendered="{!program.Limeade_Identifier_Employee_ID__c}"/>
+                    <apex:inputField value="{!newOrder.EmployeeID__c}" rendered="{!program.Limeade_Identifier_Employee_ID__c}"/>
+                    <apex:outputText rendered="{!program.Limeade_Identifier_Employee_ID__c == false}" />
+                    <apex:outputText rendered="{!program.Limeade_Identifier_Employee_ID__c == false}" />
+                    <apex:outputText ></apex:outputText>
+                    
+                <apex:outputLabel value="" rendered="{!NOT(ISBLANK(program.Activity_Device_Note_to_User__c))}"/>
+                    <apex:outputText value="{!program.Activity_Device_Note_to_User__c}" rendered="{!NOT(ISBLANK(program.Activity_Device_Note_to_User__c))}" styleClass="programMessage"></apex:outputText>
+                    <apex:outputText rendered="{!NOT(ISBLANK(program.Activity_Device_Note_to_User__c))}"></apex:outputText>
+     
+                <br />
+                
+                <apex:commandButton action="{!presubmit}" value="Send" id="submitButton" disabled="{!submitDisabled}"/>
+                <apex:commandButton action="{!cancel}" value="Cancel" id="cancelButton" />
+                
+                <br />
+                
+            </apex:panelGrid>
+        </apex:outputPanel>
+    
+        </apex:form>
+        
+                    
+        </apex:define>
+        
+    </apex:pageBlock>
+    </div>
+<!--     <site:previewAsAdmin />-->
+</apex:page>

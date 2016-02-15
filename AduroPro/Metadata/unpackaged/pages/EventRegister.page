@@ -1,0 +1,184 @@
+<apex:page controller="EventRegister" showHeader="false" sidebar="false" cache="false">
+<apex:includeScript value="{!URLFOR($Resource.jquery, '/js/jquery-1.9.1.js')}"  />
+<apex:includeScript value="{!URLFOR($Resource.jquery, '/js/jquery-ui-1.10.3.custom.js')}"  />
+<apex:includeScript value="{!URLFOR($Resource.jquery, '/js/jquery-ui-1.10.3.custom.min.js')}"  />
+<apex:includeScript value="{!URLFOR($Resource.jquery, '/development-bundle/ui/jquery.ui.datepicker.js')}"  />
+<apex:stylesheet value="{!URLFOR($Resource.jquery, '/css/overcast/jquery-ui-1.10.3.custom.css')}"  />
+<apex:stylesheet value="{!URLFOR($Resource.eventregistrationresources, 'style.css')}"/>
+<style>
+
+ .button1 {
+    background: none repeat scroll 0 0 #65a9d7;
+    display: block;
+    font-size: .8em;
+    line-height: 1.2em;
+    padding-left: 50px;
+    position: relative;
+
+    background: none repeat scroll 0 0 #65a9d7;
+    border: medium none;
+    border-radius: 7px 7px 7px 7px;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: inline-block;
+    padding: 0.8em 1em;
+    text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
+    width:450px;
+}
+ .buttonDisabled {
+    background: none repeat scroll 0 0 #D3D3CA;
+    display: block;
+    font-size: .8em;
+    line-height: 1.2em;
+    padding-left: 50px;
+    position: relative;
+    border: medium none;
+    border-radius: 7px 7px 7px 7px;
+    color: #7F7F79;
+    display: inline-block;
+    padding: 0.8em 1em;
+    width:450px;
+    
+}  
+.appRow
+{
+}
+.info, .success, .warning, .error, .validation {
+border: 1px solid;
+margin: 10px 0px;
+padding:15px 10px 15px 50px;
+background-repeat: no-repeat;
+background-position: 10px center;
+}
+.info {
+color: #00529B;
+background-color: #BDE5F8;
+background-image: url('/img/msg_icons/info32.png');
+}
+</style>
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
+<div id="sidebar">
+    <header>
+        <h1>
+            <apex:outputPanel layout="none" rendered="{!eventRegistrationLogo!=''}">
+                <a href="http://adurolife.com" target="_blank"><apex:image alt="ADURO. Set Fire to Life." url="{!eventRegistrationLogo}" style="width:150px;height:150px;" /></a>
+            </apex:outputPanel>
+            <apex:outputPanel layout="none" rendered="{!eventRegistrationLogo==''}">
+                <a href="http://adurolife.com" target="_blank"><apex:image alt="ADURO. Set Fire to Life." url="{!URLFOR($Resource.eventregistrationresources,'Aduro_flame_150x150_web.png')}"  style="width:150px;height:150px;"/></a>
+            </apex:outputPanel>
+            
+        </h1>
+    </header>
+</div>
+<div class="clearfix" id="content">
+<div class="article-wrapper">
+     
+    <div align="center" style="width: 90%;">
+    <div  align="left" style="text-align: left;width: 90%;">
+        <b>Register for your health screening!</b><br/><br/>
+        <b>Event:</b> {!e.Name}<br/>
+        <b>Date:</b>&nbsp;<apex:outputField value="{!e.Event_Date__c}"/><br/>
+        <b>Location:</b> {!e.Event_Address__c}<br/>
+        <apex:outputPanel rendered="{!IF(e.Room_Location__c=='',false,true)}">
+            <b>Room:&nbsp;</b>{!e.Room_Location__c}<br/>    
+            
+        </apex:outputPanel>
+        <!-- <apex:outputPanel rendered="{!IF(e.Event_Notes_RT__c=='',false,true)}">
+            <div class="info">{!e.Event_Notes_RT__c}</div>  
+        </apex:outputPanel>  -->
+        <apex:outputPanel rendered="{!IF(e.Event_Notes_RT__c=='',false,true)}">
+            <div class="info">
+                <apex:outputField value="{!e.Event_Notes_RT__c}"     />
+            </div>      
+        </apex:outputPanel> 
+<!--        <button onclick="goBack()">Go Back</button>
+ -->        
+        <a href="#" onclick="goBack()">Back to Main Page</a>
+        <apex:outputPanel rendered="{!NOT(alreadyRegistered)}">
+        
+        <p>Click on your desired appointment slot to register. You will receive a confirmation email when your registration is complete.
+        <br/><a href="#" style="font-size:.9em" class="ForgotYourAppointment">Forgot your appointment time?</a>
+        <br/><a href="#" style="font-size:.9em" class="DeleteYourAppointment">Need to cancel your appointment?</a>
+        </p>
+        </apex:outputPanel>
+    </div>
+    <apex:outputPanel rendered="{!alreadyRegistered}">
+    <apex:pageMessage escape="true" severity="warning" strength="3" summary="">
+        To change your existing appointment, please click on the newly desired appointment time.  Our system will delete your old appointment and send you a confirmation email with your new appointment details.  Thank you.
+    <table>
+        <tr><td style="font-weight: bold;">Existing Appointment Date/Time:&nbsp;</td><td>{!oldEventDateStr}, {!startTimeStr}-{!endTimeStr}</td></tr>
+    </table>
+    </apex:pageMessage>
+    </apex:outputPanel>
+    <table>
+    <apex:repeat value="{!events}" var="sw" >
+        <apex:repeat value="{!sw.listSlots}" var="s" >
+        <tr class="appRow">
+            <td>            
+            <apex:outputPanel rendered="{!AND(s.Contact__c=='',s.Type__c!='Break')}"><a class="button1" title="Register for this slot." href="/Event/EventRegisterStep2?eid={!s.WW_Event__c}&sid={!s.Id}&osid={!slotId}">{!sw.startTimeStr}-<apex:outputText value="{!sw.strDate}"/></a></apex:outputPanel>
+            <apex:outputPanel rendered="{!AND(s.Contact__c!='',s.Type__c!='Break')}"><span class="buttonDisabled" title="This slot has already been taken.">{!sw.startTimeStr}-<apex:outputText value="{!sw.strDate}"/>-Unavailable</span></apex:outputPanel>
+            <apex:outputPanel rendered="{!s.Type__c=='Break'}"><span class="buttonDisabled" title="No Appointment Available">No Appointment Available</span></apex:outputPanel>
+            </td>
+        </tr>
+        </apex:repeat>
+    </apex:repeat>
+    </table>
+    </div>
+</div>
+</div>
+<div id="modalDiv"><iframe id="modalIFrame" width="99%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" title="Forgot Your Appointment"></iframe></div>
+<div id="modalDivDelete"><iframe id="modalIFrameDelete" width="99%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" title="Delete Your Appointment"></iframe></div>
+<script>
+    jQuery.noConflict();
+    jQuery(document).ready(function() {
+            jQuery("#modalDiv").dialog({
+                modal: true,
+                autoOpen: false,
+                height: '300',
+                width: '600',
+                draggable: true,
+                resizeable: true,   
+                title: 'Forgot Your Appointment'
+            }); 
+            jQuery("#modalDivDelete").dialog({
+                modal: true,
+                autoOpen: false,
+                height: '300',
+                width: '600',
+                draggable: true,
+                resizeable: true,   
+                title: 'Delete Your Appointment'
+            });            
+        jQuery( ".ForgotYourAppointment" ).click(function(){
+            var eid="{!e.Id}";
+            if(eid!="")
+            {
+                url = '/Event/EventRegisterForgotEmail?eid='+eid;
+                jQuery("#modalDiv").dialog("open");
+                jQuery("#modalIFrame").attr('src',url);
+            }
+        }); 
+        jQuery(".DeleteYourAppointment" ).click(function(){
+            clickDelete()
+        }); 
+        if("{!$CurrentPage.parameters.d}"=="d")
+        {
+            clickDelete();
+        }           
+    });
+    function clickDelete()
+    {
+        var eid="{!e.Id}";
+        if(eid!="")
+        {
+            url = '/Event/EventRegisterDeleteEmail?eid='+eid;
+            jQuery("#modalDivDelete").dialog("open");
+            jQuery("#modalIFrameDelete").attr('src',url);
+           }    
+    }
+</script>   
+</apex:page>

@@ -1,0 +1,37 @@
+<apex:page controller="OnsiteHRASearch" contentType="{!contentType}" showHeader="{!showHeader}" sidebar="{!sidebar}" standardStylesheets="{!standardStylesheets}">
+	<apex:form rendered="{!renderForm}">
+		<apex:pageMessages />
+		<apex:pageBlock title="Search HRA Orders">
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton value="Search" action="{!search}"/>
+			</apex:pageBlockButtons>
+			<apex:pageBlockSection >
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="Start Date"/>
+					<apex:inputField value="{!eventForDate.Event_Date__c}"/>
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="End Date"/>
+					<apex:inputField value="{!eventForDate.Home_Test_Kit_Launch_Date__c}"/>
+				</apex:pageBlockSectionItem>	
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="Include Already Exported"/>
+					<apex:inputCheckbox value="{!includeHRAExported}"/>
+				</apex:pageBlockSectionItem>					
+			</apex:pageBlockSection> 
+		</apex:pageBlock>
+		<script>
+			function setFocusOnLoad(){}
+		</script>
+	</apex:form>
+	<apex:outputPanel rendered="{!listOrders.size>0}">
+	<a href="/apex/OnsiteHRAExport?e=t&ex={!includeHRAExported}&sd={!startDate}&ed={!endDate}" target="_blank">Export To CSV</a>
+	<apex:outputText value="{!csvText}" escape="false"  rendered="{!NOT(renderForm)}"/>
+	<apex:pageBlock title="Search Result"  rendered="{!renderForm}">
+		<apex:pageBlockTable value="{!listOrders}" var="o">
+			<apex:column value="{!o.PatientFirstName__c}"/>
+			<apex:column value="{!o.PatientLastName__c}"/>
+		</apex:pageBlockTable>
+	</apex:pageBlock>
+	</apex:outputPanel>
+</apex:page>

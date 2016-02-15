@@ -1,0 +1,98 @@
+<apex:page controller="PPProgram"  cache="false" sidebar="false" showHeader="false" standardStylesheets="false">
+<head>
+     <title>FAX Form</title>
+   	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<apex:stylesheet value="{!URLFOR($Resource.jquerymobile143, 'jquery.mobile-1.4.3.min.css')}"  />
+	<apex:includeScript value="{!URLFOR($Resource.jqueryui111, 'jquery-1.11.1.min.js')}"  />
+	<apex:includeScript value="{!URLFOR($Resource.jquerymobile143, 'jquery.mobile-1.4.3.min.js')}"  />	
+     <style>
+     	.inputText
+     	{
+     		width:280px;
+     	}
+     </style>		        
+</head> 
+	<apex:form styleClass="frmMain">
+    <div data-role="page">
+      <div data-role="header" style="background-color:#035b70;padding:4px;vertical-align:middle;text-shadow:none;">
+        <span style="color:#c1c1c1;text-shadow:none;font-size:1em;font-weight: normal;"><img src="{!IF(documentURL='',$Resource.adurologo,documentURL)}" width="60" height="67"/><span style="position: absolute;top: 35px;text-shadow:none;">&nbsp;&nbsp;Welcome to ADURO, Inc. Online Physician Form Upload</span></span>
+      </div>
+	      <div data-role="main" class="ui-content divMain" style="padding:.5em;">
+	      	<apex:outputPanel id="pnldStep12" rendered="{!OR(step1,step2)}">
+	      	<p>Please note that this is a  secure site.  ADURO, is bound by legal contractual obligations to ensure the confidentiality of the information you provide. ADURO does not rent, share or sell participants’ information. No one at your company can see your individual responses, including our Human Resources department and your manager. Please allow 48-72 hours for your results to be processed and uploaded to your wellness platform.</p>
+	      	</apex:outputPanel>
+	      	<apex:outputPanel id="pnlErrorOnPage" rendered="{!errorOnPage}">
+	      		<ul data-role="listview" data-inset="true" style="background-color:#E84D4F;">
+	      			<li style="background-color:#E84D4F;color:#ffffff;font-weight:notmal;">{!errorMessage}</li>
+	      		</ul>
+	      	</apex:outputPanel>
+			<apex:outputPanel id="pnldStep1" rendered="{!step1}">
+				
+				<p>Instructions:
+					<ol>
+						<li>Enter the six digit program number located at the bottom right of the physician form.  Include leading zeros.</li>
+						<li>Enter the email where you would like to receive a confirmation of the submission.</li>
+						<li>Upload the physician form in pdf, jpg or tif format.</li>
+					</ol>
+				</p>
+				<div class="inputText">
+				<table>
+					<tr>
+						<td>PROG-</td>
+						<td><apex:inputText value="{!programNumber1}" maxlength="1" styleClass="txtBox txtBox1"/></td>
+						<td><apex:inputText value="{!programNumber2}" maxlength="1" styleClass="txtBox txtBox2"/></td>
+						<td><apex:inputText value="{!programNumber3}" maxlength="1" styleClass="txtBox txtBox3"/></td>
+						<td><apex:inputText value="{!programNumber4}" maxlength="1" styleClass="txtBox txtBox4"/></td>
+						<td><apex:inputText value="{!programNumber5}" maxlength="1" styleClass="txtBox txtBox5"/></td>
+						<td><apex:inputText value="{!programNumber6}" maxlength="1" styleClass="txtBox txtBox6"/></td>
+					</tr>
+				</table>
+				<apex:commandButton action="{!gotoSetp2}" value="Next>>"/>
+				</div>
+			</apex:outputPanel>
+			<apex:outputPanel id="pnldStep2" rendered="{!step2}">
+				<div class="inputText">
+				First Name<apex:inputText value="{!firstName}"/>
+				Last Name<apex:inputText value="{!lastName}"/>
+				Date of Birth <span style="font-size:.8em;">(mm/dd/yyyy)</span><apex:inputText value="{!dateOfBirth}"/>
+				Email <span style="font-size:.8em;">(used to login to wellness platform)</span> <apex:inputText value="{!email}"/>
+				<apex:inputFile value="{!doc.body}" filename="{!doc.name}" styleclass="ui-btn ui-input-btn ui-corner-all ui-shadow fileUpload"/>
+				<apex:commandButton action="{!gotoSetp3}" value="Submit"/>
+				</div>
+			</apex:outputPanel>
+			<apex:outputPanel id="pnldStep3" rendered="{!step3}">
+				<p>
+				Your document has been uploaded successfully. Your results will be processed and uploaded to your online wellness platform in 48-72 hours.<br/>Thank you!
+				</p>
+			</apex:outputPanel>
+			<p>Questions? Contact the Program Concierge at 855.864.0721 or support@adurolife.com</p>	
+	      </div>
+      <div data-role="footer" style="background-color:#DAE3E6;">
+        <h1>&#169; ADURO, Inc.</h1>
+      </div>
+    </div>	
+
+		<script  type="text/javascript">
+			jQuery.noConflict();
+			jQuery(document).ready(function () {
+				//jQuery(document).trigger( "create" );
+				jQuery(".frmMain").attr("data-ajax","false");
+	            jQuery(document).on("keyup",".txtBox", function (e) { 
+	                if (jQuery(this).val().length >= 1) {
+	                   // var next;
+	                   // next = jQuery(this).next().find('.txtBox');
+	                    var className=jQuery(this).attr("class");
+	                    className=className.replace("txtBox","");
+	                    className=className.replace("txtBox","");
+	                    var boxNumber=parseInt(className);
+	                    className=".txtBox"+(boxNumber+1);
+	                    //alert(className);
+	                    jQuery(className).focus();
+	                    jQuery(className).select();
+	                    //jQuery(this).next('.txtBox').focus();
+	                }
+	            });				
+	        });	
+		</script> 					
+	</apex:form>
+</apex:page>

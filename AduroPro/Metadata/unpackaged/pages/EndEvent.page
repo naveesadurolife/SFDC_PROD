@@ -1,0 +1,5 @@
+<apex:page controller="EndEvent" sidebar="false" showHeader="false" action="{!UpdateContacts}">
+{!result}
+<br/>
+Please close this window and refresh parent window.
+</apex:page>

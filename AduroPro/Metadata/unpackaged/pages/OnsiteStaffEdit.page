@@ -1,0 +1,68 @@
+<apex:page showHeader="false" controller="OnsiteStaffEdit" standardStylesheets="false" sidebar="false" docType="html-5.0" >
+	<html>
+	<head>
+		<meta charset="utf-8">  
+			<title>Onsite Testing : Choose Function</title>
+			<meta name="description" content="Description"/>
+			<apex:stylesheet value="{!URLFOR($Resource.OnsiteStaticResources, 'onsite_static_resources/css/ww-style.css')}"/>
+		</meta>
+		<style type="text/css">
+			.cell
+			{
+				padding-left: 0px;
+				padding-right: .5em;
+			}
+			.dd
+			{
+				border: 1px solid #ccc;border-radius: 3px;-moz-box-shadow: inset 0 0 8px #dddddd;-webkit-box-shadow: inset 0 0 8px #dddddd;box-shadow: inset 0px 0px 8px #dddddd; padding: 4px; margin: 1px; overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="page-wrapper">
+		<div id="content-wrapper">
+		<h1>{!objEvent.Name} <input style="margin-right:60px;" class="bttn blue" type="button" name="eventlist" value="Staff" onclick="goToStaff()" /><input style="margin-right:60px;" class="bttn blue" type="button" name="eventlist" value="Results" onclick="goToResults()" /></h1>
+		<div class="input-grid-wrapper">
+		<apex:form id="frmMain">
+	       <apex:outputPanel id="errorpanel"> 
+				<div id="errors" class="error" style="{!errorMessageStyle}"><p><apex:outputText escape="false" value="{!errorMessage}"/></p></div>
+			</apex:outputPanel>		
+			<table class="input-grid" style="width: 90%; table-layout: fixed;border: 0px solid #B4B9C0;font-size:.9em; ">
+				<apex:outputPanel rendered="{!staffId!=''}">
+					<tr><td style="width:30%;">Name</td><td align="left">{!er.Contact__r.Name}</td></tr>
+					<tr><td >Role</td><td  align="left">{!er.Event_Role__c}</td></tr>
+				</apex:outputPanel>
+				<apex:outputPanel rendered="{!staffId==''}">
+					<tr><td valign="top">First Name</td><td  align="left"><apex:inputField value="{!con.FirstName}" style="width:90%;"/></td></tr>
+					<tr><td valign="top">Last Name</td><td  align="left"><apex:inputField value="{!con.LastName}" style="width:90%;"/></td></tr>
+					<tr><td valign="top">Phone</td><td  align="left"><apex:inputField value="{!con.Phone}" style="width:90%;"/></td></tr>
+					<tr><td valign="top">Email</td><td  align="left"><apex:inputField value="{!con.Email}" style="width:90%;"/></td></tr>
+					<tr><td valign="top">Role</td><td  align="left"><apex:inputField value="{!er.Event_Role__c}" style="width:90%;" styleClass="dd"/></td></tr>
+				</apex:outputPanel>									
+				<tr><td valign="top">Start Time</td><td  align="left"><apex:inputField value="{!er.Start_Time__c}" style="width:90%;"/></td></tr>
+				<tr><td valign="top">End Time</td><td  align="left"><apex:inputField value="{!er.End_Time__c}" style="width:90%;"/></td></tr>
+				<tr><td valign="top">Parking Credit</td><td  align="left"  style="float:left;"><apex:inputCheckbox value="{!ParkingCredit}"/></td></tr>
+				<tr><td valign="top">Attendance</td><td  align="left"><apex:inputField value="{!er.Attendance__c}" style="width:90%;" styleClass="dd"/></td></tr>
+				<tr><td valign="top">Staff Rating</td><td  align="left"><apex:inputField value="{!er.Event_Staff_Rating__c}" style="width:90%;"  styleClass="dd"/></td></tr>
+				<tr><td valign="top">Staffing Agency</td><td  align="left"><apex:inputField value="{!er.Staffing_Agency__c}" style="width:90%;"  styleClass="dd"/></td>	</tr>	
+				<tr><td class="cell" colspan="2">
+					<apex:commandButton action="{!save}" value="Save" style="vertical-align: middle; font-size:12px; width: 90px; height: 40px; " styleClass="bttn orange"/>
+				</td></tr>							
+			</table>
+		</apex:form><!-- ENDS TEST RESULTS -->
+		</div><!-- ENDS INPUT GRID WRAPPER -->
+		</div><!-- ENDS CONTENT WRAPPER -->
+		</div><!-- ENDS PAGE WRAPPER -->
+	<script type="text/javascript">
+        function goToResults(){
+			parent.location.href='/apex/OnsiteEventResult?event={!objEvent.Id}';
+        }
+        function goToStaff()
+        {
+        parent.location.href='/apex/OnsiteStaff?event={!objEvent.Id}';
+        }
+    </script>		
+	</body>
+	 </html>
+	
+</apex:page>

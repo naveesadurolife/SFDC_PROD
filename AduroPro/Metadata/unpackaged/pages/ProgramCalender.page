@@ -1,0 +1,258 @@
+<apex:page Controller="ProgramCalenderController"  showHeader="false" standardStylesheets="false" docType="html-5.0">
+  <head> 
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <apex:stylesheet value="{!URLFOR($Resource.CalenderResource,'/CalenderResource/reset.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.CalenderResource,'/CalenderResource/libs/css/smoothness/jquery-ui-1.8rc3.custom.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.CalenderResource,'/CalenderResource/jquery.weekcalendar.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.CalenderResource,'/CalenderResource/demo.css')}"/>
+    <!-- JQUERY -->
+    <apex:includeScript value="{!URLFOR($Resource.CalenderResource,'/CalenderResource/libs/jquery-1.4.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.CalenderResource,'/CalenderResource/libs/jquery-ui-1.8rc3.custom.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.CalenderResource,'/CalenderResource/jquery.weekcalendar.js')}"/>
+    <apex:includeScript value="{!$Resource.CustomProgramCalender}"/>
+    <!-- Bootstrap -->
+    <!-- Latest compiled and minified CSS -->
+    <apex:includeScript value="{!URLFOR($Resource.CalenderResource,'/CalenderResource/jquery-2.1.4.min.js')}" />
+    <apex:stylesheet value="{!$Resource.CustomCSS}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Bootstrap,'/js/bootstrap.min.js')}"/>
+    <script>
+      $.noConflict();
+       var pkey = '{!pkey}';
+       var pId = '{!programId}';
+       var fName = '{!fName}';
+       var lName = '{!lName}';
+       var email = '{!email}';
+       var eId   = '{!eId}';
+       var dob   = '{!DOB}';
+       var phone = "{!phone}";
+    </script> 
+  </head>
+  <body>
+    <div id="bootstrap">
+      <div class="col-sm-4 col-sm-offset-5">
+        <apex:outputPanel rendered="{!IF(cName !='', TRUE,FALSE)}">
+          <h3>{!cName}</h3>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!IF(cName =='', TRUE,FALSE)}">
+          <apex:image value="{!$Resource.DefaultLogo}" styleclass="defaultLogo" />
+        </apex:outputPanel>
+      </div>
+      <br/>
+      <div class="col-sm-4">
+        <button class= "btn btn-link" onclick="jQuery('#find-appointment-modal').modal('toggle');">
+        Show Existing Appointment
+        </button>  
+      </div>
+      <div id="show-timezone" class="timeinfo col-sm-8 col-sm-offset-4">
+       
+      </div>
+      <div class="modal fade" id="find-appointment-modal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title"> Search Appointments</h4>
+            </div>
+            <div class="modal-body">
+              <div class="form-horizontal" role="form">
+                <div class="form-group">
+                  <label class="control-label col-sm-2"  for="fname">Registered Email:</label>
+                  <div class="col-sm-8"> 
+                    <input type="text" class="form-control" id="email-search"/>
+                  </div>
+                  <div class="col-sm-2">
+                    <button class="btn btn-info" id= "seach-go" onclick="searchAppointment();return false;">GO
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div id="search-response">
+              </div>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+    </div>
+    <div id='calendar' class=""></div>
+    <div id="bootstrap">
+      <div class="modal fade" id="past-date-modal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title"> Past date or time selected</h4>
+            </div>
+            <div class="modal-body">
+              <p>You are not allowed to create event on past time or in current date.</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-warning btn-cancel" data-dismiss="modal" >Close</button>  
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+      <div class="modal fade" id="delete-success-modal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+              <h4 class="modal-title">Appointment Cancelled</h4>
+            </div>
+            <div class="modal-body">
+              <p>Your appointment is cancelled.</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-warning btn-cancel" data-dismiss="modal" onclick="window.location = 'https://{!brandedURL}' ; return false;" >Close</button>  
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+      <div class="modal fade" id="delete-confirm-modal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title"> Are you sure !</h4>
+            </div>
+            <div class="modal-body">
+              <p>You are about to cancel the apointment. Click Yes to continue.</p>
+            </div>
+            <div class="modal-footer">
+              <input type="hidden" id="cancel-confim-text" />  
+              <button type="button" class="btn btn-danger del-confirm" data-dismiss="modal" onclick="cancelAppointmentBySupport($('#cancel-confim-text').val())">Yes</button>  
+              <button type="button" class="btn btn-warning btn-cancel" data-dismiss="modal" >No</button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+      <div class="modal fade" id="appointment-confirm-modal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Confirmation</h4>
+            </div>
+            <div class="modal-body">
+              <p>Thank you for registering. A confirmation email with your appointment details will be sent to you shortly.
+                If you do not receive this email within 24 hours, please contact Support at <a href="mailto:support@adurolife.com?Subject=Confirmation%20not%20received" target="_top">support@adurolife.com.</a>
+              </p>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal --> 
+         
+      <div class="modal fade" id="booked-date-modal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Not available</h4>
+            </div>
+            <div class="modal-body">
+              <p>This slot is taken by someone else.</p>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->     
+      <div id="event_edit_container" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" onclick='$("#calendar").weekCalendar("removeUnsavedEvents");'>&times;</button>
+              <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+              <form class="form-inline" role="form">
+                <input type="hidden" name="sf-record-id" id ="sf-record-id"/>
+                <div class="row">
+                  <label class="col-sm-3 labels">When: </label>
+                  <label class="start_time"></label>            
+                </div>
+                <div class="form-group">
+                  <label for="fname" class="labels" ><label class="required labels">*</label>First Name:</label>
+                  <input type="text" class="form-control" id="fname" placeholder="First Name"/>
+                </div>
+                <div class="form-group">
+                  <label for="lname" class="labels"><label class="required labels">*</label>Last Name:</label>
+                  <input type="text" class="form-control" id="lname" placeholder="Last Name"/> 
+                </div>                 
+                <br/>  
+                <div class="form-group">
+                  <label for="email" class="labels"><label class="required labels">*</label>Email:</label>
+                  <input type="email" class="form-control" id="email" placeholder="Email" onchange="validateEmail(this.value,this.id);"/>
+                </div>
+                <div class="form-group">
+                  <label for="phone" class="labels"><label class="required labels">*</label>Phone:</label>
+                  <input type="text" class="form-control" id="phone" placeholder="Phone"/>
+                </div>
+                <apex:outputPanel rendered="{!dobRequired}">
+                  <div class="form-group">
+                    <label for="dob" class="labels"><label class="required labels">*</label>DOB:</label>
+                    <input type="text" class="form-control" id="cdob" placeholder="mm/dd/yyyy" onchange="isValidDate(this.value)"/>  
+                  </div>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!eIdRequired}">
+                  <div class="form-group">
+                    <label for="eid" class="labels"><label class="required labels">*</label>Employee Id:</label>
+                    <input type="text" class="form-control" id="ceid" placeholder="Employee Id"/>  
+                  </div>
+                </apex:outputPanel>
+                
+                <div class="form-group">
+                  <label for="reason" class="labels"><label class="required labels">*</label>Reason for Scheduling:</label>
+                  <input type="text" class="form-control" id="reason" placeholder="Reason"/>  
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger btn-delete" data-dismiss="modal" onclick='cancelAppointment();'>Cancel Appointment</button>
+              <button type="button" class="btn btn-primary btn-book"  onclick='confirmAppointment();'>Book Appointment
+                    <div>
+                        <img src="/img/loading32.gif" style="display:none;z-index:1000;margin-top:-20px;margin-left:30%" id="loading"/>
+                   </div>
+                </button>
+              <button type="button" class="btn btn-warning btn-cancel" data-dismiss="modal" onclick='$("#calendar").weekCalendar("removeUnsavedEvents");'>Close</button>  
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="limeade-error-modal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title"> Limeade Validation Error</h4>
+            </div>
+            <div class="modal-body">
+              <p id="limeade-error-body"></p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-warning btn-cancel" data-dismiss="modal" >Close</button>  
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>  
+    </div>
+  </body>
+</apex:page>

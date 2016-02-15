@@ -1,0 +1,15 @@
+<apex:page standardController="WW_Event__c" Extensions="CreateEventSeriesController" recordSetVar="Member">
+
+	<apex:form >
+		<apex:PageBlock >
+			<apex:pageBlockButtons >
+				<apex:commandButton action="{! save}" value="Save" />
+				<apex:commandButton action="{! cancel}" value="Cancel" />
+			</apex:pageBlockButtons>
+			<apex:PageBlockSection >
+				<apex:inputfield value="{!objEventSeries.Name}" style="width: 500px"/>
+			</apex:PageBlockSection>
+		</apex:PageBlock>
+	</apex:form>
+
+</apex:page>
